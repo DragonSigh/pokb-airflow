@@ -117,6 +117,7 @@ def analyze_results():
         index=False,
     )
 
+    # Права на скачивание любому пользователю
     os.chmod(DOWNLOAD_FILE_PATH, 0o777)
 
     f.close()

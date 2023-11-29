@@ -49,6 +49,6 @@ def upload_results():
     values.extend(df_agg2.values.tolist())
 
     wks = "Статистика по номерам"
-    spreadsheet.values_append(
+    spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
