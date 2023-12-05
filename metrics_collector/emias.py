@@ -1,5 +1,5 @@
-import config
-import utils
+import metrics_collector.config as config
+import metrics_collector.utils as utils
 import os
 from loguru import logger
 from selenium.common.exceptions import TimeoutException
