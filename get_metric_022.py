@@ -174,20 +174,18 @@ def analyze_data(df_kornet, df_emias):
     result = df_kornet[~df_kornet["ФИО пациента"].isin(df_emias["ФИО пациента"])]
     result = result[result["Дата выписки"] >= last_date]
 
-    print(result)
-
     for department in result["Подразделение"].unique():
         df_temp = result[result["Подразделение"] == department].drop(["Подразделение"], axis=1)
         # Фильтрация датафрейма по уникальному значению в колонке
+        file_path = METRIC_PATH + "/" + department
+        + " - нет записи в кабинет выписки рецептов на "
+        + str(last_date)
+        + ".xlsx"
         utils.save_to_excel(
             df_temp,
-            METRIC_PATH
-            + "/"
-            + department
-            + " - нет записи в кабинет выписки рецептов на "
-            + str(last_date)
-            + ".xlsx",
+            file_path,
         )
+        os.chmod(file_path, 0o777)
 
     # Поиск людей, которым не отмечена явка в ЕМИАС, но выдан рецепт в Корнет
     # Соединение датафреймов неявок и корнета
@@ -206,6 +204,7 @@ def analyze_data(df_kornet, df_emias):
     utils.save_to_excel(
         df_noshow, METRIC_PATH + "/_Не проставлена явка о приеме, но выписан рецепт.xlsx"
     )
+    os.chmod(METRIC_PATH + "/_Не проставлена явка о приеме, но выписан рецепт.xlsx", 0o777)
     # Сегодняшний день исключаем, так как рецепт ещё могут выписать позже
     df_kornet = df_kornet[df_kornet["Дата выписки"] < last_date]
     # ЕСЛИ НУЖНО сохранить объединенные отчёты для обеих систем для дебага
@@ -228,6 +227,12 @@ def analyze_data(df_kornet, df_emias):
 
     # Сохраняем свод
     df_kornet.columns = ["Всего рецептов", "Из них по регламенту", "% по регламенту"]
+    file_path = METRIC_PATH
+    + "/_Свод по выписанным рецептам не по регламенту "
+    + str(first_date)
+    + "_"
+    + str(yesterday_date)
+    + ".xlsx"
     utils.save_to_excel(
         df_kornet,
         METRIC_PATH
@@ -238,6 +243,7 @@ def analyze_data(df_kornet, df_emias):
         + ".xlsx",
         index_arg=True,
     )
+    os.chmod(file_path, 0o777)
 
     # Аггрегация для дашборда
 
@@ -251,8 +257,8 @@ def analyze_data(df_kornet, df_emias):
     df_kornet = df_kornet.drop(
         ["Отделение", "Из них по регламенту", "Всего рецептов", "% по регламенту"], axis=1
     ).reset_index()
-    print(df_kornet)
     utils.save_to_excel(df_kornet, METRIC_PATH + "/agg_22.xlsx", index_arg=False)
+    os.chmod(METRIC_PATH + "/agg_22.xlsx", 0o777)
 
 
 def check_metric_022():
