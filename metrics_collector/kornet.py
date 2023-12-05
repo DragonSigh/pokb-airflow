@@ -54,7 +54,7 @@ def export_report():
     # Ожидать загрузки отчёта в веб-интерфейсе
     WebDriverWait(
         browser,
-        60,
+        360,
         poll_frequency=5,
         ignored_exceptions=[NoSuchElementException, StaleElementReferenceException],
     ).until(
