@@ -28,7 +28,7 @@ def authorize(login_data: str, password_data: str):
 
 
 def load_dlo_report(begin_date, end_date):
-    logger.debug("Открываю страницу отчёта")
+    logging.info("Открываю страницу отчёта")
     browser.get(
         "http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
         "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
@@ -36,11 +36,11 @@ def load_dlo_report(begin_date, end_date):
         + "&EndDate="
         + end_date.strftime("%d.%m.%Y")
     )
-    logger.debug("Отчет сформирован в браузере")
+    logging.info("Отчет сформирован в браузере")
 
 
 def export_report():
-    logger.debug(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
+    logging.info(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
     # Создать папку с отчётами, если её нет в системе
     # try:
     #    os.mkdir(reports_path)
@@ -61,5 +61,5 @@ def export_report():
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
     )
     utils.download_wait(config.reports_path, 20)
-    logger.debug("Сохранение файла с отчетом успешно")
+    logging.info("Сохранение файла с отчетом успешно")
     browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignOut")
