@@ -39,7 +39,7 @@ def start_kornet_report_saving():
     # Определение дат
     first_date = config.first_date
     last_date = config.last_date
-    logger.debug(
+    logger.info(
         f'Выбран период: с {first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
     )
@@ -48,11 +48,11 @@ def start_kornet_report_saving():
     f.close()
     df_list = []
     for _departments in data["departments"]:
-        logger.debug(
+        logger.info(
             f"Начинается сохранение отчёта для подразденения: " f'{_departments["department"]}'
         )
         for _units in _departments["units"]:
-            logger.debug("Начинается авторизация в отделение: " f'{_units["name"]}')
+            logger.info("Начинается авторизация в отделение: " f'{_units["name"]}')
             kornet.authorize(_units["login"], _units["password"])
             kornet.load_dlo_report(first_date, last_date)
             kornet.export_report()
@@ -77,7 +77,7 @@ def start_kornet_report_saving():
         "Препарат",
         "Количество",
     ]
-    logger.debug("Выгрузка из КОРНЕТА завершена")
+    logger.info("Выгрузка из КОРНЕТА завершена")
     utils.save_to_excel(df_kornet, METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx")
 
 
@@ -88,7 +88,7 @@ def start_emias_report_saving():
     first_date = config.first_date
     last_date = config.last_date
     # Открываем данные для авторизации и проходим по списку кабинетов
-    logger.debug(
+    logger.info(
         "Выбран период: с "
         f'{first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
@@ -97,11 +97,11 @@ def start_emias_report_saving():
     data = json.load(f)
     f.close()
     for _departments in data["departments"]:
-        logger.debug(
+        logger.info(
             "Начинается сохранение отчёта для подразденения: " f'{_departments["department"]}'
         )
         for _units in _departments["units"]:
-            logger.debug("Начинается авторизация в отделение: " f'{_units["name"]}')
+            logger.info("Начинается авторизация в отделение: " f'{_units["name"]}')
             emias.authorize(_units["login"], _units["password"])
     # ID кабинетов выписки лекарств
     cabinets_list = ["2434", "2460", "2459", "2450", "636", "2458", "2343", "2457", "2449", "2711"]
@@ -123,7 +123,7 @@ def start_emias_report_saving():
         "Время приема по записи",
         "Отметка о приеме",
     ]
-    logger.debug("Выгрузка из ЕМИАС завершена")
+    logger.info("Выгрузка из ЕМИАС завершена")
     utils.save_to_excel(df_emias, METRIC_PATH + "/Промежуточный ЕМИАС.xlsx")
 
 
