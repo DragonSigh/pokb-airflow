@@ -26,7 +26,6 @@ def complex_rename(x):
         return 0
 
 
-@utils.retry_with_backoff(retries=5)
 def start_kornet_report_saving():
     # Создать папку для выгрузки метрики
     try:
@@ -80,7 +79,6 @@ def start_kornet_report_saving():
     utils.save_to_excel(df_kornet, METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx")
 
 
-@utils.retry_with_backoff(retries=5)
 def start_emias_report_saving():
     # Получить путь к файлу с данными для авторизации
     emias_credentials_path = os.path.join(PATH_TO_CREDENTIAL, "auth-kornet.json")
@@ -255,6 +253,7 @@ def analyze_data(df_kornet, df_emias):
     ).reset_index()
     print(df_kornet)
     utils.save_to_excel(df_kornet, METRIC_PATH + "/agg_22.xlsx", index_arg=False)
+
 
 def check_metric_022():
     if not utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx"):
