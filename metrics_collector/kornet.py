@@ -48,7 +48,7 @@ def export_report():
     #except FileExistsError:
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
-    WebDriverWait(browser, 30).until(
+    WebDriverWait(browser, 60).until(
         EC.element_to_be_clickable(
             (
                 By.XPATH,
