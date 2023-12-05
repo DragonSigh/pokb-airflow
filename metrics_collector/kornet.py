@@ -43,10 +43,10 @@ def load_dlo_report(begin_date, end_date):
 def export_report():
     logger.debug(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
     # Создать папку с отчётами, если её нет в системе
-    try:
-        os.mkdir(reports_path)
-    except FileExistsError:
-        pass
+    #try:
+    #    os.mkdir(reports_path)
+    #except FileExistsError:
+    #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
     WebDriverWait(browser, 30).until(
         EC.element_to_be_clickable(
