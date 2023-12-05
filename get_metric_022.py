@@ -28,10 +28,10 @@ def complex_rename(x):
 
 def start_kornet_report_saving():
     # Создать папку для выгрузки метрики
-    try:
-        os.mkdir(METRIC_PATH)
-    except FileExistsError:
-        pass
+    #try:
+    #    os.mkdir(METRIC_PATH)
+    #except FileExistsError:
+    #    pass
     # Получить путь к файлу с данными для авторизации
     kornet_credentials_path = os.path.join(PATH_TO_CREDENTIAL, "auth-kornet.json")
     # Определение дат
