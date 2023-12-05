@@ -7,7 +7,7 @@ import json
 import pandas as pd
 import logging
 
-logger = logging.getLogger("run_metric_022")
+logger = logging.getLogger(__name__)
 
 # Настройки
 PATH_TO_CREDENTIAL = r"/home/user/"
