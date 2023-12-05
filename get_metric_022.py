@@ -5,7 +5,9 @@ import metrics_collector.kornet as kornet
 import os
 import json
 import pandas as pd
-from loguru import logger
+import logging
+
+logger = logging.getLogger("run_metric_022")
 
 # Настройки
 PATH_TO_CREDENTIAL = r"/home/user/"
