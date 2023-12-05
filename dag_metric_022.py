@@ -1,12 +1,13 @@
 from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import get_metric_022
 
 dag = DAG(
     dag_id="analyze_metric_022",
     start_date=datetime(2023, 1, 1),
+    sla=timedelta(minutes=90),
     schedule_interval="@daily",
     catchup=False,
 )
