@@ -1,11 +1,6 @@
 import metrics_collector.config as config
 import metrics_collector.utils as utils
-import os
-from loguru import logger
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    StaleElementReferenceException,
-)
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -29,7 +24,7 @@ def authorize(login_data: str, password_data: str):
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
     ).click()
-    logger.debug("Авторизация пройдена")
+    logging.info("Авторизация пройдена")
 
 
 def load_dlo_report(begin_date, end_date):
@@ -52,12 +47,7 @@ def export_report():
     # except FileExistsError:
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
-    WebDriverWait(
-        browser,
-        360,
-        poll_frequency=5,
-        ignored_exceptions=[NoSuchElementException, StaleElementReferenceException],
-    ).until(
+    WebDriverWait(browser, 30).until(
         EC.element_to_be_clickable(
             (
                 By.XPATH,
