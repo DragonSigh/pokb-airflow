@@ -5,9 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 
-current_path = os.path.abspath(os.getcwd())
-system_path = ""
-reports_path = os.path.join(current_path, "reports", "downloads", system_path)
+reports_path = r"/etc/samba/share/downloads"
 
 # Опции для веб-драйвера
 options = webdriver.ChromeOptions()
