@@ -166,7 +166,7 @@ def analyze_results():
 
     wks = "Сводная статистика!E4"
     worksheet = spreadsheet.worksheet("Сводная статистика")
-    worksheet.batch_clear("E9:F30")
+    worksheet.batch_clear(["E9:F30"])
 
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
