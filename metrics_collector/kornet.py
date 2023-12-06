@@ -37,6 +37,7 @@ def load_dlo_report(begin_date, end_date):
         + "&EndDate="
         + end_date.strftime("%d.%m.%Y")
     )
+    
     logging.info("Отчет сформирован в браузере")
 
 
@@ -47,26 +48,20 @@ def export_report():
     # except FileExistsError:
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
-    max_attempts = 3
-    for i in range(max_attempts):
-        logging.info(f"Начинается экспорт отчета (попытка {i+1})")
-        try:
-            WebDriverWait(browser, 30).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
-                        "td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[8]",
-                    )
+    logging.info(f"Начинается экспорт отчета")
+    try:
+        WebDriverWait(browser, 30).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
+                    "td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[8]",
                 )
             )
-            # Perform actions on the element
-            break  # Exit the loop if successful
-        except TimeoutException:
-            continue  # Retry if a timeout occurs
+        )
+    except TimeoutException:
+        browser.save_screenshot("selenium_error.png")
 
-    browser.save_screenshot("screenie.png")
-    
     # Выполнить javascript для выгрузки  в Excel, который прописан в кнопке
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
