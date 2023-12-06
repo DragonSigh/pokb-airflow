@@ -48,8 +48,8 @@ def export_report():
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
     max_attempts = 3
-    for _ in range(max_attempts):
-        logging.info(f"Начинается экспорт отчета {_}")
+    for i in range(max_attempts):
+        logging.info(f"Начинается экспорт отчета (попытка {i+1})")
         try:
             WebDriverWait(browser, 30).until(
                 EC.element_to_be_clickable(
