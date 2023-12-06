@@ -16,20 +16,9 @@ dag = DAG(
     catchup=False,
 )
 
-sensor_task = FileSensor(
-    task_id="sense_phone_calls_file",
-    filepath=get_phone_calls.UPLOAD_FILE_PATH,
-    fs_conn_id="fs_default",
-    poke_interval=60,
-    dag=dag,
-)
-
 python_task = PythonOperator(
     task_id="run_phone_calls_processing",
     python_callable=upload_results,
     provide_context=True,
     dag=dag,
 )
-
-
-sensor_task >> python_task
