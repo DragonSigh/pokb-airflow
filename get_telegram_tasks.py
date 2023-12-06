@@ -17,6 +17,7 @@ CREDENTIALS = ServiceAccountCredentials.from_json_keyfile_name(
     PATH_TO_CREDENTIAL, SCOPE
 )
 
+
 def get_groups(x):
     """
     Выделяем из хештегов группы, на которые оформлена заявка
@@ -168,10 +169,19 @@ def analyze_results():
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
-    #df_new.to_excel(
+    df_agg = df_new[df_new["status"] == "Открыто"].groupby("group").agg({"number": "count"})
+    df_agg = df_agg.reset_index()
+    df_agg.columns = ["Статус", "Количество"]
+
+    wks = "Сводная статистика!E9"
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
+    # df_new.to_excel(
     #    DOWNLOAD_FILE_PATH,
     #    index=False,
-    #)
+    # )
 
     # Права на скачивание любому пользователю
-    #os.chmod(DOWNLOAD_FILE_PATH, 0o777)
+    # os.chmod(DOWNLOAD_FILE_PATH, 0o777)
