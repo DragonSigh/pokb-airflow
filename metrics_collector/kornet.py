@@ -59,7 +59,7 @@ def export_report():
             )
         )
     except TimeoutException:
-        browser.refresh()
+        logging.info(browser.page_source.encode("utf-8"))
     # Выполнить javascript для выгрузки  в Excel, который прописан в кнопке
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
