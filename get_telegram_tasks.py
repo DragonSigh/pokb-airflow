@@ -156,7 +156,7 @@ def analyze_results():
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
-    df_agg = df_new.groupby("status").agg({"num": "count"})
+    df_agg = df_new.groupby("status").agg({"number": "count"})
     df_agg = df_agg.reset_index()
     df_agg.columns = ["Статус", "Количество"]
 
