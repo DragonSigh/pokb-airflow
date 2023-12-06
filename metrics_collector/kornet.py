@@ -48,18 +48,23 @@ def export_report():
     # except FileExistsError:
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
-    try:
-        WebDriverWait(browser, 30).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
-                    "td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[8]",
+    max_attempts = 3
+    for _ in range(max_attempts):
+        try:
+            WebDriverWait(browser, 30).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
+                        "td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[8]",
+                    )
                 )
             )
-        )
-    except TimeoutException:
-        logging.info(browser.page_source.encode("utf-8"))
+            # Perform actions on the element
+            break  # Exit the loop if successful
+        except TimeoutException:
+            continue  # Retry if a timeout occurs
+
     # Выполнить javascript для выгрузки  в Excel, который прописан в кнопке
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
