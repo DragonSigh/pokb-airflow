@@ -165,6 +165,9 @@ def analyze_results():
     values.extend(df_agg.values.tolist())
 
     wks = "Сводная статистика!E4"
+    worksheet = spreadsheet.worksheet(wks)
+    worksheet.batch_clear("E9:F30")
+
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
