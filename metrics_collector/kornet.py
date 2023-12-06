@@ -63,10 +63,10 @@ def export_report():
             # Perform actions on the element
             break  # Exit the loop if successful
         except TimeoutException:
-            browser.save_screenshot("screenie.png")
-            browser.refresh()
             continue  # Retry if a timeout occurs
 
+    browser.save_screenshot("screenie.png")
+    
     # Выполнить javascript для выгрузки  в Excel, который прописан в кнопке
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
