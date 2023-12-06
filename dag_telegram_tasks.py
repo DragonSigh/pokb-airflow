@@ -3,7 +3,11 @@ from airflow.contrib.sensors.file_sensor import FileSensor
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime
 
-import get_telegram_tasks
+
+def analyze_results():
+    import get_telegram_tasks
+    get_telegram_tasks.analyze_results()
+
 
 dag = DAG(
     dag_id="analyze_telegram_tasks",

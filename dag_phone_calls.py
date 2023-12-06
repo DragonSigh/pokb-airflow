@@ -3,7 +3,11 @@ from airflow.contrib.sensors.file_sensor import FileSensor
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime
 
-import get_phone_calls
+
+def upload_results():
+    import get_phone_calls
+    get_phone_calls.upload_results()
+
 
 dag = DAG(
     dag_id="analyze_phone_calls",
@@ -22,7 +26,7 @@ sensor_task = FileSensor(
 
 python_task = PythonOperator(
     task_id="run_phone_calls_processing",
-    python_callable=get_phone_calls.upload_results,
+    python_callable=upload_results,
     provide_context=True,
     dag=dag,
 )
