@@ -41,6 +41,9 @@ def upload_results():
     values.extend(df_agg.values.tolist())
 
     wks = "Сводная статистика!B4"
+    worksheet = spreadsheet.worksheet("Сводная статистика")
+    worksheet.batch_clear(["B9:C30"])
+
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
