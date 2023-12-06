@@ -12,7 +12,6 @@ reports_path = config.reports_path
 
 def authorize(login_data: str, password_data: str):
     browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignOut")
-    browser.refresh()
     login_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
     )
@@ -37,7 +36,6 @@ def load_dlo_report(begin_date, end_date):
             + "&EndDate="
             + end_date.strftime("%d.%m.%Y")
         )
-        browser.refresh()
     except TimeoutException:
         browser.save_screenshot("selenium_error.png")
     logging.info("Отчет сформирован в браузере")
@@ -56,8 +54,8 @@ def export_report():
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
-                    "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
-                    "td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[8]",
+                    "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[3]"
+                    "/td/div/div/div[5]/table/tbody/tr/td/div/div[1]/table/tbody/tr/td/input",
                 )
             )
         )
