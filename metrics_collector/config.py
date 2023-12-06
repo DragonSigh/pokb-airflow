@@ -33,6 +33,15 @@ service = Service(r"/home/user/chromedriver")
 browser = webdriver.Chrome(options=options, service=service)
 actions = ActionChains(browser)
 
+# Очистить кэш, сессии, хранилище
+browser.execute_cdp_cmd(
+    "Storage.clearDataForOrigin",
+    {
+        "origin": "*",
+        "storageTypes": "all",
+    },
+)
+
 # Период: с начала недели по сегодняшний день
 first_date = date.today() - timedelta(days=date.today().weekday())
 last_date = date.today()

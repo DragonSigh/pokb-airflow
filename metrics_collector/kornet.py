@@ -10,14 +10,6 @@ browser = config.browser
 actions = config.actions
 reports_path = config.reports_path
 
-browser.execute_cdp_cmd(
-    "Storage.clearDataForOrigin",
-    {
-        "origin": "*",
-        "storageTypes": "all",
-    },
-)
-
 def authorize(login_data: str, password_data: str):
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
     browser.refresh()
