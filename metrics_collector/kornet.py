@@ -63,6 +63,7 @@ def export_report():
             # Perform actions on the element
             break  # Exit the loop if successful
         except TimeoutException:
+            browser.refresh()
             continue  # Retry if a timeout occurs
 
     # Выполнить javascript для выгрузки  в Excel, который прописан в кнопке
