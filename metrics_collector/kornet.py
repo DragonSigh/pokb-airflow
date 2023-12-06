@@ -10,6 +10,13 @@ browser = config.browser
 actions = config.actions
 reports_path = config.reports_path
 
+browser.execute_cdp_cmd(
+    "Storage.clearDataForOrigin",
+    {
+        "origin": "*",
+        "storageTypes": "all",
+    },
+)
 
 def authorize(login_data: str, password_data: str):
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
@@ -38,6 +45,7 @@ def load_dlo_report(begin_date, end_date):
             + "&EndDate="
             + end_date.strftime("%d.%m.%Y")
         )
+        browser.refresh()
     except TimeoutException:
         browser.save_screenshot("selenium_error.png")
     logging.info("Отчет сформирован в браузере")
@@ -50,7 +58,7 @@ def export_report():
     # except FileExistsError:
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
-    logging.info(f"Начинается экспорт отчета")
+    logging.info("Начинается экспорт отчета")
     try:
         WebDriverWait(browser, 30).until(
             EC.element_to_be_clickable(
