@@ -171,7 +171,10 @@ def analyze_results():
 
     df_agg = df_new[df_new["status"] == "Открыто"].groupby("group").agg({"number": "count"})
     df_agg = df_agg.reset_index()
-    df_agg.columns = ["Статус", "Количество"]
+    df_agg.columns = ["ОСП", "Количество открытых"]
+
+    values = [df_agg.columns.values.tolist()]
+    values.extend(df_agg.values.tolist())
 
     wks = "Сводная статистика!E9"
     spreadsheet.values_update(
