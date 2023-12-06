@@ -15,6 +15,7 @@ options.add_argument("--disable-extensions")
 options.add_argument("--disable-gpu")
 options.add_argument("--disable-popup-blocking")
 options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-browser-side-navigation")
 options.add_argument("--headless=new")
 options.add_experimental_option(
     "prefs",

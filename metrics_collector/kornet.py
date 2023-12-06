@@ -37,7 +37,6 @@ def load_dlo_report(begin_date, end_date):
         + "&EndDate="
         + end_date.strftime("%d.%m.%Y")
     )
-    
     logging.info("Отчет сформирован в браузере")
 
 
