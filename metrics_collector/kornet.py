@@ -11,7 +11,7 @@ actions = config.actions
 reports_path = config.reports_path
 
 def authorize(login_data: str, password_data: str):
-    browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
+    browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignOut")
     browser.refresh()
     login_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
