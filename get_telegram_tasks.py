@@ -142,7 +142,7 @@ def analyze_results():
     )
 
     df_new = df_new[
-        ["id", "url", "author", "number", "status", "group", "theme", "text"]
+        ["number", "url", "author", "status", "group", "theme", "text"]
     ]
 
     # Заливка в таблицу Google
