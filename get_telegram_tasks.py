@@ -160,8 +160,8 @@ def analyze_results():
     df_agg = df_agg.reset_index()
     df_agg.columns = ["Статус", "Количество"]
 
-    values = [df_new.columns.values.tolist()]
-    values.extend(df_new.values.tolist())
+    values = [df_agg.columns.values.tolist()]
+    values.extend(df_agg.values.tolist())
 
     wks = "Сводная статистика!E4"
     spreadsheet.values_update(
