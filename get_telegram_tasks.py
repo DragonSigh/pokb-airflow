@@ -156,6 +156,18 @@ def analyze_results():
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
+    df_agg = df_new.groupby("status").agg({"num": "count"})
+    df_agg = df_agg.reset_index()
+    df_agg.columns = ["Статус", "Количество"]
+
+    values = [df_new.columns.values.tolist()]
+    values.extend(df_new.values.tolist())
+
+    wks = "Сводная статистика!E4"
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
     #df_new.to_excel(
     #    DOWNLOAD_FILE_PATH,
     #    index=False,
