@@ -41,7 +41,6 @@ def load_dlo_report(begin_date, end_date):
 
 
 def export_report():
-    logging.info(f"Начинается экспорт отчета")
     # Создать папку с отчётами, если её нет в системе
     # try:
     #    os.mkdir(reports_path)
@@ -50,6 +49,7 @@ def export_report():
     # Ожидать загрузки отчёта в веб-интерфейсе
     max_attempts = 3
     for _ in range(max_attempts):
+        logging.info(f"Начинается экспорт отчета {_}")
         try:
             WebDriverWait(browser, 30).until(
                 EC.element_to_be_clickable(
