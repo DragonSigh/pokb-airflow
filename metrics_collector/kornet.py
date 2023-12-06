@@ -50,7 +50,7 @@ def export_report():
     # Ожидать загрузки отчёта в веб-интерфейсе
     try:
         WebDriverWait(browser, 30).until(
-            EC.presence_of_element_located(
+            EC.element_to_be_clickable(
                 (
                     By.XPATH,
                     "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
@@ -60,7 +60,6 @@ def export_report():
         )
     except TimeoutException:
         browser.refresh()
-        pass
     # Выполнить javascript для выгрузки  в Excel, который прописан в кнопке
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
