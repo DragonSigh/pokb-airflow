@@ -40,7 +40,7 @@ def upload_results():
     values = [df_agg.columns.values.tolist()]
     values.extend(df_agg.values.tolist())
 
-    wks = "Статистика по статусам"
+    wks = "Сводная статистика!B4"
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
@@ -48,7 +48,7 @@ def upload_results():
     values = [df_agg2.columns.values.tolist()]
     values.extend(df_agg2.values.tolist())
 
-    wks = "Статистика по номерам"
+    wks = "Сводная статистика!B9"
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )

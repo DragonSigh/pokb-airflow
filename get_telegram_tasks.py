@@ -1,12 +1,21 @@
 import json
 import pandas as pd
+import gspread as gs
 import re
-import os
 
+from oauth2client.service_account import ServiceAccountCredentials
 
 UPLOAD_FILE_PATH = r"/etc/samba/share/upload/result.json"
 DOWNLOAD_FILE_PATH = r"/etc/samba/share/download/Статусы заявок ТП ПОКБ в телеграм.xlsx"
-
+PATH_TO_CREDENTIAL = "/home/user/pokb-399111-f04c71766977.json"
+SPREADSHEET_KEY = "1cikHhnfVLZY7Jx6hOVHqDLD51897wwD4FIEw0_8zhc4"
+SCOPE = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive",
+]
+CREDENTIALS = ServiceAccountCredentials.from_json_keyfile_name(
+    PATH_TO_CREDENTIAL, SCOPE
+)
 
 def get_groups(x):
     """
@@ -63,6 +72,7 @@ def analyze_results():
     # Открыть и загрузить json
     f = open(UPLOAD_FILE_PATH, encoding="utf8")
     data = json.load(f)
+    f.close()
 
     # Выдернуть только сообщения из json
     msgs = data["messages"]
@@ -112,12 +122,22 @@ def analyze_results():
         ["id", "url", "author", "number", "status", "group", "theme", "text"]
     ]
 
-    df_new.to_excel(
-        DOWNLOAD_FILE_PATH,
-        index=False,
+    # Заливка в таблицу Google
+    gc = gs.authorize(CREDENTIALS)
+    spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
+
+    values = [df_new.columns.values.tolist()]
+    values.extend(df_new.values.tolist())
+
+    wks = "Все заявки в ТГ"
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
-    # Права на скачивание любому пользователю
-    os.chmod(DOWNLOAD_FILE_PATH, 0o777)
+    #df_new.to_excel(
+    #    DOWNLOAD_FILE_PATH,
+    #    index=False,
+    #)
 
-    f.close()
+    # Права на скачивание любому пользователю
+    #os.chmod(DOWNLOAD_FILE_PATH, 0o777)
