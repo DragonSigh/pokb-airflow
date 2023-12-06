@@ -24,14 +24,14 @@ def get_groups(x):
     value = str(x)
     result = []
 
-    if re.search(r"#ОСП.*\d", value):
-        result = re.findall(r"#(ОСП_\d)", value)
-    if re.search(r"#Кирова.*38", value):
+    if re.search(r"#ОСП\d", value):
+        result = re.findall(r"#(ОСП\d)", value)
+    if re.search(r"#Кирова", value):
         result.append("Кирова_38")
     if re.search(r"#Ленинград", value):
         result.append("Ленинградская_9")
     if re.search(r"#Общая", value):
-        result.append("General")
+        result.append("Общая")
     return result
 
 
@@ -119,6 +119,9 @@ def analyze_results():
     df_new["text"] = df_new["text"].str.replace("#Решена", "#Решено")
     df_new["text"] = df_new["text"].str.replace("#решено", "#Решено")
     df_new["text"] = df_new["text"].str.replace("#Закрыта", "#Решено")
+
+    df_new["text"] = df_new["text"].str.replace("#ОСП_", "#ОСП")
+    df_new["text"] = df_new["text"].str.replace("#ОСП №", "#ОСП")
 
     # Извлечь номер заявки
     df_new["number"] = (
