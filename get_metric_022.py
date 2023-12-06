@@ -17,6 +17,7 @@ first_date = config.first_date
 last_date = config.last_date
 yesterday_date = config.yesterday_date
 
+
 # Функция для нормализации ФИО из ЕМИАС
 def complex_rename(x):
     if isinstance(x, str):

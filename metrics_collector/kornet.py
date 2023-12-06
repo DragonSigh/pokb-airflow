@@ -41,7 +41,7 @@ def load_dlo_report(begin_date, end_date):
 
 
 def export_report():
-    logging.info(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
+    logging.info(f"Начинается экспорт отчета")
     # Создать папку с отчётами, если её нет в системе
     # try:
     #    os.mkdir(reports_path)
@@ -50,7 +50,7 @@ def export_report():
     # Ожидать загрузки отчёта в веб-интерфейсе
     try:
         WebDriverWait(browser, 30).until(
-            EC.element_to_be_clickable(
+            EC.presence_of_element_located(
                 (
                     By.XPATH,
                     "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
@@ -65,6 +65,7 @@ def export_report():
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
     )
+    logging.info(f"Сохранение файла с отчетом в папку: {reports_path}")
     utils.download_wait(config.reports_path, 20)
     logging.info("Сохранение файла с отчетом успешно")
     browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignOut")
