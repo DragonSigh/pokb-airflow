@@ -68,6 +68,19 @@ def get_clean_data(x):
     return str(x).translate({ord(x): "" for x in chars_list})
 
 
+def parse_message(msg_content):
+    if isinstance(msg_content, list):
+        txt_content = ""
+        for part in msg_content:
+            if isinstance(part, str):
+                txt_content += part
+            elif isinstance(part, dict):
+                txt_content += part["text"]
+        msg_content = txt_content
+    msg_content = msg_content.replace("\n", " ")
+    return msg_content
+
+
 def analyze_results():
     # Открыть и загрузить json
     f = open(UPLOAD_FILE_PATH, encoding="utf8")
@@ -85,8 +98,12 @@ def analyze_results():
 
     # Пропустить первые вводные строки
     df_new = df_new[3:]
+
     # Дропнуть технические записи без автора
     df_new = df_new.dropna(subset="author")
+
+    # Распарсить содержимое списка message в текст
+    df_new["text"] = df_new["text"].apply(parse_message)
 
     # Преобразовать в текст
     df_new["text"] = df_new["text"].astype(str)
