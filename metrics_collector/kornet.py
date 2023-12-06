@@ -48,6 +48,9 @@ def export_report():
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
     WebDriverWait(browser, 30).until(
+        lambda driver: driver.execute_script("return document.readyState") == "complete"
+    )
+    WebDriverWait(browser, 30).until(
         EC.element_to_be_clickable(
             (
                 By.XPATH,

@@ -49,7 +49,7 @@ def start_kornet_report_saving():
     df_list = []
     for _departments in data["departments"]:
         logger.info(
-            f"Начинается сохранение отчёта для подразденения: " f'{_departments["department"]}'
+            f"Начинается сохранение отчёта для подразделения: " f'{_departments["department"]}'
         )
         for _units in _departments["units"]:
             logger.info("Начинается авторизация в отделение: " f'{_units["name"]}')
