@@ -84,6 +84,8 @@ def upload_results():
 
     df_10days = df_10days.reset_index().rename_axis(None, axis=1)
 
+    df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
+
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
 
