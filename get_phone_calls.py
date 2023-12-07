@@ -60,10 +60,11 @@ def upload_results():
     df_calls["Дата вызова"] = pd.to_datetime(
         df_calls["Дата вызова"], format="%Y-%m-%d"
     ).dt.date
+
     df_10days = df_calls[df_calls["Дата вызова"] >= (date.today() - timedelta(days=10))]
 
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
-    df_10days = df_10days[["Дата вызова", "Первый ответивший"]]
+    df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
 
     df_10days = (
         df_10days.groupby(["Первый ответивший", "Дата вызова"], observed=True)
@@ -71,7 +72,15 @@ def upload_results():
         .reset_index()
     )
 
-    df_10days = df_10days.pivot(index="Первый ответивший", columns="Дата вызова", values="count")
+    df_10days = df_10days.pivot_table(
+        index="Первый ответивший",
+        columns="Дата вызова",
+        values="Время вызова",
+        fill_value=0,
+        aggfunc="sum",
+    )
+
+    df_10days["Итого"] = df_10days.sum(axis=1, skipna=True).astype(int)
 
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
