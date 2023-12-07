@@ -46,6 +46,7 @@ def authorize(login_data: str, password_data: str):
     WebDriverWait(browser, 20).until(
         EC.invisibility_of_element((By.XPATH, '//*[@id="loadertext"]'))
     )
+    #Предупреждение
     #element = browser.find_element(By.XPATH, "/html/body/div[8]/div[3]/div/button/span")
     #element.click()
     logging.info("Авторизация пройдена")
@@ -57,6 +58,7 @@ def load_system_report(cabinet_id, begin_date, end_date):
     """
     logging.info(f"Открываю Отчет по записи на прием v2, ID кабинета: {cabinet_id}")
     element = browser.find_element(By.XPATH, '//*[@id="Portlet_9"]/div[2]/div[1]/a')
+    WebDriverWait(browser, 20).until(EC.element_to_be_clickable(element))
     element.click()
     browser.switch_to.window(browser.window_handles[1])
     WebDriverWait(browser, 20).until(
