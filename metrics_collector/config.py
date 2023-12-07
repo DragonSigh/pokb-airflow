@@ -33,8 +33,6 @@ service = Service(r"/home/user/chromedriver")
 browser = webdriver.Chrome(options=options, service=service)
 actions = ActionChains(browser)
 
-browser.close()
-
 # Очистить кэш, сессии, хранилище
 browser.delete_all_cookies()
 browser.execute_cdp_cmd(
