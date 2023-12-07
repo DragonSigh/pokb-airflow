@@ -17,6 +17,11 @@ CREDENTIALS = ServiceAccountCredentials.from_json_keyfile_name(
     PATH_TO_CREDENTIAL, SCOPE
 )
 
+def next_available_row(sheet, cols_to_sample=2):
+    # looks for empty row based on values appearing in 1st N columns
+    cols = sheet.range(1, 1, sheet.row_count, cols_to_sample)
+    return max([cell.row for cell in cols if cell.value]) + 1
+
 
 def upload_results():
     df_calls = pd.read_excel(UPLOAD_FILE_PATH, header=0)
@@ -89,6 +94,12 @@ def upload_results():
     values.extend(df_10days.values.tolist())
 
     wks = "Все звонки за 10 дней"
+    worksheet = spreadsheet.worksheet(wks)
+    worksheet.batch_clear(["A1:Q30"])
+    
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
+
+    next_row = next_available_row(worksheet)
+    worksheet.update_acell("A{}".format(next_row), 123)
