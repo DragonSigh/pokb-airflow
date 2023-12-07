@@ -78,11 +78,11 @@ def upload_results():
         values="Время вызова",
         fill_value=0,
         aggfunc="sum",
-    )
+    ).reset_index()
 
     df_10days["Итого"] = df_10days.sum(axis=1, skipna=True).astype(int)
 
-    df_10days.reset_index(inplace=True)
+    df_10days = df_10days.reset_index().rename_axis(None, axis=1)
 
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
