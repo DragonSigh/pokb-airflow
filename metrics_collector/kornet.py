@@ -67,7 +67,6 @@ def export_report():
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
     )
-    logging.info(f"Сохранение файла с отчетом в папку: {reports_path}")
     utils.download_wait(config.reports_path, 20)
-    logging.info("Сохранение файла с отчетом успешно")
+    logging.info("Экспорт файла с отчетом завершен")
     browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignOut")

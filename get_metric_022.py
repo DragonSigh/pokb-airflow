@@ -7,8 +7,6 @@ import json
 import pandas as pd
 import logging
 
-logger = logging.getLogger(__name__)
-
 # Настройки
 PATH_TO_CREDENTIAL = r"/home/user/"
 METRIC_PATH = r"/etc/samba/share/download/Показатель 22"
@@ -40,20 +38,21 @@ def start_kornet_report_saving():
     # Определение дат
     first_date = config.first_date
     last_date = config.last_date
-    logger.info(
+    logging.info(
         f'Выбран период: с {first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
     )
+    logging.info(f"Сохранение файла с отчетом в папку: {METRIC_PATH}")
     f = open(kornet_credentials_path, "r", encoding="utf-8")
     data = json.load(f)
     f.close()
     df_list = []
     for _departments in data["departments"]:
-        logger.info(
+        logging.info(
             f"Начинается сохранение отчёта для подразделения: " f'{_departments["department"]}'
         )
         for _units in _departments["units"]:
-            logger.info("Начинается авторизация в отделение: " f'{_units["name"]}')
+            logging.info("Начинается авторизация в отделение: " f'{_units["name"]}')
             kornet.authorize(_units["login"], _units["password"])
             kornet.load_dlo_report(first_date, last_date)
             kornet.export_report()
@@ -78,18 +77,18 @@ def start_kornet_report_saving():
         "Препарат",
         "Количество",
     ]
-    logger.info("Выгрузка из КОРНЕТА завершена")
+    logging.info("Выгрузка из КОРНЕТА завершена")
     utils.save_to_excel(df_kornet, METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx")
 
 
 def start_emias_report_saving():
     # Получить путь к файлу с данными для авторизации
-    emias_credentials_path = os.path.join(PATH_TO_CREDENTIAL, "auth-kornet.json")
+    emias_credentials_path = os.path.join(PATH_TO_CREDENTIAL, "auth-emias.json")
     # Определение дат
     first_date = config.first_date
     last_date = config.last_date
     # Открываем данные для авторизации и проходим по списку кабинетов
-    logger.info(
+    logging.info(
         "Выбран период: с "
         f'{first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
@@ -98,11 +97,11 @@ def start_emias_report_saving():
     data = json.load(f)
     f.close()
     for _departments in data["departments"]:
-        logger.info(
-            "Начинается сохранение отчёта для подразденения: " f'{_departments["department"]}'
+        logging.info(
+            "Начинается сохранение отчёта для подразделения: " f'{_departments["department"]}'
         )
         for _units in _departments["units"]:
-            logger.info("Начинается авторизация в отделение: " f'{_units["name"]}')
+            logging.info("Начинается авторизация в отделение: " f'{_units["name"]}')
             emias.authorize(_units["login"], _units["password"])
     # ID кабинетов выписки лекарств
     cabinets_list = ["2434", "2460", "2459", "2450", "636", "2458", "2343", "2457", "2449", "2711"]
@@ -124,7 +123,7 @@ def start_emias_report_saving():
         "Время приема по записи",
         "Отметка о приеме",
     ]
-    logger.info("Выгрузка из ЕМИАС завершена")
+    logging.info("Выгрузка из ЕМИАС завершена")
     utils.save_to_excel(df_emias, METRIC_PATH + "/Промежуточный ЕМИАС.xlsx")
 
 
