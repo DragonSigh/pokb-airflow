@@ -1,6 +1,7 @@
 import pandas as pd
 import gspread as gs
-import os
+
+from datetime import date, timedelta
 
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -55,3 +56,22 @@ def upload_results():
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
+
+    df_calls["Дата вызова"] = pd.to_datetime(
+        df_calls["Дата вызова"], format="%Y-%m-%d"
+    ).dt.date
+    df_10days = df_calls[df_calls["Дата вызова"] >= (date.today() - timedelta(days=10))]
+
+    df_10days = df_10days[df_10days["Статус"] == "успешный"]
+    df_10days = df_10days[["Дата вызова", "Первый ответивший"]]
+
+    df_10days = df_10days.pivot(index="Первый ответивший", columns="Дата вызова", values="count")
+
+    values = [df_10days.columns.values.tolist()]
+    values.extend(df_10days.values.tolist())
+
+    wks = "Все звонки за 10 дней"
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+    
