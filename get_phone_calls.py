@@ -62,6 +62,7 @@ def upload_results():
     ).dt.date
 
     df_10days = df_calls[df_calls["Дата вызова"] >= (date.today() - timedelta(days=10))]
+    df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
     df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
@@ -83,8 +84,6 @@ def upload_results():
     df_10days["Итого"] = df_10days.sum(axis=1, skipna=True).astype(int)
 
     df_10days = df_10days.reset_index().rename_axis(None, axis=1)
-
-    df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
