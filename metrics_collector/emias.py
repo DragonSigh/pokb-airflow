@@ -1,7 +1,7 @@
 import metrics_collector.config as config
 import metrics_collector.utils as utils
 import os
-from loguru import logger
+import logging
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -18,7 +18,7 @@ def authorize(login_data: str, password_data: str):
     Авторизация в ЕМИАС МО
     http://main.emias.mosreg.ru/MIS/Podolsk_GKB
     """
-    logger.debug("Начинается авторизация в ЕМИАС")
+    logging.info("Начинается авторизация в ЕМИАС")
     # Очистить куки
     browser.delete_all_cookies()
     # Убедиться что открыта только одна вкладка
@@ -49,14 +49,14 @@ def authorize(login_data: str, password_data: str):
     browser.save_screenshot("/etc/samba/share/download/error.png")
     element = browser.find_element(By.XPATH, "/html/body/div[8]/div[3]/div/button/span")
     element.click()
-    logger.debug("Авторизация пройдена")
+    logging.info("Авторизация пройдена")
 
 
 def load_system_report(cabinet_id, begin_date, end_date):
     """
     Открыть Системные отчеты - Отчет по записи на прием v2
     """
-    logger.debug(f"Открываю Отчет по записи на прием v2, ID кабинета: {cabinet_id}")
+    logging.info(f"Открываю Отчет по записи на прием v2, ID кабинета: {cabinet_id}")
     element = browser.find_element(By.XPATH, '//*[@id="Portlet_9"]/div[2]/div[1]/a')
     element.click()
     browser.switch_to.window(browser.window_handles[1])
@@ -100,11 +100,11 @@ def load_system_report(cabinet_id, begin_date, end_date):
         "0",
     )
     browser.find_element(By.XPATH, '//*[@id="send-request-btn"]').click()
-    logger.debug("Отчет открыт в браузере")
+    logging.info("Отчет открыт в браузере")
 
 
 def export_system_report(cabinet):
-    logger.debug("Начинается формирование отчета")
+    logging.info("Начинается формирование отчета")
     # Создать папку с отчётами, если её нет в системе
     try:
         os.mkdir(reports_path)
@@ -125,14 +125,14 @@ def export_system_report(cabinet):
     utils.download_wait(reports_path, 20)
     browser.close()
     browser.switch_to.window(browser.window_handles[0])
-    logger.debug(f"Файл с отчетом сохранён в папку: {reports_path}")
+    logging.info(f"Файл с отчетом сохранён в папку: {reports_path}")
 
 
 def load_tm_report(report_id, begin_date, end_date):
     """
     Открыть Отчеты
     """
-    logger.debug(f"Открываю отчет с ID {report_id}")
+    logging.info(f"Открываю отчет с ID {report_id}")
     element = browser.find_element(By.XPATH, '//*[@id="Portlet_9"]/div[2]/div[4]/a')
     element.click()
     browser.switch_to.window(browser.window_handles[1])
@@ -153,4 +153,4 @@ def load_tm_report(report_id, begin_date, end_date):
         Keys.CONTROL
     ).send_keys("0").perform()
 
-    logger.debug("Отчет открыт в браузере")
+    logging.info("Отчет открыт в браузере")
