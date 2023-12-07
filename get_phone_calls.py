@@ -65,6 +65,12 @@ def upload_results():
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
     df_10days = df_10days[["Дата вызова", "Первый ответивший"]]
 
+    df_10days = (
+        df_10days.groupby(["Первый ответивший", "Дата вызова"], observed=True)
+        .count()
+        .reset_index()
+    )
+
     df_10days = df_10days.pivot(index="Первый ответивший", columns="Дата вызова", values="count")
 
     values = [df_10days.columns.values.tolist()]
@@ -74,4 +80,3 @@ def upload_results():
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
-    
