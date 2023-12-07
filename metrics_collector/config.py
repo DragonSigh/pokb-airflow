@@ -34,6 +34,7 @@ browser = webdriver.Chrome(options=options, service=service)
 actions = ActionChains(browser)
 
 # Очистить кэш, сессии, хранилище
+browser.delete_all_cookies()
 browser.execute_cdp_cmd(
     "Storage.clearDataForOrigin",
     {
