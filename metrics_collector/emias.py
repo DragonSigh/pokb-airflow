@@ -46,9 +46,11 @@ def authorize(login_data: str, password_data: str):
     WebDriverWait(browser, 20).until(
         EC.invisibility_of_element((By.XPATH, '//*[@id="loadertext"]'))
     )
-    browser.save_screenshot("/etc/samba/share/download/error.png")
-    element = browser.find_element(By.XPATH, "/html/body/div[8]/div[3]/div/button/span")
-    element.click()
+    try:
+        element = browser.find_element(By.XPATH, "/html/body/div[8]/div[3]/div/button/span")
+        element.click()
+    finally:
+        pass
     logging.info("Авторизация пройдена")
 
 
