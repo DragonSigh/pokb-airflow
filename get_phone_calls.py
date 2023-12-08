@@ -107,5 +107,6 @@ def upload_results():
     next_row = next_available_row(worksheet)
     worksheet.update_acell("A{}".format(next_row), "Отвечено за 10 дней")
     worksheet.update_acell("B{}".format(next_row), suc_calls)
+    next_row = next_available_row(worksheet)
     worksheet.update_acell("A{}".format(next_row), "Пропущено за 10 дней")
     worksheet.update_acell("B{}".format(next_row), neg_calls)
