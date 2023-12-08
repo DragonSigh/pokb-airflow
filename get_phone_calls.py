@@ -102,4 +102,7 @@ def upload_results():
     )
 
     next_row = next_available_row(worksheet)
-    worksheet.update_acell("A{}".format(next_row), 123)
+    worksheet.update_acell("A{}".format(next_row), "Отвечено за 10 дней")
+    worksheet.update_acell("B{}".format(next_row), df_10days[df_10days["Статус"] == "успешный"].count())
+    worksheet.update_acell("A{}".format(next_row), "Пропущено за 10 дней")
+    worksheet.update_acell("B{}".format(next_row), df_10days[df_10days["Статус"] == "пропущенный"].count())
