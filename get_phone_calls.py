@@ -69,6 +69,9 @@ def upload_results():
     df_10days = df_calls[df_calls["Дата вызова"] >= (date.today() - timedelta(days=10))]
     df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
+    suc_calls = df_10days[df_10days["Статус"] == "успешный"].count()
+    neg_calls =  df_10days[df_10days["Статус"] == "пропущенный"].count()
+
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
     df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
 
@@ -103,6 +106,6 @@ def upload_results():
 
     next_row = next_available_row(worksheet)
     worksheet.update_acell("A{}".format(next_row), "Отвечено за 10 дней")
-    worksheet.update_acell("B{}".format(next_row), df_10days[df_10days["Статус"] == "успешный"].count())
+    worksheet.update_acell("B{}".format(next_row), suc_calls)
     worksheet.update_acell("A{}".format(next_row), "Пропущено за 10 дней")
-    worksheet.update_acell("B{}".format(next_row), df_10days[df_10days["Статус"] == "пропущенный"].count())
+    worksheet.update_acell("B{}".format(next_row), neg_calls)
