@@ -27,7 +27,7 @@ def next_available_row(sheet, cols_to_sample=2):
 def analyze_results():
     df_calls = pd.read_excel(UPLOAD_FILE_PATH, header=0)
 
-    df_calls = df_calls[df_calls["Номер вызываемого"] == "74967534223"]
+    df_calls = df_calls[df_calls["Входящая линия"] == 74967534223]
 
     df_agg = df_calls.groupby("Статус").agg({"Тип": "count"})
     df_agg = df_agg.reset_index()
