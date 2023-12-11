@@ -1,7 +1,7 @@
 import os
 import logging
 import json
-import utils
+import metrics_collector.utils as utils
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
