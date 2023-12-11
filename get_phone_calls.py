@@ -1,112 +1,120 @@
-import pandas as pd
-import gspread as gs
+import os
+import logging
+import json
+import utils
 
-from datetime import date, timedelta
-
-from oauth2client.service_account import ServiceAccountCredentials
-
-# Настройки
-PATH_TO_CREDENTIAL = "/home/user/pokb-399111-f04c71766977.json"
-SPREADSHEET_KEY = "1cikHhnfVLZY7Jx6hOVHqDLD51897wwD4FIEw0_8zhc4"
-UPLOAD_FILE_PATH = r"/etc/samba/share/upload/Отчет по вызовам в домене.xlsx"
-SCOPE = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/drive",
-]
-CREDENTIALS = ServiceAccountCredentials.from_json_keyfile_name(
-    PATH_TO_CREDENTIAL, SCOPE
-)
-
-def next_available_row(sheet, cols_to_sample=2):
-    # looks for empty row based on values appearing in 1st N columns
-    cols = sheet.range(1, 1, sheet.row_count, cols_to_sample)
-    return max([cell.row for cell in cols if cell.value]) + 1
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
-def upload_results():
-    df_calls = pd.read_excel(UPLOAD_FILE_PATH, header=0)
+CURRENT_PATH = os.path.abspath(os.getcwd())
+PATH_TO_CREDENTIAL = r"/home/user/phone_calls_auth.json"
+UPLOAD_PATH = r"/etc/samba/share/upload/"
+DOWNLOAD_PATH = r"/etc/samba/share/download/"
 
-    df_agg = df_calls.groupby("Статус").agg({"Тип": "count"})
-    df_agg = df_agg.reset_index()
-    df_agg.columns = ["Статус", "Количество"]
 
-    df_agg2 = (
-        df_calls[df_calls["Статус"] == "успешный"]
-        .groupby("Первый ответивший")
-        .agg({"Тип": "count"})
+def download_phone_calls():
+    # Опции для веб-драйвера
+    options = webdriver.ChromeOptions()
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--start-maximized")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-popup-blocking")
+    # options.add_argument("--headless=new")
+    options.add_experimental_option(
+        "prefs",
+        {
+            "download.default_directory": CURRENT_PATH,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": False,
+            "safebrowsing.disable_download_protection": True,
+        },
     )
 
-    df_agg2 = df_agg2.reset_index()
-    df_agg2.columns = ["Номер", "Количество ответов"]
+    # Выбираем драйвер браузера и устанавливаем его опции
+    service = Service("C:\\chromedriver\\chromedriver.exe")
+    browser = webdriver.Chrome(options=options, service=service)
+    actions = ActionChains(browser)
 
-    # Заливка в таблицу Google
-    gc = gs.authorize(CREDENTIALS)
-    spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
+    logging.info("Начинается авторизация")
 
-    values = [df_agg.columns.values.tolist()]
-    values.extend(df_agg.values.tolist())
+    # Очистить куки
+    browser.delete_all_cookies()
+    # Убедиться что открыта только одна вкладка
+    if len(browser.window_handles) > 1:
+        browser.switch_to.window(browser.window_handles[1])
+        browser.close()
+        browser.switch_to.window(browser.window_handles[0])
+    browser.get(r"https://p1.cloudpbx.rt.ru/lk_new/#/login?redirect=%2Fadmin%2Fhistory")
 
-    wks = "Сводная статистика!B4"
-    worksheet = spreadsheet.worksheet("Сводная статистика")
-    worksheet.batch_clear(["B9:C30"])
+    with open(PATH_TO_CREDENTIAL) as f:
+        data = json.load(f)
 
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    username_data = data["username"]
+    password_data = data["password"]
+    server_data = data["server"]
+
+    WebDriverWait(browser, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]')))
+
+    # Ввести логин
+    element = browser.find_element(By.XPATH, '//*[@id="username"]')
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(
+        username_data
+    ).perform()
+    # Ввести пароль
+    element = browser.find_element(By.XPATH, '//*[@id="password"]')
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(
+        password_data
+    ).perform()
+    # Ввести сервер
+    element = browser.find_element(By.XPATH, '//*[@id="domain"]')
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(
+        server_data
+    ).perform()
+    # Нажать на кнопку "Войти"
+    browser.find_element(By.XPATH, '//*[@id="testform"]/div[4]/div[1]/button').click()
+
+    logging.info("Авторизация завершена")
+    logging.info("Открываю страницу отчета")
+    browser.get("https://p1.cloudpbx.rt.ru/lk_new/#/admin/history")
+
+    WebDriverWait(browser, 20).until(
+        EC.invisibility_of_element(
+            (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg')
+        )
+    )
+    option = WebDriverWait(browser, 30).until(
+        EC.visibility_of_element_located(
+            (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[5]/div[1]/a[3]')
+        )
+    )
+    actions.move_to_element(option).click().perform()
+
+    WebDriverWait(browser, 20).until(
+        EC.invisibility_of_element(
+            (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg')
+        )
     )
 
-    values = [df_agg2.columns.values.tolist()]
-    values.extend(df_agg2.values.tolist())
-
-    wks = "Сводная статистика!B9"
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    option = WebDriverWait(browser, 30).until(
+        EC.visibility_of_element_located(
+            (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[6]/span[1]')
+        )
     )
+    actions.move_to_element(option).click().perform()
 
-    df_calls["Дата вызова"] = pd.to_datetime(
-        df_calls["Дата вызова"], format="%Y-%m-%d"
-    ).dt.date
+    logging.info("Начато сохранение файла")
+    utils.download_wait(CURRENT_PATH, 600, len(os.listdir(CURRENT_PATH)) + 1)
+    logging.info("Сохранение завершено")
 
-    df_10days = df_calls[df_calls["Дата вызова"] >= (date.today() - timedelta(days=10))]
-    df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
-    suc_calls = df_10days[df_10days["Статус"] == "успешный"].shape[0]
-    neg_calls =  df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
-
-    df_10days = df_10days[df_10days["Статус"] == "успешный"]
-    df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
-
-    df_10days = (
-        df_10days.groupby(["Первый ответивший", "Дата вызова"], observed=True)
-        .count()
-        .reset_index()
-    )
-
-    df_10days = df_10days.pivot_table(
-        index="Первый ответивший",
-        columns="Дата вызова",
-        values="Время вызова",
-        fill_value=0,
-        aggfunc="sum",
-    )
-
-    df_10days["Итого"] = df_10days.sum(axis=1, skipna=True).astype(int)
-
-    df_10days = df_10days.reset_index().rename_axis(None, axis=1)
-
-    values = [df_10days.columns.values.tolist()]
-    values.extend(df_10days.values.tolist())
-
-    wks = "Все звонки за 10 дней"
-    worksheet = spreadsheet.worksheet(wks)
-    worksheet.batch_clear(["A1:Q30"])
-    
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
-    )
-
-    next_row = next_available_row(worksheet)
-    worksheet.update_acell("A{}".format(next_row), "Отвечено за 10 дней")
-    worksheet.update_acell("B{}".format(next_row), suc_calls)
-    next_row = next_available_row(worksheet)
-    worksheet.update_acell("A{}".format(next_row), "Пропущено за 10 дней")
-    worksheet.update_acell("B{}".format(next_row), neg_calls)
+def start_download_phone_calls():
+    # Удалить устаревший файл с отчетом
+    if not utils.is_actual_report_exist(UPLOAD_PATH + "\\Отчет по вызовам в домене.xlsx"):
+        download_phone_calls()
