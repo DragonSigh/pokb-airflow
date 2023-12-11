@@ -92,9 +92,9 @@ def analyze_results():
         aggfunc="sum",
     )
 
-    df_10days["Итого"] = pd.Series(df_10days.sum(numeric_only=True).astype(int))
-
     df_10days = df_10days.reset_index().rename_axis(None, axis=1)
+
+    df_10days["Итого"] = pd.Series(df_10days.sum(numeric_only=True).astype(int))
 
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
