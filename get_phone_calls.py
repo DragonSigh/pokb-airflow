@@ -29,7 +29,7 @@ def download_phone_calls():
     options.add_experimental_option(
         "prefs",
         {
-            "download.default_directory": CURRENT_PATH,
+            "download.default_directory": UPLOAD_PATH,
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
             "safebrowsing.enabled": False,
