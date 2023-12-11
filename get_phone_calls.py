@@ -51,6 +51,7 @@ def download_phone_calls():
         browser.switch_to.window(browser.window_handles[1])
         browser.close()
         browser.switch_to.window(browser.window_handles[0])
+
     browser.get(r"https://p1.cloudpbx.rt.ru/lk_new/#/login?redirect=%2Fadmin%2Fhistory")
 
     with open(PATH_TO_CREDENTIAL) as f:
@@ -60,6 +61,7 @@ def download_phone_calls():
     password_data = data["password"]
     server_data = data["server"]
 
+    browser.save_screenshot(r'/etc/samba/share/upload/error.png')
     WebDriverWait(browser, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]')))
 
     # Ввести логин
