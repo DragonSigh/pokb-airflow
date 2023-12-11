@@ -73,7 +73,7 @@ def analyze_results():
     df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
     suc_calls = df_10days[df_10days["Статус"] == "успешный"].shape[0]
-    neg_calls = df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
+    neg_calls =  df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
 
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
     df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
@@ -92,9 +92,9 @@ def analyze_results():
         aggfunc="sum",
     )
 
-    df_10days = df_10days.reset_index().rename_axis(None, axis=1)
+    df_10days.loc["Итого"] = df_10days.sum(numeric_only=True, axis=0)
 
-    df_10days["Итого"] = pd.Series(df_10days.sum(numeric_only=True).astype(int))
+    df_10days = df_10days.reset_index().rename_axis(None, axis=1)
 
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
@@ -102,7 +102,7 @@ def analyze_results():
     wks = "Все звонки за 10 дней"
     worksheet = spreadsheet.worksheet(wks)
     worksheet.batch_clear(["A1:Q30"])
-
+    
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
