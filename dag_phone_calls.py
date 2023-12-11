@@ -22,16 +22,18 @@ dag = DAG(
 )
 
 
-python_task = PythonOperator(
+python_task_download = PythonOperator(
     task_id="get_phone_calls_from_web",
     python_callable=download_report,
     provide_context=True,
     dag=dag,
 )
 
-python_task = PythonOperator(
+python_task_analyze = PythonOperator(
     task_id="run_phone_calls_processing",
     python_callable=analyze_results,
     provide_context=True,
     dag=dag,
 )
+
+python_task_download >> python_task_analyze
