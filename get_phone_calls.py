@@ -25,7 +25,7 @@ def download_phone_calls():
     options.add_argument("--start-maximized")
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-popup-blocking")
-    # options.add_argument("--headless=new")
+    options.add_argument("--headless=new")
     options.add_experimental_option(
         "prefs",
         {
