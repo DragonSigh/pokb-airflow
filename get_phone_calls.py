@@ -62,7 +62,7 @@ def download_phone_calls():
     server_data = data["server"]
 
     browser.save_screenshot(r'/etc/samba/share/upload/error.png')
-    WebDriverWait(browser, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]')))
+    WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]')))
 
     # Ввести логин
     element = browser.find_element(By.XPATH, '//*[@id="username"]')
@@ -86,7 +86,7 @@ def download_phone_calls():
     logging.info("Открываю страницу отчета")
     browser.get("https://p1.cloudpbx.rt.ru/lk_new/#/admin/history")
 
-    WebDriverWait(browser, 20).until(
+    WebDriverWait(browser, 30).until(
         EC.invisibility_of_element(
             (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg')
         )
@@ -98,7 +98,7 @@ def download_phone_calls():
     )
     actions.move_to_element(option).click().perform()
 
-    WebDriverWait(browser, 20).until(
+    WebDriverWait(browser, 30).until(
         EC.invisibility_of_element(
             (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg')
         )
