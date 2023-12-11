@@ -61,7 +61,6 @@ def download_phone_calls():
     password_data = data["password"]
     server_data = data["server"]
 
-    browser.save_screenshot(r'/etc/samba/share/upload/error.png')
     WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]')))
 
     # Ввести логин
@@ -112,6 +111,7 @@ def download_phone_calls():
     actions.move_to_element(option).click().perform()
 
     logging.info("Начато сохранение файла")
+    browser.save_screenshot(r'/etc/samba/share/upload/error.png')
     utils.download_wait(CURRENT_PATH, 600, len(os.listdir(CURRENT_PATH)) + 1)
     logging.info("Сохранение завершено")
 
