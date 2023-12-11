@@ -38,7 +38,7 @@ def download_phone_calls():
     )
 
     # Выбираем драйвер браузера и устанавливаем его опции
-    service = Service("C:\\chromedriver\\chromedriver.exe")
+    service = Service(r"/home/user/chromedriver")
     browser = webdriver.Chrome(options=options, service=service)
     actions = ActionChains(browser)
 
