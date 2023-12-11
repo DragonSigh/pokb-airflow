@@ -107,9 +107,7 @@ def analyze_results():
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
-    next_row = next_available_row(worksheet)
-    worksheet.update_acell("A{}".format(next_row), "Отвечено за 10 дней")
-    worksheet.update_acell("B{}".format(next_row), suc_calls)
-    next_row = next_available_row(worksheet)
-    worksheet.update_acell("A{}".format(next_row), "Пропущено за 10 дней")
-    worksheet.update_acell("B{}".format(next_row), neg_calls)
+    worksheet.update_acell("A28", "Отвечено за 10 дней")
+    worksheet.update_acell("B28", suc_calls)
+    worksheet.update_acell("A29", "Пропущено за 10 дней")
+    worksheet.update_acell("B29", neg_calls)
