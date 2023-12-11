@@ -116,5 +116,5 @@ def download_phone_calls():
 
 def start_download_phone_calls():
     # Удалить устаревший файл с отчетом
-    if not utils.is_actual_report_exist(UPLOAD_PATH + "\\Отчет по вызовам в домене.xlsx"):
+    if not utils.is_actual_report_exist(UPLOAD_PATH + r"/Отчет по вызовам в домене.xlsx"):
         download_phone_calls()
