@@ -9,7 +9,7 @@ def analyze_results():
 
 
 dag = DAG(
-    dag_id="analyze_telegram_tasks",
+    dag_id="telegram_tasks",
     start_date=datetime(2023, 1, 1),
     schedule_interval="@daily",
     catchup=False,

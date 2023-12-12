@@ -14,7 +14,7 @@ def download_report():
 
 
 dag = DAG(
-    dag_id="analyze_phone_calls",
+    dag_id="phone_calls",
     start_date=datetime(2023, 1, 1),
     schedule_interval="@daily",
     catchup=False,
