@@ -155,7 +155,7 @@ def start_mysql_export():
 
     wks = "Расписание на 3 недели!A1"
     worksheet = spreadsheet.worksheet("Расписание на 3 недели")
-    worksheet.batch_clear(["A1:Z100"])
+    worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
@@ -184,7 +184,7 @@ def start_mysql_export():
 
     wks = "Доступность терапевтов и педиатров!A1"
     worksheet = spreadsheet.worksheet("Доступность терапевтов и педиатров")
-    worksheet.batch_clear(["A1:Z100"])
+    worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
