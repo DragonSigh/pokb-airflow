@@ -6,8 +6,9 @@ import os
 
 
 def start_mysql_export():
-    CURRENT_PATH = os.path.abspath(os.getcwd())
-    SQL_QUERY_FILE_PATH = CURRENT_PATH + r"/metrics_collector/pokb_get_schedule.sql"
+    FULL_PATH_TO_SCRIPT = os.path.abspath(__file__)
+    SCRIPT_DIRECTORY = str(os.path.dirname(FULL_PATH_TO_SCRIPT))
+    SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_schedule.sql"
     PATH_TO_CREDENTIAL = r"/home/user/auth-mysql.json"
 
     with open(SQL_QUERY_FILE_PATH, "r", encoding="utf-8") as file:
