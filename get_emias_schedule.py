@@ -10,6 +10,7 @@ def start_mysql_export():
     SCRIPT_DIRECTORY = str(os.path.dirname(FULL_PATH_TO_SCRIPT))
     SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_schedule.sql"
     PATH_TO_CREDENTIAL = r"/home/user/auth-mysql.json"
+    EXPORT_PATH = r"/etc/samba/share/download/Расписание"
 
     with open(SQL_QUERY_FILE_PATH, "r", encoding="utf-8") as file:
         sql_query = file.read()
@@ -30,7 +31,9 @@ def start_mysql_export():
 
     df = pd.read_sql_query(sql_query, engine)
 
-    df = df.map(lambda x: x.encode("latin1").decode("cp1251") if isinstance(x, str) else x)
+    df = df.map(
+        lambda x: x.encode("latin1").decode("cp1251") if isinstance(x, str) else x
+    )
 
     # print(df.info())
     # print(df.head(5))
@@ -69,7 +72,7 @@ def start_mysql_export():
         # TODO
         df_sum["diff_minutes"] = df_sum["end_time"] - df_sum["begin_time"]
         df_sum["diff_minutes"] = df_sum["diff_minutes"] / pd.Timedelta(minutes=1)
-        print(df_sum["diff_minutes"])
+        # print(df_sum["diff_minutes"])
         # Доступность педиатров и врачей специалистов
         df_temp = df_temp[
             (df_temp["is_used"] == 0) & (df_temp["end_time"] > pd.Timestamp("today"))
@@ -88,7 +91,9 @@ def start_mysql_export():
                     nearest_day_internet = -9999  # не найдено
                 else:
                     nearest_day_internet = (
-                        df_temp[df_temp["ac_internet"] == 1]["end_time"].iloc[0].normalize()
+                        df_temp[df_temp["ac_internet"] == 1]["end_time"]
+                        .iloc[0]
+                        .normalize()
                         - pd.Timestamp("today").normalize()
                     ).days
                 row = [
@@ -104,9 +109,22 @@ def start_mysql_export():
         # Врач без свободных ячеек
         # print(df[df["resource_id"] == resource]["doctor_full_name"].iloc[0])
 
+    # Создать папку для выгрузки метрики
+    try:
+        os.mkdir(EXPORT_PATH)
+    except FileExistsError:
+        pass
+
+    missed_days.to_excel(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xslx", index=False)
+
+    # Права на скачивание любому пользователю
+    os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xslx", 0o777)
+
     # df_dep = pd.DataFrame(dep_data, columns=["Отделение", "ФИО врача", "Даты без расписания"])
     # print(df_dep)
     # df_dep.to_excel(dep + ".xlsx", index=False)
+
+
 
 
     # КР 25, 45
@@ -115,7 +133,6 @@ def start_mysql_export():
     # Врачи-терапевты участковые, ВОП - 1 день, Узкие - 10 дней.
     # Педиатрия - 1 день, Узкие - 10 дней.
     # Учитывается среднее значение доступности за отчетный период в разрезе всех подразделений.
-
 
     # print(dp_ter_ped.head())
 
