@@ -101,7 +101,7 @@ def start_mysql_export():
                 ).days
                 # Количество дней ожидания до свободной ячейки для самозаписи
                 if df_temp[df_temp["ac_internet"] == 1].empty:
-                    nearest_day_internet = -9999  # не найдено
+                    nearest_day_internet = 9999  # не найдено
                 else:
                     nearest_day_internet = (
                         df_temp[df_temp["ac_internet"] == 1]["end_time"]
@@ -171,7 +171,7 @@ def start_mysql_export():
             "До ячейки самозаписи",
         ],
     )
-    df_nearest_cells = df_nearest_cells[df_nearest_cells["До ближайшей свободной ячейки"] > 1]
+    df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки"] > 1) | (df_nearest_cells["До ячейки самозаписи"] > 1)]
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
 
     df_nearest_cells.to_excel(
