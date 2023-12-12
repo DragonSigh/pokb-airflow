@@ -12,6 +12,13 @@ reports_path = config.reports_path
 
 
 def authorize(login_data: str, password_data: str):
+    # Очистить куки
+    browser.delete_all_cookies()
+    # Убедиться что открыта только одна вкладка
+    if len(browser.window_handles) > 1:
+        browser.switch_to.window(browser.window_handles[1])
+        browser.close()
+        browser.switch_to.window(browser.window_handles[0])
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
     browser.refresh()
     login_field = browser.find_element(
@@ -43,8 +50,6 @@ def load_dlo_report(begin_date, end_date):
         + "&EndDate="
         + end_date.strftime("%d.%m.%Y")
     )
-    browser.save_screenshot(r'/etc/samba/share/upload/kornet_rep2.png')
-    browser.implicitly_wait(5)
     logging.info("Отчет сформирован в браузере")
 
 
