@@ -119,7 +119,7 @@ def start_mysql_export():
     df_missed_days.to_excel(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", index=False)
 
     # Права на скачивание любому пользователю
-    os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xslx", 0o777)
+    os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", 0o777)
 
     # df_dep = pd.DataFrame(dep_data, columns=["Отделение", "ФИО врача", "Даты без расписания"])
     # print(df_dep)
