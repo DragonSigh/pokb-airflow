@@ -115,18 +115,41 @@ def start_mysql_export():
     except FileExistsError:
         pass
 
-    df_missed_days = pd.DataFrame(missed_days, columns=["Подразделение", "Отделение", "ФИО врача", "Даты без расписания"])
-    df_missed_days.to_excel(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", index=False)
+    # Расписание создано на 3 недели вперед
+    df_missed_days = pd.DataFrame(
+        missed_days,
+        columns=["Подразделение", "Отделение", "ФИО врача", "Даты без расписания"],
+    )
+    df_missed_days = df_missed_days.sort_values("Подразделение")
+    df_missed_days.to_excel(
+        EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", index=False
+    )
 
     # Права на скачивание любому пользователю
     os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", 0o777)
 
+    df_nearest_cells = pd.DataFrame(
+        nearest_cells,
+        columns=[
+            "Подразделение",
+            "Отделение",
+            "ФИО врача",
+            "Специальность",
+            "До ближайшей свободной ячейки",
+            "До ячейки самозаписи",
+        ],
+    )
+    df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
+    df_nearest_cells.to_excel(
+        EXPORT_PATH + "/Ближайшие свободные ячейки.xlsx", index=False
+    )
+
+    # Права на скачивание любому пользователю
+    os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки.xlsx", 0o777)
+
     # df_dep = pd.DataFrame(dep_data, columns=["Отделение", "ФИО врача", "Даты без расписания"])
     # print(df_dep)
     # df_dep.to_excel(dep + ".xlsx", index=False)
-
-
-
 
     # КР 25, 45
     # Доступность педиатров и врачей специалистов
