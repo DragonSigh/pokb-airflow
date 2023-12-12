@@ -73,7 +73,7 @@ def analyze_results():
     df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
     suc_calls = df_10days[df_10days["Статус"] == "успешный"].shape[0]
-    neg_calls =  df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
+    neg_calls = df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
 
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
     df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
