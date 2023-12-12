@@ -133,6 +133,11 @@ def start_mysql_export():
         missed_days,
         columns=["Подразделение", "Отделение", "ФИО врача", "Даты без расписания"],
     )
+
+    df_missed_days["Даты без расписания"] = df_missed_days["Даты без расписания"].apply(
+        lambda x: ", ".join(x)
+    )
+
     df_missed_days = df_missed_days.sort_values("Подразделение")
     df_missed_days.to_excel(
         EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", index=False
@@ -141,7 +146,7 @@ def start_mysql_export():
     # Права на скачивание любому пользователю
     os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", 0o777)
 
-   # Заливка в таблицу Google
+    # Заливка в таблицу Google
     gc = gs.authorize(CREDENTIALS)
     spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
 
