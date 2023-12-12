@@ -171,7 +171,9 @@ def start_mysql_export():
             "До ячейки самозаписи",
         ],
     )
+    df_nearest_cells = df_nearest_cells[df_nearest_cells["До ближайшей свободной ячейки"] > 1]
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
+
     df_nearest_cells.to_excel(
         EXPORT_PATH + "/Ближайшие свободные ячейки.xlsx", index=False
     )
