@@ -26,8 +26,8 @@ def authorize(login_data: str, password_data: str):
         By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
     ).click()
 
-    WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//*[@id='ctl00_plate_siteVersion']"))
+    WebDriverWait(browser, 60).until(
+        EC.presence_of_element_located((By.XPATH, "//*[@id='aspnetForm']/header/nav/ul/li[3]"))
     )
 
     logging.info("Авторизация пройдена")
