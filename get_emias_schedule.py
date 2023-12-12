@@ -115,7 +115,8 @@ def start_mysql_export():
     except FileExistsError:
         pass
 
-    missed_days.to_excel(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xslx", index=False)
+    df_missed_days = pd.DataFrame(missed_days, columns=["Подразделение", "Отделение", "ФИО врача", "Даты без расписания"])
+    df_missed_days.to_excel(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xslx", index=False)
 
     # Права на скачивание любому пользователю
     os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xslx", 0o777)
