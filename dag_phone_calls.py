@@ -1,5 +1,4 @@
 from airflow.models import DAG
-from airflow.contrib.sensors.file_sensor import FileSensor
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime
 
