@@ -4,18 +4,31 @@ from datetime import date, timedelta
 import json
 import os
 
+import gspread as gs
+from oauth2client.service_account import ServiceAccountCredentials
+
+# Настройки
+FULL_PATH_TO_SCRIPT = os.path.abspath(__file__)
+SCRIPT_DIRECTORY = str(os.path.dirname(FULL_PATH_TO_SCRIPT))
+EXPORT_PATH = r"/etc/samba/share/download/Расписание"
+SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_schedule.sql"
+PATH_TO_MYSQL_CREDENTIAL = r"/home/user/auth-mysql.json"
+PATH_TO_GSHEETS_CREDENTIAL = r"/home/user/pokb-399111-f04c71766977.json"
+SPREADSHEET_KEY = r"1gIn_J_m_hkkU7KHMYWXulOHF8wJ3fRLHLt4qEnKai3s"
+SCOPE = [
+    r"https://spreadsheets.google.com/feeds",
+    r"https://www.googleapis.com/auth/drive",
+]
+CREDENTIALS = ServiceAccountCredentials.from_json_keyfile_name(
+    PATH_TO_GSHEETS_CREDENTIAL, SCOPE
+)
+
 
 def start_mysql_export():
-    FULL_PATH_TO_SCRIPT = os.path.abspath(__file__)
-    SCRIPT_DIRECTORY = str(os.path.dirname(FULL_PATH_TO_SCRIPT))
-    SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_schedule.sql"
-    PATH_TO_CREDENTIAL = r"/home/user/auth-mysql.json"
-    EXPORT_PATH = r"/etc/samba/share/download/Расписание"
-
     with open(SQL_QUERY_FILE_PATH, "r", encoding="utf-8") as file:
         sql_query = file.read()
 
-    with open(PATH_TO_CREDENTIAL) as f:
+    with open(PATH_TO_MYSQL_CREDENTIAL) as f:
         data = json.load(f)
 
     conf_server = data["conf_server"]
@@ -128,6 +141,20 @@ def start_mysql_export():
     # Права на скачивание любому пользователю
     os.chmod(EXPORT_PATH + "/Расписание создано на 3 недели вперед.xlsx", 0o777)
 
+   # Заливка в таблицу Google
+    gc = gs.authorize(CREDENTIALS)
+    spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
+
+    values = [df_missed_days.columns.values.tolist()]
+    values.extend(df_missed_days.values.tolist())
+
+    wks = "Расписание на 3 недели!A1"
+    worksheet = spreadsheet.worksheet("Расписание на 3 недели")
+    worksheet.batch_clear(["A1:Z100"])
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
     df_nearest_cells = pd.DataFrame(
         nearest_cells,
         columns=[
@@ -147,6 +174,16 @@ def start_mysql_export():
     # Права на скачивание любому пользователю
     os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки.xlsx", 0o777)
 
+    values = [df_nearest_cells.columns.values.tolist()]
+    values.extend(df_nearest_cells.values.tolist())
+
+    wks = "Доступность терапевтов и педиатров!A1"
+    worksheet = spreadsheet.worksheet("Доступность терапевтов и педиатров")
+    worksheet.batch_clear(["A1:Z100"])
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
     # df_dep = pd.DataFrame(dep_data, columns=["Отделение", "ФИО врача", "Даты без расписания"])
     # print(df_dep)
     # df_dep.to_excel(dep + ".xlsx", index=False)
@@ -157,8 +194,6 @@ def start_mysql_export():
     # Врачи-терапевты участковые, ВОП - 1 день, Узкие - 10 дней.
     # Педиатрия - 1 день, Узкие - 10 дней.
     # Учитывается среднее значение доступности за отчетный период в разрезе всех подразделений.
-
-    # print(dp_ter_ped.head())
 
     # В выгрузку расписаний добавить (по возможности) число ставок, на которое оформлен врач
     # + считать суммарное время (сумма всех ячеек в день/период), на которое открыто расписание по ресурсу (перерывы должны вычитаться)
