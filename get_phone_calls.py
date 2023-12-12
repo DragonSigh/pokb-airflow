@@ -111,7 +111,7 @@ def download_phone_calls():
     actions.move_to_element(option).click().perform()
 
     logging.info("Начато сохранение файла")
-    browser.save_screenshot(r'/etc/samba/share/upload/error.png')
+    #browser.save_screenshot(r'/etc/samba/share/upload/error.png')
     utils.download_wait(UPLOAD_PATH, 120, len(os.listdir(CURRENT_PATH)) + 1)
     logging.info("Сохранение завершено")
 

@@ -31,6 +31,7 @@ def authorize(login_data: str, password_data: str):
     )
 
     logging.info("Авторизация пройдена")
+    browser.save_screenshot(r'/etc/samba/share/upload/kornet_auth.png')
 
 
 def load_dlo_report(begin_date, end_date):
@@ -42,6 +43,7 @@ def load_dlo_report(begin_date, end_date):
         + "&EndDate="
         + end_date.strftime("%d.%m.%Y")
     )
+    browser.save_screenshot(r'/etc/samba/share/upload/kornet_rep2.png')
     browser.implicitly_wait(5)
     logging.info("Отчет сформирован в браузере")
 
