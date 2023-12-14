@@ -24,10 +24,49 @@ def next_available_row(sheet, cols_to_sample=2):
     return max([cell.row for cell in cols if cell.value]) + 1
 
 
+def get_name(x):
+    """
+    Дополняем телефон именами
+    """
+    value = str(x)
+    if "tel701" in value:
+        return "Сафронов (701)"
+    elif "tel702" in value:
+        return "Зенкин (702)"
+    elif "tel703" in value:
+        return "Черников (703)"
+    elif "tel704" in value:
+        return "Ермаков (704)"
+    elif "tel705" in value:
+        return "Александров (705)"
+    elif "tel706" in value:
+        return "Хожиматов (706)"
+    elif "tel707" in value:
+        return "Орехов (707)"
+    elif "tel708" in value:
+        return "Ларина (708)"
+    elif "tel709" in value:
+        return "Терентьев (709)"
+    elif "tel710" in value:
+        return "Седова (710)"
+    elif "tel711" in value:
+        return "Анашкин (711)"
+    elif "tel712" in value:
+        return "Жаров (712)"
+    elif "tel713" in value:
+        return "Лазанко (713)"
+    elif "tel714" in value:
+        return "Ковнеров (714)"
+    elif "tel715" in value:
+        return "Елистратов (715)"
+
+
 def analyze_results():
     df_calls = pd.read_excel(UPLOAD_FILE_PATH, header=0)
 
     df_calls = df_calls[df_calls["Входящая линия"] == 74967534223]
+
+    df_calls["Первый ответивший"] = df_calls["Первый ответивший"].apply(get_name)
 
     df_agg = df_calls.groupby("Статус").agg({"Тип": "count"})
     df_agg = df_agg.reset_index()
@@ -64,6 +103,7 @@ def analyze_results():
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
+
 
     df_calls["Дата вызова"] = pd.to_datetime(
         df_calls["Дата вызова"], format="%Y-%m-%d"
