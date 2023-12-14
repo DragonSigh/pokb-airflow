@@ -110,7 +110,7 @@ def analyze_results():
         values="Всего пропущено",
         fill_value=0,
         aggfunc="sum",
-    )
+    ).reset_index()
 
     df_10days = df_10days.reset_index().rename_axis(None, axis=1)
 
