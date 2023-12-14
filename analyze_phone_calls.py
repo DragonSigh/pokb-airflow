@@ -69,12 +69,15 @@ def analyze_results():
         df_calls["Дата вызова"], format="%Y-%m-%d"
     ).dt.date
 
-    df_10days = df_calls[df_calls["Дата вызова"] >= (date.today() - timedelta(days=10))]
+    date_filter = date.today() - timedelta(days=10)
+
+    df_10days = df_calls[df_calls["Дата вызова"] >= date_filter]
     df_10days["Дата вызова"] = df_10days["Дата вызова"].astype(str)
 
     suc_calls = df_10days[df_10days["Статус"] == "успешный"].shape[0]
     neg_calls = df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
 
+    # Всего отвечено
     df_10days = df_10days[df_10days["Статус"] == "успешный"]
     df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
 
@@ -92,17 +95,33 @@ def analyze_results():
         aggfunc="sum",
     )
 
-    df_10days.loc["Итого"] = df_10days.sum(numeric_only=True, axis=0)
+    df_10days.loc["Всего отвечено"] = df_10days.sum(numeric_only=True, axis=0)
+
+    # Всего пропущено
+    df_10days_missed = df_calls[
+        (df_calls["Статус"] == "пропущенный") & (df_calls["Дата вызова"] >= date_filter)
+    ].groupby("Дата вызова", observed=True).count().reset_index()
+
+    df_10days_missed = df_10days_missed[["Дата вызова", "Время вызова"]]
+    df_10days_missed.columns = ["Дата вызова", "Всего пропущено"]
+
+    df_10days_missed = df_10days_missed.pivot_table(
+        columns="Дата вызова",
+        values="Всего пропущено",
+        fill_value=0,
+        aggfunc="sum",
+    )
 
     df_10days = df_10days.reset_index().rename_axis(None, axis=1)
 
     values = [df_10days.columns.values.tolist()]
     values.extend(df_10days.values.tolist())
+    values.extend(df_10days_missed.values.tolist())
 
     wks = "Все звонки за 10 дней"
     worksheet = spreadsheet.worksheet(wks)
     worksheet.batch_clear(["A1:Q30"])
-    
+
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
