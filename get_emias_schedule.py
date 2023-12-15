@@ -175,11 +175,11 @@ def start_mysql_export():
             "Отделение",
             "ФИО врача",
             "Специальность",
-            "До ближайшей свободной ячейки",
-            "До ячейки самозаписи",
+            "До ближайшей свободной ячейки (дней)",
+            "До ячейки самозаписи (дней)",
         ],
     )
-    df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки"] > 1) | (df_nearest_cells["До ячейки самозаписи"] > 1)]
+    df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1) | (df_nearest_cells["До ячейки самозаписи (дней)"] > 1)]
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
 
     df_nearest_cells.to_excel(

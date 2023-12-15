@@ -16,7 +16,7 @@ default_args = {
 dag = DAG(
     dag_id="emias_schedule",
     description="Выгрузка расписания из ЕМИАС в дашборд",
-    schedule_interval="@daily",
+    schedule_interval="0 8,12,20 * * *",
     catchup=False,
     default_args=default_args
 )
