@@ -24,6 +24,7 @@ SELECT res_spec.[DocPRVDID] AS [resource_id],
 	UPPER(doc.[FAM_V] + ' ' + doc.[IM_V] + ' ' + doc.[OT_V]) AS [doctor_full_name],
 	equip.[Name] AS [equipment_name],
 	equip_type.[Name] AS [equipment_type],
+	cabinets.[Num] AS [cabinet_number],
 	dbt.[Name] AS [cell_type],
 	dtt.[FlagAccess] AS [access_code],
 	dtt.[UsedUE] AS [is_used],
@@ -50,6 +51,8 @@ LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_ResourceType] AS res_type -- спра�
 	ON res_spec.[rf_ResourceTypeID] = res_type.[ResourceTypeID]
 LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_Equipment] AS equip -- данные оборудования
 	ON res_spec.[rf_EquipmentID] = equip.[EquipmentID]
+LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_HealingRoom] AS cabinets -- данные кабинетов
+	ON res_spec.[rf_HealingRoomID] = cabinets.[HealingRoomID]
 LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_EquipmentType] AS equip_type -- справочник типа оборудования
 	ON equip.[rf_EquipmentTypeID] = equip_type.[EquipmentTypeID]
 LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_PRVD] AS spec -- специальность ресурса из справочника
@@ -60,7 +63,7 @@ LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_LPU] AS subdivision -- подразд�
 	ON dep.[rf_LPUID] = subdivision.[LPUID]
 WHERE CAST(dtt.[Date] AS DATE) >= CAST(GETDATE() AS DATE) -- все дни после сегодняшнего числа
 	-- AND dtt.[UsedUE] = 1 -- только свободные ячейки
-	AND res_type.[Name] = 'Врач'
+	--- AND res_type.[Name] = 'Врач' -- только врач
 	AND res_spec.[InTime] = 1 -- Доступен в расписании
 	-- AND dtt.[IsOutSchedule] = 0 -- убираем Вне расписания
 	-- AND doc.[FAM_V] + ' ' + doc.[IM_V] + ' ' + doc.[OT_V] = 'БАГДАДЯН АРУСЯК ВАРДГЕСОВНА'

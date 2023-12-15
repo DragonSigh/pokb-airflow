@@ -68,10 +68,17 @@ def start_mysql_export():
             .tolist()
         )
         if missed_dates:
+            if df_temp["resource_type"].iloc[0] == "Врач":
+                resource_name = df_temp["doctor_full_name"].iloc[0]
+            elif df_temp["resource_type"].iloc[0] == "Оборудование":
+                resource_name = df_temp["equipment_name"].iloc[0]
+            elif df_temp["resource_type"].iloc[0] == "Кабинет":
+                resource_name = df_temp["cabinet_number"].iloc[0]
             row = [
+                df_temp["resource_type"].iloc[0],
                 df_temp["subdivision_name"].iloc[0],
                 df_temp["department_name"].iloc[0],
-                df_temp["doctor_full_name"].iloc[0],
+                resource_name,
                 missed_dates,
             ]
             missed_days.append(row)
@@ -132,7 +139,7 @@ def start_mysql_export():
     # Расписание создано на 3 недели вперед
     df_missed_days = pd.DataFrame(
         missed_days,
-        columns=["Подразделение", "Отделение", "ФИО врача", "Даты без расписания"],
+        columns=["Тип ресурса", "Подразделение", "Отделение", "Название ресурса", "Даты без расписания"],
     )
 
     df_missed_days["Даты без расписания"] = df_missed_days["Даты без расписания"].apply(
