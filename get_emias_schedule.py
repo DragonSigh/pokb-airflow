@@ -102,7 +102,7 @@ def start_mysql_export():
                 ).days
                 # Количество дней ожидания до свободной ячейки для самозаписи
                 if df_temp[df_temp["ac_internet"] == 1].empty:
-                    nearest_day_internet = np.NaN  # не найдено
+                    nearest_day_internet = 9999  # не найдено
                 else:
                     nearest_day_internet = (
                         df_temp[df_temp["ac_internet"] == 1]["end_time"]
