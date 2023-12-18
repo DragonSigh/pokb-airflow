@@ -13,7 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 CURRENT_PATH = os.path.abspath(os.getcwd())
-PATH_TO_CREDENTIAL = r"/home/user/phone_calls_auth.json"
+PATH_TO_CREDENTIAL = r"/home/user/auth-phone-calls.json"
 UPLOAD_PATH = r"/etc/samba/share/upload/"
 DOWNLOAD_PATH = r"/etc/samba/share/download/"
 
