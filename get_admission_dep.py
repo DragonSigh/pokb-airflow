@@ -6,7 +6,7 @@ import json
 
 # Настройки
 PATH_TO_HOSPITAL_CREDENTIAL = r"/home/user/auth-hospital.json"
-METRIC_PATH = r"/etc/samba/share/download/Показатель 22"
+EXPORT_PATH = r"/etc/samba/share/download/Приемные отделения"
 
 
 def start_hospital_export():
