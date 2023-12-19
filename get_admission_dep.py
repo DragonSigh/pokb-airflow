@@ -34,5 +34,5 @@ def start_bi_export():
             for _units in _departments["units"]:
                 bi_emias.authorize(_units["login"], _units["password"])
         # Выгрузка отчета
-        bi_emias.load_any_report("dashboard_priem_otdel_krasnogorsk_al")
+        bi_emias.load_any_report("dashboard_priem_otdel_krasnogorsk_al", use_dates=False)
         bi_emias.export_report()
