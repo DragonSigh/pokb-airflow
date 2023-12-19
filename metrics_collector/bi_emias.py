@@ -13,7 +13,7 @@ reports_path = config.reports_path
 
 
 def authorize(login_data: str, password_data: str):
-    logger.debug("Начата авторизация")
+    logger.debug("Начата авторизация, логин:" + login_data)
     browser.get("http://bi.mz.mosreg.ru/login/")
     login_field = browser.find_element(By.XPATH, '//*[@id="login"]')
     login_field.send_keys(login_data)
@@ -27,11 +27,14 @@ def authorize(login_data: str, password_data: str):
 
 def load_any_report(report_name, use_dates=True, begin_date=config.first_date, end_date=config.last_date):
     logger.debug(
-        f"Открываю {report_name} - выбран период:"
+        f"Открываю страницу отчета {report_name}"
+    )
+    logger.debug(
+        f"Выбран период:"
         f" с {begin_date.strftime('%d.%m.%Y')}"
         f" по {end_date.strftime('%d.%m.%Y')}"
     )
-
+    
     browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
