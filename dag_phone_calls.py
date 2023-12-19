@@ -17,7 +17,7 @@ dag = DAG(
     dag_id="phone_calls",
     description="Выгрузка и анализ телефонных звонок ТП ПОКБ",
     start_date=datetime(2023, 1, 1),
-    schedule_interval="0 6 * * *",
+    schedule_interval="0 3 * * *",
     catchup=False,
 )
 

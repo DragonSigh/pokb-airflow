@@ -12,7 +12,7 @@ dag = DAG(
     dag_id="telegram_tasks",
     description="Выгрузка и анализ заявок ТП ПОКБ в Телеграмме",
     start_date=datetime(2023, 1, 1),
-    schedule_interval="0 6 * * *",
+    schedule_interval="0 3 * * *",
     catchup=False,
 )
 
