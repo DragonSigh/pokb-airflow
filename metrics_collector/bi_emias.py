@@ -15,8 +15,15 @@ reports_path = config.reports_path
 
 def authorize(login_data: str, password_data: str):
     logger.debug("Начата авторизация, логин: " + login_data)
+    # Очистить куки
+    browser.delete_all_cookies()
+    # Убедиться что открыта только одна вкладка
+    if len(browser.window_handles) > 1:
+        browser.switch_to.window(browser.window_handles[1])
+        browser.close()
+        browser.switch_to.window(browser.window_handles[0])
+    # Страница авторизации
     browser.get("http://bi.mz.mosreg.ru/login/")
-
     # Ввести логин
     login_field = browser.find_element(By.XPATH, '//*[@id="login"]')
     actions.click(login_field).key_down(Keys.CONTROL).send_keys("a").key_up(
@@ -44,7 +51,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
         f" по {end_date.strftime('%d.%m.%Y')}"
     )
 
-    browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
+    #browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
         WebDriverWait(browser, 60).until(
