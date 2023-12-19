@@ -38,6 +38,11 @@ def authorize(login_data: str, password_data: str):
     browser.find_element(
         By.XPATH, '//*[@id="isLoginBinding"]/form/div[4]/button'
     ).click()
+    WebDriverWait(browser, 60).until(
+        EC.invisibility_of_element(
+            (By.XPATH, "//div[@data-componentid='ext-progress-1']")
+        )
+    )
     logger.debug("Авторизация пройдена")
 
 
