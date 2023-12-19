@@ -25,7 +25,7 @@ def authorize(login_data: str, password_data: str):
     logger.debug("Авторизация пройдена")
 
 
-def load_any_report(report_name, begin_date, end_date):
+def load_any_report(report_name, begin_date=config.first_date, end_date=config.last_date):
     logger.debug(
         f"Открываю {report_name} - выбран период:"
         f" с {begin_date.strftime('%d.%m.%Y')}"
