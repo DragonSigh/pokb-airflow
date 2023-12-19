@@ -4,6 +4,7 @@ import os
 
 from loguru import logger
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -13,12 +14,20 @@ reports_path = config.reports_path
 
 
 def authorize(login_data: str, password_data: str):
-    logger.debug("Начата авторизация, логин:" + login_data)
+    logger.debug("Начата авторизация, логин: " + login_data)
     browser.get("http://bi.mz.mosreg.ru/login/")
+
+    # Ввести логин
     login_field = browser.find_element(By.XPATH, '//*[@id="login"]')
-    login_field.send_keys(login_data)
+    actions.click(login_field).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(login_data).perform()
+    # Ввести пароль
     password_field = browser.find_element(By.XPATH, '//*[@id="password"]')
-    password_field.send_keys(password_data)
+    actions.click(password_field).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(password_data).perform()
+    # Войти
     browser.find_element(
         By.XPATH, '//*[@id="isLoginBinding"]/form/div[4]/button'
     ).click()
@@ -34,7 +43,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
         f" с {begin_date.strftime('%d.%m.%Y')}"
         f" по {end_date.strftime('%d.%m.%Y')}"
     )
-    
+
     browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
