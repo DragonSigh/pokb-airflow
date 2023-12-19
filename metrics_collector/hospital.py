@@ -12,6 +12,7 @@ browser = config.browser
 actions = config.actions
 reports_path = config.reports_path
 
+
 def authorize(login_data: str, password_data: str):
     """
     Авторизация в ЕМИАС СТАЦИОНАР
