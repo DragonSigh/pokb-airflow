@@ -19,8 +19,12 @@ def start_hospital_export():
     auth_username = data["username"]
     auth_password = data["password"]
 
-    hospital.authorize(auth_username, auth_password)
-    hospital.load_admission_dep_report()
+    try:
+        hospital.authorize(auth_username, auth_password)
+        hospital.load_admission_dep_report()
+    except TimeoutException as ex:
+        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
+        raise ex
 
 
 def start_bi_export():
@@ -47,3 +51,4 @@ def start_bi_export():
             bi_emias.export_report()
         except TimeoutException:
             config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
+            raise TimeoutException
