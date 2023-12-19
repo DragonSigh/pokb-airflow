@@ -37,3 +37,10 @@ hospital_export_task = PythonOperator(
     provide_context=True,
     dag=dag,
 )
+
+bi_export_task = PythonOperator(
+    task_id="bi_export",
+    python_callable=start_bi_export,
+    provide_context=True,
+    dag=dag,
+)
