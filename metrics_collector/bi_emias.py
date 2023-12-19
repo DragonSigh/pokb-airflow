@@ -35,6 +35,7 @@ def authorize(login_data: str, password_data: str):
         Keys.CONTROL
     ).send_keys(password_data).perform()
     # Войти
+    browser.save_screenshot(os.path.join(reports_path, "logib_bi_entered.png"))
     browser.find_element(
         By.XPATH, '//*[@id="isLoginBinding"]/form/div[4]/button'
     ).click()
