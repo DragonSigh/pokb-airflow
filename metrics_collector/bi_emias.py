@@ -3,7 +3,6 @@ import metrics_collector.utils as utils
 import os
 
 from loguru import logger
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -33,10 +32,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
         f" по {end_date.strftime('%d.%m.%Y')}"
     )
 
-    try:
-        browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
-    except TimeoutException:
-        browser.save_screenshot(reports_path + "bi_error.png")
+    browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
         WebDriverWait(browser, 60).until(

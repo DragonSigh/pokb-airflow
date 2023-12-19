@@ -2,6 +2,7 @@ import metrics_collector.config as config
 import metrics_collector.utils as utils
 import metrics_collector.hospital as hospital
 import metrics_collector.bi_emias as bi_emias
+from selenium.common.exceptions import TimeoutException
 import json
 import os
 
@@ -23,6 +24,11 @@ def start_hospital_export():
 
 
 def start_bi_export():
+    # Создать папку для выгрузки
+    try:
+        os.mkdir(EXPORT_PATH)
+    except FileExistsError:
+        pass
     if not utils.is_actual_report_exist(
         config.reports_path + "Дашборд приемного отделения.xlsx"
     ):
@@ -34,5 +40,10 @@ def start_bi_export():
             for _units in _departments["units"]:
                 bi_emias.authorize(_units["login"], _units["password"])
         # Выгрузка отчета
-        bi_emias.load_any_report("dashboard_priem_otdel_krasnogorsk_al", use_dates=False)
-        bi_emias.export_report()
+        try:
+            bi_emias.load_any_report(
+                "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
+            )
+            bi_emias.export_report()
+        except TimeoutException:
+            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
