@@ -47,7 +47,7 @@ def load_admission_dep_report():
     Отчет Список пациентов, поступивших в приёмное отделение
     """
     logging.info("Открываются отчеты")
-    WebDriverWait(browser, 60).until(EC.element_to_be_clickable((By.XPATH, '//*[@test_id="win_swLpuAdminWorkPlaceWindow_pnl___btn_Plani_flyuorograficheskih_meropriyatiy"]')))
+    WebDriverWait(browser, 120).until(EC.element_to_be_clickable((By.XPATH, '//*[@test_id="win_swLpuAdminWorkPlaceWindow_pnl___btn_Plani_flyuorograficheskih_meropriyatiy"]')))
 
     element = browser.find_element(By.XPATH, '//*[@test_id="tbr_btn_Otcheti"]')
     element.click()
