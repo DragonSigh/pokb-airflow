@@ -24,18 +24,23 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[0])
     # Страница авторизации
     browser.get("http://bi.mz.mosreg.ru/login/")
+    # Ввести логин
     login_field = browser.find_element(By.XPATH, '//*[@id="login"]')
-    login_field.send_keys(login_data)
+    actions.click(login_field).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(login_data).perform()
+    # Ввести пароль
     password_field = browser.find_element(By.XPATH, '//*[@id="password"]')
-    password_field.send_keys(password_data)
-    browser.find_element(
-        By.XPATH, '//*[@id="isLoginBinding"]/form/div[4]/button'
-    ).click()
+    actions.click(password_field).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(password_data).send_keys(Keys.ENTER).perform()
+
     WebDriverWait(browser, 60).until(
         EC.invisibility_of_element(
             (By.XPATH, "//div[@data-componentid='ext-progress-1']")
         )
     )
+
     logger.debug("Авторизация пройдена")
 
 
@@ -49,7 +54,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
         f" по {end_date.strftime('%d.%m.%Y')}"
     )
 
-    #browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
+    browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
         WebDriverWait(browser, 60).until(
