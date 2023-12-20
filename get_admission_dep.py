@@ -44,11 +44,11 @@ def start_bi_export():
             for _units in _departments["units"]:
                 bi_emias.authorize(_units["login"], _units["password"])
         # Выгрузка отчета
-        try:
-            bi_emias.load_any_report(
-                "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
-            )
-            bi_emias.export_report()
-        except TimeoutException:
-            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
-            raise TimeoutException
+        #try:
+        #    bi_emias.load_any_report(
+        #        "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
+        #    )
+        #    bi_emias.export_report()
+        #except TimeoutException:
+        #    config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
+        #    raise TimeoutException

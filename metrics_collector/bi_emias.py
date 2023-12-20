@@ -39,7 +39,7 @@ def authorize(login_data: str, password_data: str):
             (By.XPATH, "//div[@data-componentid='ext-progress-1']")
         )
     )
-    browser.save_screenshot(os.path.join(reports_path, "bi_auth.png"))
+    #browser.save_screenshot(os.path.join(reports_path, "bi_auth.png"))
     logger.debug("Авторизация пройдена")
 
 
