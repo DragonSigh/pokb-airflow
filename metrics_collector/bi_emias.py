@@ -112,4 +112,4 @@ def export_report():
         By.XPATH,
         "/html/body/div[1]/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[2]/div/div[3]/div[4]",
     ).click()
-    logger.debug("Сохранение файла с отчетом успешно")
+    logger.debug("Сохранение файла с отчетом завершено")

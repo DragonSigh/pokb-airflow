@@ -31,7 +31,6 @@ options.add_experimental_option(
 # Выбираем драйвер браузера и устанавливаем его опции
 service = Service(r"/home/user/chromedriver")
 browser = webdriver.Chrome(options=options, service=service)
-browser.set_page_load_timeout(120)
 actions = ActionChains(browser)
 
 # Очистить кэш, сессии, хранилище
