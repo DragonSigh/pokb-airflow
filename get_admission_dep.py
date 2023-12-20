@@ -43,6 +43,7 @@ def start_bi_export():
         for _departments in data["departments"]:
             for _units in _departments["units"]:
                 bi_emias.authorize(_units["login"], _units["password"])
+        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "hospital_error.png"))
         # Выгрузка отчета
         #try:
         #    bi_emias.load_any_report(
