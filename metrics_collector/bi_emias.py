@@ -99,7 +99,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
     else:
         WebDriverWait(browser, 60).until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//div[@data-componentid='ext-RTA-grid-2']")
+                (By.XPATH, "//div[@data-componentid='ext-RTA-gridview-1']")
             )
         )
 
