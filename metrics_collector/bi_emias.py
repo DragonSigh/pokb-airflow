@@ -24,16 +24,13 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[0])
     # Страница авторизации
     browser.get("http://bi.mz.mosreg.ru/login/")
-    # Ввести логин
     login_field = browser.find_element(By.XPATH, '//*[@id="login"]')
-    actions.click(login_field).key_down(Keys.CONTROL).send_keys("a").key_up(
-        Keys.CONTROL
-    ).send_keys(login_data).perform()
-    # Ввести пароль
+    login_field.send_keys(login_data)
     password_field = browser.find_element(By.XPATH, '//*[@id="password"]')
-    actions.click(password_field).key_down(Keys.CONTROL).send_keys("a").key_up(
-        Keys.CONTROL
-    ).send_keys(password_data).send_keys(Keys.ENTER).perform()
+    password_field.send_keys(password_data)
+    browser.find_element(
+        By.XPATH, '//*[@id="isLoginBinding"]/form/div[4]/button'
+    ).click()
     WebDriverWait(browser, 60).until(
         EC.invisibility_of_element(
             (By.XPATH, "//div[@data-componentid='ext-progress-1']")
