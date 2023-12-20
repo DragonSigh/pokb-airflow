@@ -2,7 +2,7 @@ import metrics_collector.config as config
 import metrics_collector.utils as utils
 import os
 
-from loguru import logger
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
@@ -14,7 +14,7 @@ reports_path = config.reports_path
 
 
 def authorize(login_data: str, password_data: str):
-    logger.debug("Начата авторизация, логин: " + login_data)
+    logging.info("Начата авторизация, логин: " + login_data)
     # Очистить куки
     browser.delete_all_cookies()
     # Убедиться что открыта только одна вкладка
@@ -41,22 +41,24 @@ def authorize(login_data: str, password_data: str):
         )
     )
 
-    logger.debug("Авторизация пройдена")
+    logging.info("Авторизация пройдена")
 
 
 def load_any_report(report_name, use_dates=True, begin_date=config.first_date, end_date=config.last_date):
-    logger.debug(
+    logging.info(
         f"Открываю страницу отчета {report_name}"
-    )
-    logger.debug(
-        f"Выбран период:"
-        f" с {begin_date.strftime('%d.%m.%Y')}"
-        f" по {end_date.strftime('%d.%m.%Y')}"
     )
 
     browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
+
+        logging.info(
+            f"Выбран период:"
+            f" с {begin_date.strftime('%d.%m.%Y')}"
+            f" по {end_date.strftime('%d.%m.%Y')}"
+        )
+
         WebDriverWait(browser, 60).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//input[@data-componentid='ext-datefield-3']")
@@ -103,7 +105,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
 
 
 def export_report():
-    logger.debug(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
+    logging.info(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
     try:
         os.mkdir(reports_path)
     except FileExistsError:
@@ -117,4 +119,4 @@ def export_report():
         By.XPATH,
         "/html/body/div[1]/div[2]/div/div/div/div[2]/div/div/div[1]/div[1]/div[2]/div/div[3]/div[4]",
     ).click()
-    logger.debug("Сохранение файла с отчетом завершено")
+    logging.info("Сохранение файла с отчетом завершено")
