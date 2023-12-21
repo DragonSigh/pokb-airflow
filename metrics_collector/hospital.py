@@ -56,16 +56,21 @@ def load_admission_dep_report():
     element.click()
 
     WebDriverWait(browser, 60).until(EC.visibility_of_element_located((By.XPATH, '//*[@test_id="win_swReportEndUserWindow_pnl_Katalog_otchetov"]')))
+ 
+    # Мои отчета
     WebDriverWait(browser, 30).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div[2]/div[5]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/ul/div/li[5]/div/img[1]')))
-
     element = browser.find_element(By.XPATH, "/html/body/div[1]/div/div[2]/div[5]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/ul/div/li[5]/div/img[1]")
     element.click()
+    # Отчет по приемным
     WebDriverWait(browser, 30).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div[2]/div[5]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/ul/div/li[5]/ul/li/div/a')))
     element = browser.find_element(By.XPATH, "/html/body/div[1]/div/div[2]/div[5]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/ul/div/li[5]/ul/li/div/a")
     element.click()
+    # Сформировать отчет
     WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@test_id="win_swReportEndUserWindow_btn_Sformirovat_otchet"]')))
     element = browser.find_element(By.XPATH, '//*[@test_id="win_swReportEndUserWindow_btn_Sformirovat_otchet"]')
     element.click()
+    # Проверка, что открылось окно скачивания отчета
+    WebDriverWait(browser, 20).until(EC.number_of_windows_to_be(2))
     logging.info(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
-    utils.download_wait(reports_path, 300, len(os.listdir(reports_path)) + 1)
+    utils.download_wait(reports_path, 60, len(os.listdir(reports_path)) + 1)
     logging.info("Сохранение файла с отчетом завершено")
