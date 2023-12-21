@@ -276,12 +276,14 @@ def analyze_data(df_kornet, df_emias):
 
     # Сохраняем свод
     df_kornet.columns = ["Всего рецептов", "Из них по регламенту", "% по регламенту"]
-    file_path = EXPORT_PATH
-    +"/_Свод по выписанным рецептам не по регламенту "
-    +str(first_date)
-    +"_"
-    +str(yesterday_date)
-    +".xlsx"
+    file_path = os.path.join(
+        EXPORT_PATH,
+        "_Свод по выписанным рецептам не по регламенту "
+        + str(first_date)
+        + "_"
+        + str(yesterday_date)
+        + ".xlsx",
+    )
     utils.save_to_excel(
         df_kornet,
         EXPORT_PATH
