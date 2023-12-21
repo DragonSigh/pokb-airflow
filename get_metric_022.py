@@ -2,6 +2,7 @@ import metrics_collector.config as config
 import metrics_collector.utils as utils
 import metrics_collector.emias as emias
 import metrics_collector.kornet as kornet
+from selenium.common.exceptions import TimeoutException
 import os
 import json
 import pandas as pd
@@ -9,7 +10,7 @@ import logging
 
 # Настройки
 PATH_TO_CREDENTIAL = r"/home/user/"
-METRIC_PATH = r"/etc/samba/share/download/Показатель 22"
+EXPORT_PATH = r"/etc/samba/share/download/Показатель 22"
 
 first_date = config.first_date
 last_date = config.last_date
@@ -30,7 +31,7 @@ def complex_rename(x):
 def start_kornet_report_saving():
     # Создать папку для выгрузки метрики
     # try:
-    #    os.mkdir(METRIC_PATH)
+    #    os.mkdir(EXPORT_PATH)
     # except FileExistsError:
     #    pass
     # Получить путь к файлу с данными для авторизации
@@ -42,7 +43,7 @@ def start_kornet_report_saving():
         f'Выбран период: с {first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
     )
-    logging.info(f"Сохранение файла с отчетом в папку: {METRIC_PATH}")
+    logging.info(f"Сохранение файла с отчетом в папку: {EXPORT_PATH}")
     f = open(kornet_credentials_path, "r", encoding="utf-8")
     data = json.load(f)
     f.close()
@@ -82,7 +83,7 @@ def start_kornet_report_saving():
         "Количество",
     ]
     logging.info("Выгрузка из КОРНЕТА завершена")
-    utils.save_to_excel(df_kornet, METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx")
+    utils.save_to_excel(df_kornet, EXPORT_PATH + "/Промежуточный КОРНЕТ.xlsx")
 
 
 def start_emias_report_saving():
@@ -141,7 +142,7 @@ def start_emias_report_saving():
         "Отметка о приеме",
     ]
     logging.info("Выгрузка из ЕМИАС завершена")
-    utils.save_to_excel(df_emias, METRIC_PATH + "/Промежуточный ЕМИАС.xlsx")
+    utils.save_to_excel(df_emias, EXPORT_PATH + "/Промежуточный ЕМИАС.xlsx")
 
 
 def analyze_data(df_kornet, df_emias):
@@ -212,7 +213,7 @@ def analyze_data(df_kornet, df_emias):
             ["Подразделение"], axis=1
         )
         # Фильтрация датафрейма по уникальному значению в колонке
-        file_path = METRIC_PATH + "/" + department
+        file_path = EXPORT_PATH + "/" + department
         +" - нет записи в кабинет выписки рецептов на "
         +str(last_date)
         +".xlsx"
@@ -241,10 +242,10 @@ def analyze_data(df_kornet, df_emias):
     # Сохранить отчет по непроставленным явкам
     utils.save_to_excel(
         df_noshow,
-        METRIC_PATH + "/_Не проставлена явка о приеме, но выписан рецепт.xlsx",
+        EXPORT_PATH + "/_Не проставлена явка о приеме, но выписан рецепт.xlsx",
     )
     os.chmod(
-        METRIC_PATH + "/_Не проставлена явка о приеме, но выписан рецепт.xlsx", 0o777
+        EXPORT_PATH + "/_Не проставлена явка о приеме, но выписан рецепт.xlsx", 0o777
     )
     # Сегодняшний день исключаем, так как рецепт ещё могут выписать позже
     df_kornet = df_kornet[df_kornet["Дата выписки"] < last_date]
@@ -272,7 +273,7 @@ def analyze_data(df_kornet, df_emias):
 
     # Сохраняем свод
     df_kornet.columns = ["Всего рецептов", "Из них по регламенту", "% по регламенту"]
-    file_path = METRIC_PATH
+    file_path = EXPORT_PATH
     +"/_Свод по выписанным рецептам не по регламенту "
     +str(first_date)
     +"_"
@@ -280,7 +281,7 @@ def analyze_data(df_kornet, df_emias):
     +".xlsx"
     utils.save_to_excel(
         df_kornet,
-        METRIC_PATH
+        EXPORT_PATH
         + "/_Свод по выписанным рецептам не по регламенту "
         + str(first_date)
         + "_"
@@ -303,19 +304,24 @@ def analyze_data(df_kornet, df_emias):
         ["Отделение", "Из них по регламенту", "Всего рецептов", "% по регламенту"],
         axis=1,
     ).reset_index()
-    utils.save_to_excel(df_kornet, METRIC_PATH + "/agg_22.xlsx", index_arg=False)
-    os.chmod(METRIC_PATH + "/agg_22.xlsx", 0o777)
+    utils.save_to_excel(df_kornet, EXPORT_PATH + "/agg_22.xlsx", index_arg=False)
+    os.chmod(EXPORT_PATH + "/agg_22.xlsx", 0o777)
 
 
 def check_metric_022():
-    if utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx"):
-        logging.info("Промежуточный отчет из КОРНЕТ уже есть в папке")
-    else:
-        start_kornet_report_saving()
-    df_kornet = pd.read_excel(METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx", header=0)
-    if utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный ЕМИАС.xlsx"):
-        logging.info("Промежуточный отчет из ЕМИАС уже есть в папке")
-    else:
-        start_emias_report_saving()
-    df_emias = pd.read_excel(METRIC_PATH + "/Промежуточный ЕМИАС.xlsx", header=0)
+    # Выгрузка отчета
+    try:
+        if utils.is_actual_report_exist(EXPORT_PATH + "/Промежуточный КОРНЕТ.xlsx"):
+            logging.info("Промежуточный отчет из КОРНЕТ уже есть в папке")
+        else:
+            start_kornet_report_saving()
+        df_kornet = pd.read_excel(EXPORT_PATH + "/Промежуточный КОРНЕТ.xlsx", header=0)
+        if utils.is_actual_report_exist(EXPORT_PATH + "/Промежуточный ЕМИАС.xlsx"):
+            logging.info("Промежуточный отчет из ЕМИАС уже есть в папке")
+        else:
+            start_emias_report_saving()
+        df_emias = pd.read_excel(EXPORT_PATH + "/Промежуточный ЕМИАС.xlsx", header=0)
+    except TimeoutException:
+        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
+        raise TimeoutException
     analyze_data(df_kornet, df_emias)
