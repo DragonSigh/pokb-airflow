@@ -213,10 +213,13 @@ def analyze_data(df_kornet, df_emias):
             ["Подразделение"], axis=1
         )
         # Фильтрация датафрейма по уникальному значению в колонке
-        file_path = EXPORT_PATH + "/" + department
-        +" - нет записи в кабинет выписки рецептов на "
-        +str(last_date)
-        +".xlsx"
+        file_path = os.path.join(
+            EXPORT_PATH,
+            department
+            + " - нет записи в кабинет выписки рецептов на "
+            + str(last_date)
+            + ".xlsx",
+        )
         utils.save_to_excel(
             df_temp,
             file_path,
