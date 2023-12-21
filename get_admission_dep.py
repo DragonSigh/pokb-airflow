@@ -42,7 +42,7 @@ def start_bi_export():
     except FileExistsError:
         pass
     if not utils.is_actual_report_exist(
-        config.reports_path + "Дашборд приемного отделения.xlsx"
+        os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx"), timedelta
     ):
         with open(PATH_TO_BI_CREDENTIAL) as f:
             data = json.load(f)

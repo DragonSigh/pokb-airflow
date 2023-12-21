@@ -2,7 +2,6 @@ import os
 import time
 import random
 import re
-from datetime import date, timedelta
 import pandas as pd
 
 
@@ -127,11 +126,14 @@ def get_department(x):
 
 
 # Проверить если нужный файл с отчётом за сегодняшний день уже есть в папке
-def is_actual_report_exist(filepath, days=0):
+def is_actual_report_exist(filepath, hours=24):
     exist = os.path.isfile(filepath) and os.access(filepath, os.F_OK)
     if exist:
-        created = os.path.getctime(filepath)
-        if not date.fromtimestamp(created) >= date.today() - timedelta(days):
+        # Получить время создания файла
+        file_creation_time = os.path.getctime(filepath)
+        # Получить текущее время
+        current_time = time.time()
+        if not file_creation_time >= (current_time - hours * 3600):
             os.remove(filepath)
             exist = False
     return exist
