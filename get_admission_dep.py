@@ -31,7 +31,9 @@ def start_hospital_export():
             hospital.authorize(auth_username, auth_password)
             hospital.load_admission_dep_report()
         except TimeoutException as ex:
-            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "hospital_error.png"))
+            config.browser.save_screenshot(
+                os.path.join(EXPORT_PATH, "hospital_error.png")
+            )
             raise ex
 
 
@@ -42,7 +44,7 @@ def start_bi_export():
     except FileExistsError:
         pass
     if not utils.is_actual_report_exist(
-        os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx"), timedelta
+        os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx"), 4
     ):
         with open(PATH_TO_BI_CREDENTIAL) as f:
             data = json.load(f)

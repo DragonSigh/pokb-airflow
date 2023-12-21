@@ -125,9 +125,15 @@ def get_department(x):
         return value
 
 
-# Проверить если нужный файл с отчётом за сегодняшний день уже есть в папке
-def is_actual_report_exist(filepath, hours=24):
-    exist = os.path.isfile(filepath) and os.access(filepath, os.F_OK)
+def is_actual_report_exist(filepath, hours=23):
+    """
+    Проверка актуальности файла с отчетом
+        filepath:
+            путь к файлу
+        hours:
+            сколько часов отчет актуален
+    """
+    exist = os.path.exists(filepath)
     if exist:
         # Получить время создания файла
         file_creation_time = os.path.getctime(filepath)

@@ -15,8 +15,8 @@ default_args = {
 
 dag = DAG(
     dag_id="metric_022",
-    description="Выгрузка и анализ Показаталея 22",
-    schedule_interval="@daily",
+    description="Выгрузка и анализ Показателя 22",
+    schedule_interval="0 7 * * *",
     catchup=False,
     default_args=default_args
 )

@@ -57,7 +57,7 @@ def load_system_report(cabinet_id, begin_date, end_date):
     Открыть Системные отчеты - Отчет по записи на прием v2
     """
     logging.info(f"Открываю Отчет по записи на прием v2, ID кабинета: {cabinet_id}")
-    element = browser.find_element(By.XPATH, '//*[@id="Portlet_9"]/div[2]/div[1]/a')
+    element = browser.find_element(By.XPATH, '//*[@id="Portlet_9"]/div[2]/div[1]')
     WebDriverWait(browser, 20).until(EC.element_to_be_clickable(element))
     element.click()
     browser.switch_to.window(browser.window_handles[1])
