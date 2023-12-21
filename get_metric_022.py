@@ -309,8 +309,8 @@ def analyze_data(df_kornet, df_emias):
         ["Отделение", "Из них по регламенту", "Всего рецептов", "% по регламенту"],
         axis=1,
     ).reset_index()
-    utils.save_to_excel(df_kornet, EXPORT_PATH + "/agg_22.xlsx", index_arg=False)
-    os.chmod(EXPORT_PATH + "/agg_22.xlsx", 0o777)
+    utils.save_to_excel(df_kornet, os.path.join(EXPORT_PATH, "agg_22.xlsx"), index_arg=False)
+    os.chmod(os.path.join(EXPORT_PATH, "agg_22.xlsx"), 0o777)
 
 
 def check_metric_022():
