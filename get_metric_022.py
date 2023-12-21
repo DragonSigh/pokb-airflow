@@ -308,10 +308,14 @@ def analyze_data(df_kornet, df_emias):
 
 
 def check_metric_022():
-    if not utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx"):
+    if utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx"):
+        logging.info("Промежуточный отчет из КОРНЕТ уже есть в папке")
+    else:
         start_kornet_report_saving()
     df_kornet = pd.read_excel(METRIC_PATH + "/Промежуточный КОРНЕТ.xlsx", header=0)
-    if not utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный ЕМИАС.xlsx"):
+    if utils.is_actual_report_exist(METRIC_PATH + "/Промежуточный ЕМИАС.xlsx"):
+        logging.info("Промежуточный отчет из ЕМИАС уже есть в папке")
+    else:
         start_emias_report_saving()
     df_emias = pd.read_excel(METRIC_PATH + "/Промежуточный ЕМИАС.xlsx", header=0)
     analyze_data(df_kornet, df_emias)
