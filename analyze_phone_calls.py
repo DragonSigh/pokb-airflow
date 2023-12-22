@@ -152,6 +152,13 @@ def analyze_results():
     df_10days_missed = df_10days_missed[["Дата вызова", "Время вызова"]]
     df_10days_missed.columns = ["Дата вызова", "Всего пропущено"]
 
+    dtr = pd.date_range(date_filter, date.today(), freq="D")
+    s = pd.Series(dtr)
+    df_10days_missed = pd.concat(
+        [df_10days_missed, s[~s.index.isin(df_10days_missed.index)]]
+    )
+    df_10days_missed = df_10days_missed.drop([0], axis=1).fillna(0)
+
     df_10days_missed = df_10days_missed.pivot_table(
         columns="Дата вызова",
         values="Всего пропущено",
