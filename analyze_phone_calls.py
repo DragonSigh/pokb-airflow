@@ -161,10 +161,9 @@ def analyze_results():
 
     df_10days_answered = df_10days_answered.reset_index().rename_axis(None, axis=1)
 
-    df_result = pd.concat([df_10days_answered, df_10days_missed])
-
-    values = [df_result.columns.values.tolist()]
-    values.extend(df_result.values.tolist())
+    values = [df_10days_answered.columns.values.tolist()]
+    values.extend(df_10days_answered.values.tolist())
+    values.extend(df_10days_missed.values.tolist())
 
     wks = "Все звонки за 10 дней"
     worksheet = spreadsheet.worksheet(wks)
