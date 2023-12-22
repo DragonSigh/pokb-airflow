@@ -13,10 +13,11 @@ default_args = {
     'sla': timedelta(minutes=60)
 }
 
+# At 07:00 on every day-of-week from Tuesday through Friday.
 dag = DAG(
     dag_id="metric_022",
     description="Выгрузка и анализ Показателя 22",
-    schedule_interval="0 7 * * *",
+    schedule_interval="0 7 * * 2-5",
     catchup=False,
     default_args=default_args
 )

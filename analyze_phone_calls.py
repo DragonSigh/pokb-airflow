@@ -152,6 +152,7 @@ def analyze_results():
     df_10days_missed = df_10days_missed[["Дата вызова", "Время вызова"]]
     df_10days_missed.columns = ["Дата вызова", "Всего пропущено"]
 
+    # Заполняем даты без пропущенных звонков нулями
     dtr = pd.date_range(date_filter, date.today(), freq="D")
     s = pd.Series(dtr)
     df_10days_missed = pd.concat(
