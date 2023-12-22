@@ -13,10 +13,11 @@ default_args = {
     'sla': timedelta(minutes=60)
 }
 
+# At hour 8, 12, and 20 on every day-of-week from Monday through Friday.
 dag = DAG(
     dag_id="emias_schedule",
     description="Выгрузка расписания из ЕМИАС в дашборд",
-    schedule_interval="0 8,12,20 * * *",
+    schedule_interval="0 8,12,20 * * 1-5",
     catchup=False,
     default_args=default_args
 )

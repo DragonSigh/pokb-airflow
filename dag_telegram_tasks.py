@@ -8,11 +8,12 @@ def analyze_results():
     get_telegram_tasks.analyze_results()
 
 
+# At 06:00 on every day-of-week from Monday through Friday.
 dag = DAG(
     dag_id="telegram_tasks",
     description="Выгрузка и анализ заявок ТП ПОКБ в Телеграмме",
     start_date=datetime(2023, 1, 1),
-    schedule_interval="0 3 * * *",
+    schedule_interval="0 6 * * 1-5",
     catchup=False,
 )
 

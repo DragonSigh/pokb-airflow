@@ -23,10 +23,11 @@ default_args = {
     'sla': timedelta(minutes=60)
 }
 
+# At hour 6, 12, and 18 on every day-of-week from Monday through Friday
 dag = DAG(
     dag_id="hospital_admission_dep",
     description="Анализ отчетов приемного отделения",
-    schedule_interval="0 6 * * *",
+    schedule_interval="0 6,12,18 * * 1-5",
     catchup=False,
     default_args=default_args
 )
