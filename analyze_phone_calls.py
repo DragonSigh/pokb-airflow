@@ -9,6 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 PATH_TO_CREDENTIAL = "/home/user/pokb-399111-f04c71766977.json"
 SPREADSHEET_KEY = "1cikHhnfVLZY7Jx6hOVHqDLD51897wwD4FIEw0_8zhc4"
 UPLOAD_FILE_PATH = r"/etc/samba/share/upload/Отчет по вызовам в домене.xlsx"
+EXPORTH_PATH = r"/etc/samba/share/download/"
 SCOPE = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive",
@@ -104,7 +105,6 @@ def analyze_results():
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
-
     df_calls["Дата вызова"] = pd.to_datetime(
         df_calls["Дата вызова"], format="%Y-%m-%d"
     ).dt.date
@@ -118,16 +118,18 @@ def analyze_results():
     neg_calls = df_10days[df_10days["Статус"] == "пропущенный"].shape[0]
 
     # Всего отвечено
-    df_10days = df_10days[df_10days["Статус"] == "успешный"]
-    df_10days = df_10days[["Дата вызова", "Первый ответивший", "Время вызова"]]
+    df_10days_answered = df_10days[df_10days["Статус"] == "успешный"]
+    df_10days_answered = df_10days_answered[
+        ["Дата вызова", "Первый ответивший", "Время вызова"]
+    ]
 
-    df_10days = (
-        df_10days.groupby(["Первый ответивший", "Дата вызова"], observed=True)
+    df_10days_answered = (
+        df_10days_answered.groupby(["Первый ответивший", "Дата вызова"], observed=True)
         .count()
         .reset_index()
     )
 
-    df_10days = df_10days.pivot_table(
+    df_10days_answered = df_10days_answered.pivot_table(
         index="Первый ответивший",
         columns="Дата вызова",
         values="Время вызова",
@@ -135,12 +137,17 @@ def analyze_results():
         aggfunc="sum",
     )
 
-    df_10days.loc["Всего отвечено"] = df_10days.sum(numeric_only=True, axis=0)
+    df_10days_answered.loc["Всего отвечено"] = df_10days_answered.sum(
+        numeric_only=True, axis=0
+    )
 
     # Всего пропущено
-    df_10days_missed = df_calls[
-        (df_calls["Статус"] == "пропущенный") & (df_calls["Дата вызова"] >= date_filter)
-    ].groupby("Дата вызова", observed=True).count().reset_index()
+    df_10days_missed = (
+        df_10days[(df_10days["Статус"] == "пропущенный")]
+        .groupby("Дата вызова", observed=True)
+        .count()
+        .reset_index()
+    )
 
     df_10days_missed = df_10days_missed[["Дата вызова", "Время вызова"]]
     df_10days_missed.columns = ["Дата вызова", "Всего пропущено"]
@@ -152,10 +159,10 @@ def analyze_results():
         aggfunc="sum",
     ).reset_index()
 
-    df_10days = df_10days.reset_index().rename_axis(None, axis=1)
+    df_10days_answered = df_10days_answered.reset_index().rename_axis(None, axis=1)
 
-    values = [df_10days.columns.values.tolist()]
-    values.extend(df_10days.values.tolist())
+    values = [df_10days_answered.columns.values.tolist()]
+    values.extend(df_10days_answered.values.tolist())
     values.extend(df_10days_missed.values.tolist())
 
     wks = "Все звонки за 10 дней"
