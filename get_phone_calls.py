@@ -61,23 +61,25 @@ def download_phone_calls():
     password_data = data["password"]
     server_data = data["server"]
 
-    WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]')))
+    WebDriverWait(browser, 30).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="username"]'))
+    )
 
     # Ввести логин
     element = browser.find_element(By.XPATH, '//*[@id="username"]')
-    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(
-        username_data
-    ).perform()
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(username_data).perform()
     # Ввести пароль
     element = browser.find_element(By.XPATH, '//*[@id="password"]')
-    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(
-        password_data
-    ).perform()
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(password_data).perform()
     # Ввести сервер
     element = browser.find_element(By.XPATH, '//*[@id="domain"]')
-    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(
-        server_data
-    ).perform()
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(server_data).perform()
     # Нажать на кнопку "Войти"
     browser.find_element(By.XPATH, '//*[@id="testform"]/div[4]/div[1]/button').click()
 
@@ -87,7 +89,10 @@ def download_phone_calls():
 
     WebDriverWait(browser, 30).until(
         EC.invisibility_of_element(
-            (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg')
+            (
+                By.XPATH,
+                '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg',
+            )
         )
     )
     option = WebDriverWait(browser, 30).until(
@@ -99,7 +104,10 @@ def download_phone_calls():
 
     WebDriverWait(browser, 30).until(
         EC.invisibility_of_element(
-            (By.XPATH, '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg')
+            (
+                By.XPATH,
+                '//*[@id="page-content-wrapper"]/main/div/div[7]/div/div/div[1]/div[2]/svg',
+            )
         )
     )
 
@@ -111,12 +119,17 @@ def download_phone_calls():
     actions.move_to_element(option).click().perform()
 
     logging.info("Начато сохранение файла")
-    #browser.save_screenshot(r'/etc/samba/share/upload/error.png')
+    # browser.save_screenshot(r'/etc/samba/share/upload/error.png')
     utils.download_wait(UPLOAD_PATH, 120, len(os.listdir(CURRENT_PATH)) + 1)
     logging.info("Сохранение завершено")
 
 
 def start_download_phone_calls():
     # Удалить устаревший файл с отчетом
-    if not utils.is_actual_report_exist(UPLOAD_PATH + r"/Отчет по вызовам в домене.xlsx"):
+    if (
+        not utils.is_actual_report_exist(
+            os.path.join(UPLOAD_PATH, "Отчет по вызовам в домене")
+        )
+        is None
+    ):
         download_phone_calls()

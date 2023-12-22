@@ -18,8 +18,9 @@ def start_hospital_export():
         os.mkdir(EXPORT_PATH)
     except FileExistsError:
         pass
-    if not utils.is_actual_report_exist(
-        config.reports_path + "Дашборд приемного отделения.xlsx"
+    if (
+        utils.is_actual_report_exist(config.reports_path, "r50_han_PriemGosp_pg", 4)
+        is None
     ):
         with open(PATH_TO_HOSPITAL_CREDENTIAL) as f:
             data = json.load(f)
@@ -43,8 +44,11 @@ def start_bi_export():
         os.mkdir(EXPORT_PATH)
     except FileExistsError:
         pass
-    if not utils.is_actual_report_exist(
-        os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx"), 4
+    if (
+        utils.is_actual_report_exist(
+            config.reports_path, "Дашборд приемного отделения", 4
+        )
+        is None
     ):
         with open(PATH_TO_BI_CREDENTIAL) as f:
             data = json.load(f)

@@ -309,23 +309,30 @@ def analyze_data(df_kornet, df_emias):
         ["Отделение", "Из них по регламенту", "Всего рецептов", "% по регламенту"],
         axis=1,
     ).reset_index()
-    utils.save_to_excel(df_kornet, os.path.join(EXPORT_PATH, "agg_22.xlsx"), index_arg=False)
+    utils.save_to_excel(
+        df_kornet, os.path.join(EXPORT_PATH, "agg_22.xlsx"), index_arg=False
+    )
     os.chmod(os.path.join(EXPORT_PATH, "agg_22.xlsx"), 0o777)
 
 
 def check_metric_022():
     # Выгрузка отчета
     try:
-        if utils.is_actual_report_exist(EXPORT_PATH + "/Промежуточный КОРНЕТ.xlsx"):
+        if (
+            not utils.is_actual_report_exist(EXPORT_PATH, "Промежуточный КОРНЕТ")
+            is None
+        ):
             logging.info("Промежуточный отчет из КОРНЕТ уже есть в папке")
         else:
             start_kornet_report_saving()
-        df_kornet = pd.read_excel(EXPORT_PATH + "/Промежуточный КОРНЕТ.xlsx", header=0)
-        if utils.is_actual_report_exist(EXPORT_PATH + "/Промежуточный ЕМИАС.xlsx"):
+        df_kornet = pd.read_excel(os.path.join(EXPORT_PATH, "Промежуточный КОРНЕТ.xlsx"), header=0)
+        if not utils.is_actual_report_exist(EXPORT_PATH, "Промежуточный ЕМИАС") is None:
             logging.info("Промежуточный отчет из ЕМИАС уже есть в папке")
         else:
             start_emias_report_saving()
-        df_emias = pd.read_excel(EXPORT_PATH + "/Промежуточный ЕМИАС.xlsx", header=0)
+        df_emias = pd.read_excel(
+            os.path.join(EXPORT_PATH, "Промежуточный ЕМИАС.xlsx"), header=0
+        )
     except TimeoutException:
         config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
         raise TimeoutException

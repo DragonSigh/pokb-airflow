@@ -125,21 +125,24 @@ def get_department(x):
         return value
 
 
-def is_actual_report_exist(filepath, hours=23):
+def is_actual_report_exist(directory, partial_name, hours=23):
     """
     Проверка актуальности файла с отчетом
-        filepath:
-            путь к файлу
+        directory:
+            директория для поиска файла
+        partial_name:
+            частичное (или полное) имя файла
         hours:
             сколько часов отчет актуален
     """
-    exist = os.path.exists(filepath)
-    if exist:
-        # Получить время создания файла
-        file_creation_time = os.path.getctime(filepath)
-        # Получить текущее время
-        current_time = time.time()
-        if not file_creation_time >= (current_time - hours * 3600):
-            os.remove(filepath)
-            exist = False
-    return exist
+    for filename in os.listdir(directory):
+        if partial_name in filename:
+            file_path = os.path.join(directory, filename)
+            if os.path.isfile(file_path):
+                file_creation_time = os.path.getctime(file_path)
+                current_time = time.time()
+                if not file_creation_time >= (current_time - hours * 3600):
+                    os.remove(file_path)
+                    return None
+                return file_path
+    return None
