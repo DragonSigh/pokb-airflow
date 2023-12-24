@@ -65,6 +65,18 @@ def load_admission_dep_report():
     WebDriverWait(browser, 30).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div[2]/div[5]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/ul/div/li[5]/ul/li/div/a')))
     element = browser.find_element(By.XPATH, "/html/body/div[1]/div/div[2]/div[5]/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/ul/div/li[5]/ul/li/div/a")
     element.click()
+    # Дата начала = вчера
+    WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@test_id="win_swReportEndUserWindow_pnl_Otchet_-_Spisok_patsientov,_postupivshih_v_priёmnoe_otdelenie_undefined_paramBegDate"]')))
+    element = browser.find_element(By.XPATH, '//*[@test_id="win_swReportEndUserWindow_pnl_Otchet_-_Spisok_patsientov,_postupivshih_v_priёmnoe_otdelenie_undefined_paramBegDate"]')
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(
+        Keys.CONTROL
+    ).send_keys(str(config.yesterday_date)).send_keys(Keys.ENTER).perform()
+    # Формат
+    element = browser.find_element(By.XPATH, '//*[@test_id="win_swReportEndUserWindow_tbr_undefined"]')
+    element.click()
+    # XLSX
+    element = browser.find_element(By.XPATH, '//*[@id="ext-gen2072"]/div[7]')
+    element.click()
     # Сформировать отчет
     WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@test_id="win_swReportEndUserWindow_btn_Sformirovat_otchet"]')))
     element = browser.find_element(By.XPATH, '//*[@test_id="win_swReportEndUserWindow_btn_Sformirovat_otchet"]')
