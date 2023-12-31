@@ -128,7 +128,7 @@ def start_download_phone_calls():
     # Удалить устаревший файл с отчетом
     if (
         not utils.is_actual_report_exist(
-            os.path.join(UPLOAD_PATH, "Отчет по вызовам в домене")
+            UPLOAD_PATH, "Отчет по вызовам в домене"
         )
         is None
     ):
