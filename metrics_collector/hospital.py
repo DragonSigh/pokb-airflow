@@ -71,6 +71,7 @@ def load_admission_dep_report():
     actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(
         Keys.CONTROL
     ).send_keys(str(config.yesterday_date)).send_keys(Keys.ENTER).perform()
+    browser.implicitly_wait(15)
     # Формат
     element = browser.find_element(By.XPATH, '//*[@test_id="win_swReportEndUserWindow_tbr_undefined"]')
     element.click()
