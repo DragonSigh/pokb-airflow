@@ -63,6 +63,6 @@ def start_bi_export():
                 "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
             )
             bi_emias.export_report()
-        except TimeoutException:
-            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
-            raise TimeoutException
+        except Exception as e:
+            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "exception.png"))
+            raise e
