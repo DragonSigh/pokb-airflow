@@ -47,8 +47,8 @@ def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
 
     browser.get(
-        "http://llo.emias.mosreg.ru/korvet/FiltersLocalReport.aspx?"
-        + "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B"
+        r"http://llo.emias.mosreg.ru/korvet/FiltersLocalReport.aspx?"
+        + r"guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B"
     )
 
     WebDriverWait(browser, 60).until(
@@ -62,11 +62,11 @@ def load_dlo_report(begin_date, end_date):
     logging.info("Устанавливаю даты")
 
     browser.get(
-        "http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
-        + "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
-        + begin_date.strftime("%d.%m.%Y")
-        + "&EndDate="
-        + end_date.strftime("%d.%m.%Y")
+        r"http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
+        + r"guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
+        + begin_date.strftime(r"%d.%m.%Y")
+        + r"&EndDate="
+        + end_date.strftime(r"%d.%m.%Y")
     )
 
     logging.info("Отчет сформирован в браузере")
