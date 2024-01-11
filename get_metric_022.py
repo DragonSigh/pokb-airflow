@@ -333,7 +333,7 @@ def check_metric_022():
         df_emias = pd.read_excel(
             os.path.join(EXPORT_PATH, "Промежуточный ЕМИАС.xlsx"), header=0
         )
-    except TimeoutException:
-        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "timeout_error.png"))
-        raise TimeoutException
+    except Exception as ex:
+        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "error.png"))
+        raise ex
     analyze_data(df_kornet, df_emias)
