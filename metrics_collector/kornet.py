@@ -49,7 +49,7 @@ def load_dlo_report(begin_date, end_date):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "/html/body/form/header/nav/ul/li[3]/a",
+                "/html/body/form/header/nav/ul/li[3]/ul/li[2]/a",
             )
         )
     )
