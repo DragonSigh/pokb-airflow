@@ -38,13 +38,13 @@ def authorize(login_data: str, password_data: str):
     )
 
     logging.info("Авторизация пройдена")
-    browser.save_screenshot(r'/etc/samba/share/upload/kornet_auth.png')
 
 
 def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
     browser.get("http://llo.emias.mosreg.ru/korvet/FiltersLocalReport.aspx?"
                 "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B")
+    browser.refresh()
     WebDriverWait(browser, 30).until(
         EC.element_to_be_clickable(
             (
