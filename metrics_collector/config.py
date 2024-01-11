@@ -15,7 +15,6 @@ options.add_argument("--enable-javascript")
 options.add_argument("--no-sandbox")
 options.add_argument("--ignore-certificate-errors")
 options.add_argument("--ignore-ssl-errors")
-options.add_argument("--disable-infobars")
 options.add_argument("--disable-blink-features=AutomationControlled")
 options.add_argument("--disable-extensions")
 options.add_argument("--disable-popup-blocking")
@@ -26,6 +25,7 @@ options.add_argument("--headless=new")
 options.add_argument("--enable-features=NetworkServiceInProcess")
 options.add_argument("--disable-features=NetworkService")
 # Cache
+options.add_argument("--incognito")
 options.add_argument("--aggressive-cache-discard")
 options.add_argument("--disable-cache")
 options.add_argument("--disable-application-cache")
@@ -45,6 +45,8 @@ options.add_experimental_option(
 # Выбираем драйвер браузера и устанавливаем его опции
 service = Service(r"/home/user/chromedriver")
 browser = webdriver.Chrome(options=options, service=service)
+browser.set_page_load_timeout(30)
+browser.set_script_timeout(3)
 actions = ActionChains(browser)
 
 # Очистить кэш, сессии, хранилище
