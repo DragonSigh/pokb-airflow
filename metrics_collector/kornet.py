@@ -1,8 +1,8 @@
 import metrics_collector.config as config
 import metrics_collector.utils as utils
 import logging
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -61,13 +61,14 @@ def load_dlo_report(begin_date, end_date):
 
     logging.info("Устанавливаю даты")
 
-    browser.get(
-        r"http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
-        + r"guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
-        + begin_date.strftime(r"%d.%m.%Y")
-        + r"&EndDate="
-        + end_date.strftime(r"%d.%m.%Y")
-    )
+    element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_plate_BeginDate']")))
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(begin_date.strftime(r"%d.%m.%Y")).perform()
+
+    element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_plate_EndDate']")))
+    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(end_date.strftime(r"%d.%m.%Y")).perform()
+
+    element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_plate_sumbit']")))
+    element.click()
 
     logging.info("Отчет сформирован в браузере")
 
