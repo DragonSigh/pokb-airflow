@@ -75,7 +75,7 @@ def load_admission_dep_report():
     element = browser.find_element(By.XPATH, '//*[@test_id="win_swReportEndUserWindow_tbr_undefined"]')
     element.click()
     # XLSX
-    element = browser.find_element(By.XPATH, '/html/body/div[15]/div/div[7]')
+    element = browser.find_element(By.XPATH, '//div[text()="Формат XLSX"]')
     element.click()
     # Сформировать отчет
     WebDriverWait(browser, 30).until(EC.element_to_be_clickable((By.XPATH, '//*[@test_id="win_swReportEndUserWindow_btn_Sformirovat_otchet"]')))
