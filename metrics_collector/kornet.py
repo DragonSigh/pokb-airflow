@@ -21,14 +21,15 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[0])
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
     browser.refresh()
-    login_field = browser.find_element(
+
+    browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
-    )
-    login_field.send_keys(login_data)
-    password_field = browser.find_element(
+    ).send_keys(login_data)
+
+    browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'
-    )
-    password_field.send_keys(password_data)
+    ).send_keys(password_data)
+
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
     ).click()
