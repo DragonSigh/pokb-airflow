@@ -45,31 +45,13 @@ def authorize(login_data: str, password_data: str):
 
 def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
-
     browser.get(
-        r"http://llo.emias.mosreg.ru/korvet/FiltersLocalReport.aspx?"
-        + r"guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B"
+        "http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
+        + "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
+        + begin_date.strftime("%d.%m.%Y")
+        + "&EndDate="
+        + end_date.strftime("%d.%m.%Y")
     )
-
-    WebDriverWait(browser, 60).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='aspnetForm']/header/nav/ul/li[3]")
-        )
-    )
-
-    browser.refresh()
-
-    logging.info("Устанавливаю даты")
-
-    element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_plate_BeginDate']")))
-    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(begin_date.strftime(r"%d.%m.%Y")).perform()
-
-    element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_plate_EndDate']")))
-    actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(end_date.strftime(r"%d.%m.%Y")).perform()
-
-    element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='ctl00_plate_sumbit']")))
-    element.click()
-
     logging.info("Отчет сформирован в браузере")
 
 
