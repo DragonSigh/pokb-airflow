@@ -45,6 +45,14 @@ def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
     browser.get("http://llo.emias.mosreg.ru/korvet/FiltersLocalReport.aspx?"
                 "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B")
+    WebDriverWait(browser, 30).until(
+        EC.element_to_be_clickable(
+            (
+                By.XPATH,
+                "//*[@id='aspnetForm']/header/div/a",
+            )
+        )
+    )
     browser.get(
         "http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
         "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
@@ -67,8 +75,7 @@ def export_report():
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "/html/body/form/table/tbody/tr/td/div/span/div/table/tbody/tr[4]/"
-                "td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[8]",
+                '//*[@id="ctl00_plate_reportViewer_ctl05_ctl05_ctl00_ctl00"]/table/tbody/tr/td/input',
             )
         )
     )
