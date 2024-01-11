@@ -9,13 +9,17 @@ reports_path = r"/etc/samba/share/download"
 
 # Опции для веб-драйвера
 options = webdriver.ChromeOptions()
-options.add_argument("--disable-blink-features=AutomationControlled")
 options.add_argument("--start-maximized")
+options.add_argument("--enable-automation")
+options.add_argument("--enable-javascript")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-infobars")
+options.add_argument("--disable-blink-features=AutomationControlled")
 options.add_argument("--disable-extensions")
 options.add_argument("--disable-popup-blocking")
-#options.add_argument("--disable-gpu")
-#options.add_argument("--disable-dev-shm-usage")
-#options.add_argument("--disable-browser-side-navigation")
+options.add_argument("--disable-gpu")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-browser-side-navigation")
 options.add_argument("--headless=new")
 options.add_experimental_option(
     "prefs",
