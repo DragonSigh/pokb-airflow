@@ -334,6 +334,6 @@ def check_metric_022():
             os.path.join(EXPORT_PATH, "Промежуточный ЕМИАС.xlsx"), header=0
         )
     except TimeoutException:
-        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
+        config.browser.save_screenshot(os.path.join(EXPORT_PATH, "timeout_error.png"))
         raise TimeoutException
     analyze_data(df_kornet, df_emias)
