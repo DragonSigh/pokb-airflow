@@ -31,6 +31,8 @@ def get_groups(x):
         result.append("Кирова_38")
     if re.search(r"#Ленинград", value):
         result.append("Ленинградская_9")
+    if re.search(r"#ЦАОП", value):
+        result.append("ЦАОП")
     if re.search(r"#Общая", value):
         result.append("Общая")
     return result

@@ -58,7 +58,7 @@ def load_dlo_report(begin_date, end_date):
     )
 
     browser.refresh()
-    
+
     logging.info("Устанавливаю даты")
 
     browser.get(
