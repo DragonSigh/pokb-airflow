@@ -31,7 +31,7 @@ def start_hospital_export():
         try:
             hospital.authorize(auth_username, auth_password)
             hospital.load_admission_dep_report()
-        except TimeoutException as ex:
+        except Exception as ex:
             config.browser.save_screenshot(
                 os.path.join(EXPORT_PATH, "hospital_error.png")
             )
@@ -63,6 +63,6 @@ def start_bi_export():
                 "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
             )
             bi_emias.export_report()
-        except Exception as e:
-            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "exception.png"))
-            raise e
+        except Exception as ex:
+            config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
+            raise ex
