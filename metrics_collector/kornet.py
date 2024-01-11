@@ -45,28 +45,16 @@ def authorize(login_data: str, password_data: str):
 def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
 
-    WebDriverWait(browser, 30).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "/html/body/form/header/nav/ul/li[3]/ul/li[2]/a",
-            )
-        )
-    )
-
     browser.find_element(
         By.XPATH, "/html/body/form/header/nav/ul/li[3]/ul/li[2]/a"
     ).click()
 
-    WebDriverWait(browser, 30).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                '//*[@id="ctl00_plate_sumbit"]',
-            )
+    WebDriverWait(browser, 60).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='aspnetForm']/header/nav/ul/li[3]")
         )
     )
-
+    
     browser.get(
         "http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
         "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
