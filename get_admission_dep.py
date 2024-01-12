@@ -77,6 +77,9 @@ def start_analyze():
     df = pd.read_excel(os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx"), skiprows=[0,2])
     df_emias = pd.DataFrame()
 
+    # Только Подольская ОКБ
+    df = df[(df["ОГРН"] == 1215000036305)]
+
     for filename in os.listdir(config.reports_path):
         if "r50_han_PriemGosp_pg" in filename:
             file_path = os.path.join(config.reports_path, filename)
@@ -135,3 +138,5 @@ def start_analyze():
                 'Профильное отделение', 'ОСП', 'Заполнен осмотр', 'Создано направление', 'Время осмотра корректно']] \
             .sort_values('ФИО Врача') \
             .to_excel(os.path.join(EXPORT_PATH, f'{i[:22]}.xlsx'), index=False)
+
+    os.chmod(os.path.join(EXPORT_PATH, f'{i[:22]}.xlsx'), 0o777)
