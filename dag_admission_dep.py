@@ -45,3 +45,5 @@ bi_export_task = PythonOperator(
     provide_context=True,
     dag=dag,
 )
+
+bi_export_task >> hospital_export_task

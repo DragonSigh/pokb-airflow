@@ -25,12 +25,12 @@ options.add_argument("--headless=new")
 #options.add_argument("--enable-features=NetworkServiceInProcess")
 #options.add_argument("--disable-features=NetworkService")
 # Cache
-options.add_argument("--incognito")
-options.add_argument("--aggressive-cache-discard")
-options.add_argument("--disable-cache")
-options.add_argument("--disable-application-cache")
-options.add_argument("--disable-offline-load-stale-cache")
-options.add_argument("--disk-cache-size=0")
+#options.add_argument("--incognito")
+#options.add_argument("--aggressive-cache-discard")
+#options.add_argument("--disable-cache")
+#options.add_argument("--disable-application-cache")
+#options.add_argument("--disable-offline-load-stale-cache")
+#options.add_argument("--disk-cache-size=0")
 options.add_experimental_option(
     "prefs",
     {
@@ -45,8 +45,8 @@ options.add_experimental_option(
 # Выбираем драйвер браузера и устанавливаем его опции
 service = Service(r"/home/user/chromedriver")
 browser = webdriver.Chrome(options=options, service=service)
-browser.set_page_load_timeout(30)
-browser.set_script_timeout(3)
+#browser.set_page_load_timeout(30)
+#browser.set_script_timeout(3)
 actions = ActionChains(browser)
 
 # Очистить кэш, сессии, хранилище
