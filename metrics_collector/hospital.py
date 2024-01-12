@@ -113,9 +113,7 @@ def load_admission_dep_report():
     )
     actions.click(element).key_down(Keys.CONTROL).send_keys("a").key_up(
         Keys.CONTROL
-    ).send_keys(config.yesterday_date.strftime("%d.%m.%Y")).send_keys(
-        Keys.ENTER
-    ).perform()
+    ).send_keys(config.yesterday_date.strftime("%d.%m.%Y")).perform()
     browser.implicitly_wait(15)
     # Формат
     element = browser.find_element(
