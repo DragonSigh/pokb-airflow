@@ -31,12 +31,12 @@ def start_hospital_export():
         try:
             hospital.authorize(auth_username, auth_password)
             hospital.load_admission_dep_report()
+            config.browser.quit()
         except Exception as ex:
             config.browser.save_screenshot(
                 os.path.join(EXPORT_PATH, "hospital_error.png")
             )
             raise ex
-    config.browser.quit()
 
 
 def start_bi_export():
@@ -64,7 +64,7 @@ def start_bi_export():
                 "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
             )
             bi_emias.export_report()
+            config.browser.quit()
         except Exception as ex:
             config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
             raise ex
-    config.browser.quit()
