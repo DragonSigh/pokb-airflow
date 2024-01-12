@@ -79,6 +79,7 @@ def save_to_excel(dframe: pd.DataFrame, path, index_arg=False):
             column_width = max(dframe[column].astype(str).map(len).max(), len(column))
             col_idx = dframe.columns.get_loc(column)
             writer.sheets["Sheet1"].column_dimensions[chr(65 + col_idx)].width = column_width + 5
+    os.chmod(path, 0o777)
 
 
 def get_new_department_name(x):
