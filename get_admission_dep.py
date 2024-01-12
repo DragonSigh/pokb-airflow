@@ -36,6 +36,7 @@ def start_hospital_export():
                 os.path.join(EXPORT_PATH, "hospital_error.png")
             )
             raise ex
+    config.browser.quit()
 
 
 def start_bi_export():
@@ -66,3 +67,4 @@ def start_bi_export():
         except Exception as ex:
             config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
             raise ex
+    config.browser.quit()
