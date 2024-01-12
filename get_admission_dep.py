@@ -134,5 +134,4 @@ def start_analyze():
                 [['Номер карты', 'ФИО', 'Дата поступления', 'ФИО Врача', 'Диагноз', 
                 'Профильное отделение', 'ОСП', 'Заполнен осмотр', 'Создано направление', 'Время осмотра корректно']] \
             .sort_values('ФИО Врача') \
-            .to_excel(os.join(EXPORT_PATH, f'{i[:22]}.xlsx'), index=False)
-        
+            .to_excel(os.path.join(EXPORT_PATH, f'{i[:22]}.xlsx'), index=False)
