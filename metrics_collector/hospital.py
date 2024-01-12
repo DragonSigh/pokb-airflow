@@ -136,11 +136,9 @@ def load_admission_dep_report():
         By.XPATH, '//*[@test_id="win_swReportEndUserWindow_btn_Sformirovat_otchet"]'
     )
     element.click()
-    config.browser.save_screenshot(os.path.join(reports_path, "save file1.png"))
     # Проверка, что открылось окно скачивания отчета
     WebDriverWait(browser, 20).until(EC.number_of_windows_to_be(2))
     logging.info(f"Начинается сохранение файла с отчетом в папку: {reports_path}")
     utils.download_wait(reports_path, 300, len(os.listdir(reports_path)) + 1)
     browser.switch_to.window(browser.window_handles[1])
-    config.browser.save_screenshot(os.path.join(reports_path, "save file2.png"))
     logging.info("Сохранение файла с отчетом завершено")
