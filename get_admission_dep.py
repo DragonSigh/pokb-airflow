@@ -133,10 +133,14 @@ def start_analyze():
          'Приемное отделение №2 (кардиология) Кирова 38-13 корпус': '13 корпус'}  
 
     for i in df['Приемное отделение'].unique():
-        df[(df["Приемное отделение"] == i) & (~df.po_done | ~df.napr_done | ~df.correct_time)] \
-                [['Номер карты', 'ФИО', 'Дата поступления', 'ФИО Врача', 'Диагноз', 
+        df_temp = df[(df["Приемное отделение"] == i) & (~df.po_done | ~df.napr_done | ~df.correct_time)] \
+                [['Номер карты', 'ФИО', 'Дата поступления', 'ФИО Врача', 'Диагноз',
                 'Профильное отделение', 'ОСП', 'Заполнен осмотр', 'Создано направление', 'Время осмотра корректно']] \
-            .sort_values('ФИО Врача') \
-            .to_excel(os.path.join(EXPORT_PATH, f'{i[:22]}.xlsx'), index=False)
+            .sort_values('ФИО Врача')
+        
+        utils.save_to_excel(
+            df_temp,
+            os.path.join(EXPORT_PATH, f'{i[:22]}.xlsx'),
+        )
 
     os.chmod(os.path.join(EXPORT_PATH, f'{i[:22]}.xlsx'), 0o777)
