@@ -46,4 +46,12 @@ bi_export_task = PythonOperator(
     dag=dag,
 )
 
-bi_export_task >> hospital_export_task
+analyze_task = PythonOperator(
+    task_id="analyze",
+    python_callable=start_analyze,
+    provide_context=True,
+    dag=dag,
+)
+
+bi_export_task >> analyze_task
+hospital_export_task >> analyze_task
