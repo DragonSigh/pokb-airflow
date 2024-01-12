@@ -68,7 +68,8 @@ def start_bi_export():
             config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
             raise ex
 
-def start_analyse():
+
+def start_analyze():
     import pandas as pd
     import numpy as np
     import re
