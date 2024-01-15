@@ -294,12 +294,12 @@ def start_analyze():
             "ФИО Врача"
         )
 
-        utils.save_to_excel(
-            df_temp,
-            os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
-        )
-
-        dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
+        if not df_temp.empty:
+            utils.save_to_excel(
+                df_temp,
+                os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
+            )
+            dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
 
     df_stat = (
         df.query('ОСП == "Кирова 38"')
@@ -355,7 +355,7 @@ def _draw_as_table(df, pagesize):
     fig, ax = plt.subplots(figsize=pagesize)
     ax.axis("tight")
     ax.axis("off")
-    ax.table(
+    table = ax.table(
         cellText=df.values,
         rowLabels=df.index,
         colLabels=df.columns,
@@ -364,6 +364,8 @@ def _draw_as_table(df, pagesize):
         cellColours=alternating_colors,
         loc="center",
     )
+    table.set_fontsize(14)
+    table.scale(1.5, 1.5)  # may help
     return fig
 
 
