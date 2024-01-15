@@ -4,6 +4,32 @@ import metrics_collector.hospital as hospital
 import metrics_collector.bi_emias as bi_emias
 import json
 import os
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+
+
+def export_to_pdf(df, filename):
+    # Create a new PDF document
+    doc = canvas.Canvas(filename, pagesize=letter)
+
+    # Set the font and font size
+    font = "Helvetica"
+    font_size = 12
+
+    # Set the table style
+    table_style = [('GRID', (0, 0), (-1, -1), 1, 'black'),
+                   ('FONT', (0, 0), (-1, -1), font, font_size),
+                   ('ALIGN', (0, 0), (-1, -1), 'CENTER')]
+
+    # Draw the table
+    table = doc.table(df.columns, df.values, style=table_style)
+
+    # Add the table to the document
+    doc.draw(table)
+
+    # Save the document
+    doc.save()
 
 # Настройки
 PATH_TO_HOSPITAL_CREDENTIAL = r"/home/user/auth-hospital.json"
@@ -302,6 +328,7 @@ def start_analyze():
                 lambda x: x.replace(" ", "\n")
             )
             # dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
+            export_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
 
     df_stat = (
         df.query('ОСП == "Кирова 38"')
