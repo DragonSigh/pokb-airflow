@@ -355,7 +355,7 @@ def _draw_as_table(df, pagesize):
     fig, ax = plt.subplots(figsize=pagesize)
     ax.axis("tight")
     ax.axis("off")
-    table = ax.table(
+    the_table = ax.table(
         cellText=df.values,
         rowLabels=df.index,
         colLabels=df.columns,
@@ -364,8 +364,9 @@ def _draw_as_table(df, pagesize):
         cellColours=alternating_colors,
         loc="center",
     )
-    table.set_fontsize(14)
-    table.scale(1.5, 1.5)  # may help
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(14)
+    the_table.scale(1.5, 1.5)  # may help
     return fig
 
 
