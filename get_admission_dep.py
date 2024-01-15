@@ -36,10 +36,10 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     table_data = [dataframe.columns.values.tolist()]
     table_data.extend(dataframe.values.tolist())
 
-    #table_data = [
-        #[str(x) for x in row]
-        #for row in dataframe.itertuples(index=False)
-    #]  # Convert DataFrame to list of lists
+    # table_data = [
+    # [str(x) for x in row]
+    # for row in dataframe.itertuples(index=False)
+    # ]  # Convert DataFrame to list of lists
 
     table_style = TableStyle(
         [
@@ -52,12 +52,14 @@ def export_dataframe_to_pdf(dataframe, filename, title):
         ]
     )
 
-    report_header = ParagraphStyle('yourtitle',
-                           fontName="Helvetica-Bold",
-                           fontSize=18,
-                           parent=style['Heading1'],
-                           alignment=1,
-                           spaceAfter=14)
+    report_header = ParagraphStyle(
+        "yourtitle",
+        fontName="Helvetica-Bold",
+        fontSize=18,
+        parent=styles["Heading1"],
+        alignment=1,
+        spaceAfter=14,
+    )
 
     pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
     table = Table(table_data, hAlign="CENTER")  # Center align table horizontally
