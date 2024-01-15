@@ -7,6 +7,8 @@ import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
+from reportlab.lib.enhancements import Enhancement
+from reportlab.lib.pages import Table
 
 
 def export_to_pdf(df, filename):
@@ -22,14 +24,15 @@ def export_to_pdf(df, filename):
                    ('FONT', (0, 0), (-1, -1), font, font_size),
                    ('ALIGN', (0, 0), (-1, -1), 'CENTER')]
 
-    # Draw the table
-    table = doc.table(df.columns, df.values, style=table_style)
+    # Create the table
+    table = Table(df.columns, df.values, style=table_style)
 
     # Add the table to the document
-    doc.draw(table)
+    doc.add(table)
 
     # Save the document
     doc.save()
+
 
 # Настройки
 PATH_TO_HOSPITAL_CREDENTIAL = r"/home/user/auth-hospital.json"
