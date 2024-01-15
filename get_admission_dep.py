@@ -32,9 +32,9 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     )
 
     table_data = [
-        [str(x) for x in row]
-        for row in dataframe.itertuples(index=False)
-        # [[Paragraph(col) for col in df.columns]] + df.values.tolist()
+        #[str(x) for x in row]
+        #for row in dataframe.itertuples(index=False)
+        [[Paragraph(col) for col in dataframe.columns]] + dataframe.values.tolist()
     ]  # Convert DataFrame to list of lists
     table_style = TableStyle(
         [
