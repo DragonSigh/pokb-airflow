@@ -31,11 +31,14 @@ def export_dataframe_to_pdf(dataframe, filename, title):
         TTFont("Ubuntu", "/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf")
     )
 
-    table_data = [
+    table_data = [dataframe.columns.values.tolist()]
+    table_data.extend(dataframe.values.tolist())
+
+    #table_data = [
         #[str(x) for x in row]
         #for row in dataframe.itertuples(index=False)
-        [[Paragraph(col) for col in dataframe.columns]] + dataframe.values.tolist()
-    ]  # Convert DataFrame to list of lists
+    #]  # Convert DataFrame to list of lists
+
     table_style = TableStyle(
         [
             ("FONTNAME", (0, 0), (-1, -1), "Ubuntu"),
