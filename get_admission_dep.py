@@ -2,6 +2,8 @@ import metrics_collector.config as config
 import metrics_collector.utils as utils
 import metrics_collector.hospital as hospital
 import metrics_collector.bi_emias as bi_emias
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 import json
 import os
 
@@ -297,6 +299,8 @@ def start_analyze():
             os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
         )
 
+        dataframe_to_pdf(df_temp, EXPORT_PATH, f"{i[:22]}.xlsx")
+
     df_stat = (
         df.query('ОСП == "Кирова 38"')
         .groupby("Приемное отделение")
@@ -340,3 +344,50 @@ def start_analyze():
         df_stat_osp,
         os.path.join(EXPORT_PATH, "ОСП Статистика по приемным отделениям.xlsx"),
     )
+
+
+def _draw_as_table(df, pagesize):
+    alternating_colors = [
+        ["white"] * len(df.columns),
+        ["lightgray"] * len(df.columns),
+    ] * len(df)
+    alternating_colors = alternating_colors[: len(df)]
+    fig, ax = plt.subplots(figsize=pagesize)
+    ax.axis("tight")
+    ax.axis("off")
+    the_table = ax.table(
+        cellText=df.values,
+        rowLabels=df.index,
+        colLabels=df.columns,
+        rowColours=["lightblue"] * len(df),
+        colColours=["lightblue"] * len(df.columns),
+        cellColours=alternating_colors,
+        loc="center",
+    )
+    return fig
+
+
+def dataframe_to_pdf(df, filename, numpages=(1, 1), pagesize=(11, 8.5)):
+    with PdfPages(filename) as pdf:
+        nh, nv = numpages
+        rows_per_page = len(df) // nh
+        cols_per_page = len(df.columns) // nv
+        for i in range(0, nh):
+            for j in range(0, nv):
+                page = df.iloc[
+                    (i * rows_per_page) : min((i + 1) * rows_per_page, len(df)),
+                    (j * cols_per_page) : min((j + 1) * cols_per_page, len(df.columns)),
+                ]
+                fig = _draw_as_table(page, pagesize)
+                if nh > 1 or nv > 1:
+                    # Add a part/page number at bottom-center of page
+                    fig.text(
+                        0.5,
+                        0.5 / pagesize[0],
+                        "Part-{}x{}: Page-{}".format(i + 1, j + 1, i * nv + j + 1),
+                        ha="center",
+                        fontsize=8,
+                    )
+                pdf.savefig(fig, bbox_inches="tight")
+
+                plt.close()
