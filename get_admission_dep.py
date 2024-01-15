@@ -13,7 +13,7 @@ from reportlab.platypus import (
     TableStyle,
     Paragraph,
 )
-from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
@@ -30,6 +30,8 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     pdfmetrics.registerFont(
         TTFont("Ubuntu", "/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf")
     )
+
+    styles = getSampleStyleSheet()
 
     table_data = [dataframe.columns.values.tolist()]
     table_data.extend(dataframe.values.tolist())
@@ -50,18 +52,19 @@ def export_dataframe_to_pdf(dataframe, filename, title):
         ]
     )
 
+    report_header = ParagraphStyle('yourtitle',
+                           fontName="Helvetica-Bold",
+                           fontSize=18,
+                           parent=style['Heading1'],
+                           alignment=1,
+                           spaceAfter=14)
+
     pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
     table = Table(table_data, hAlign="CENTER")  # Center align table horizontally
     table.setStyle(table_style)
 
-    my_Style = ParagraphStyle(
-        "My Para style",
-        fontName="Ubuntu",
-        fontSize=22,
-    )
-
     elements = []
-    elements.append(Paragraph(title, my_Style))  # Add title as a paragraph
+    elements.append(Paragraph(title, report_header))  # Add title as a paragraph
     elements.append(table)
 
     pdf.build(elements)
