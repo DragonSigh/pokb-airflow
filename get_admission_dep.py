@@ -4,34 +4,46 @@ import metrics_collector.hospital as hospital
 import metrics_collector.bi_emias as bi_emias
 import json
 import os
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-from reportlab.lib.enhancements import Enhancement
-from reportlab.lib.pages import Table
+
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import landscape, A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 
 
-def export_to_pdf(df, filename):
-    # Create a new PDF document
-    doc = canvas.Canvas(filename, pagesize=letter)
+def export_dataframe_to_pdf(dataframe, filename, title):
+    """Exports a pandas DataFrame to a PDF file with specified formatting.
 
-    # Set the font and font size
-    font = "Helvetica"
-    font_size = 12
+    Args:
+        dataframe (pandas.DataFrame): The DataFrame to export.
+        filename (str): The name of the PDF file to create.
+        title (str): The title to display at the top of the PDF.
+    """
 
-    # Set the table style
-    table_style = [('GRID', (0, 0), (-1, -1), 1, 'black'),
-                   ('FONT', (0, 0), (-1, -1), font, font_size),
-                   ('ALIGN', (0, 0), (-1, -1), 'CENTER')]
+    styles = getSampleStyleSheet()
 
-    # Create the table
-    table = Table(df.columns, df.values, style=table_style)
+    table_data = [
+        [str(x) for x in row] for row in dataframe.itertuples(index=False)
+    ]  # Convert DataFrame to list of lists
+    table_style = TableStyle(
+        [
+            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),  # Gray header background
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),  # Black header text
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Center align all cells
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),  # Middle align all cells
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),  # Add grid lines
+        ]
+    )
 
-    # Add the table to the document
-    doc.add(table)
+    pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
+    table = Table(table_data, hAlign="CENTER")  # Center align table horizontally
+    table.setStyle(table_style)
 
-    # Save the document
-    doc.save()
+    elements = []
+    elements.append(Paragraph(title, styles["Heading1"]))  # Add title as a paragraph
+    elements.append(table)
+
+    pdf.build(elements)
 
 
 # Настройки
@@ -331,7 +343,7 @@ def start_analyze():
                 lambda x: x.replace(" ", "\n")
             )
             # dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
-            export_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
+            export_dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"), str(i))
 
     df_stat = (
         df.query('ОСП == "Кирова 38"')
