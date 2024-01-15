@@ -366,7 +366,7 @@ def _draw_as_table(df, pagesize):
     )
     the_table.auto_set_font_size(False)
     the_table.set_fontsize(14)
-    the_table.scale(1.5, 1.5)  # may help
+    #the_table.scale(1.5, 1.5)  # may help
     return fig
 
 
