@@ -55,10 +55,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     report_header = ParagraphStyle(
         "yourtitle",
         fontName="Helvetica-Bold",
-        fontSize=18,
         parent=styles["Heading1"],
-        alignment=1,
-        spaceAfter=14,
     )
 
     pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
