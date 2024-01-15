@@ -299,6 +299,7 @@ def start_analyze():
                 df_temp,
                 os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
             )
+            df_temp['ФИО Врача'] = df_temp['ФИО Врача'].map(lambda x: x.replace("", "\n"))
             dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
 
     df_stat = (
@@ -357,7 +358,6 @@ def _draw_as_table(df, pagesize):
     ax.axis("off")
     the_table = ax.table(
         cellText=df.values,
-        rowLabels=df.index,
         colLabels=df.columns,
         rowColours=["lightblue"] * len(df),
         colColours=["lightblue"] * len(df.columns),
