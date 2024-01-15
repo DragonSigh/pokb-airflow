@@ -54,7 +54,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
 
     report_header = ParagraphStyle(
         "yourtitle",
-        fontName="Helvetica-Bold",
+        fontName="Ubuntu",
         parent=styles["Heading1"],
     )
 
