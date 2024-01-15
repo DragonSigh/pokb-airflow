@@ -355,15 +355,6 @@ def _draw_as_table(df, pagesize):
     fig, ax = plt.subplots(figsize=pagesize)
     ax.axis("tight")
     ax.axis("off")
-    the_table = ax.table(
-        cellText=df.values,
-        rowLabels=df.index,
-        colLabels=df.columns,
-        rowColours=["lightblue"] * len(df),
-        colColours=["lightblue"] * len(df.columns),
-        cellColours=alternating_colors,
-        loc="center",
-    )
     return fig
 
 
