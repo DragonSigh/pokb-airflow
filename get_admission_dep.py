@@ -27,7 +27,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     ]  # Convert DataFrame to list of lists
     table_style = TableStyle(
         [
-            ("FONTNAME", (0, 0), (-1, -1), "Arial"),
+            ("FONTNAME", (0, 0), (-1, -1), "Ubuntu"),
             ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),  # Gray header background
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),  # Black header text
             ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Center align all cells
