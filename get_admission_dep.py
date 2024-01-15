@@ -57,13 +57,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     my_Style = ParagraphStyle(
         "My Para style",
         fontName="Ubuntu",
-        backColor="#F1F1F1",
-        fontSize=24,
-        borderColor="#FFFF00",
-        borderWidth=2,
-        borderPadding=(20, 20, 20),
-        leading=20,
-        alignment=0,
+        fontSize=22,
     )
 
     elements = []
