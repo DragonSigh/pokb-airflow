@@ -9,7 +9,8 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 def export_dataframe_to_pdf(dataframe, filename, title):
     """Exports a pandas DataFrame to a PDF file with specified formatting.
@@ -21,6 +22,8 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     """
 
     styles = getSampleStyleSheet()
+
+    pdfmetrics.registerFont(TTFont('Ubuntu', '/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf'))
 
     table_data = [
         [str(x) for x in row] for row in dataframe.itertuples(index=False)
