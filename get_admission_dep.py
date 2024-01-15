@@ -299,7 +299,7 @@ def start_analyze():
                 df_temp,
                 os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
             )
-            df_temp['ФИО Врача'] = df_temp['ФИО Врача'].map(lambda x: x.replace("", "\n"))
+            df_temp['ФИО Врача'] = df_temp['ФИО Врача'].apply(lambda x: x.replace("", "\n"))
             dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
 
     df_stat = (
