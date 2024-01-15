@@ -6,11 +6,17 @@ import json
 import os
 
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import landscape, A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Table,
+    TableStyle,
+    Paragraph,
+)
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+
 
 def export_dataframe_to_pdf(dataframe, filename, title):
     """Exports a pandas DataFrame to a PDF file with specified formatting.
@@ -21,12 +27,14 @@ def export_dataframe_to_pdf(dataframe, filename, title):
         title (str): The title to display at the top of the PDF.
     """
 
-    styles = getSampleStyleSheet()
-
-    pdfmetrics.registerFont(TTFont('Ubuntu', '/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf'))
+    pdfmetrics.registerFont(
+        TTFont("Ubuntu", "/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf")
+    )
 
     table_data = [
-        [str(x) for x in row] for row in dataframe.itertuples(index=False)
+        [str(x) for x in row]
+        for row in dataframe.itertuples(index=False)
+        # [[Paragraph(col) for col in df.columns]] + df.values.tolist()
     ]  # Convert DataFrame to list of lists
     table_style = TableStyle(
         [
@@ -43,8 +51,20 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     table = Table(table_data, hAlign="CENTER")  # Center align table horizontally
     table.setStyle(table_style)
 
+    my_Style = ParagraphStyle(
+        "My Para style",
+        fontName="Ubuntu",
+        backColor="#F1F1F1",
+        fontSize=24,
+        borderColor="#FFFF00",
+        borderWidth=2,
+        borderPadding=(20, 20, 20),
+        leading=20,
+        alignment=0,
+    )
+
     elements = []
-    elements.append(Paragraph(title, styles["Heading1"]))  # Add title as a paragraph
+    elements.append(Paragraph(title, my_Style))  # Add title as a paragraph
     elements.append(table)
 
     pdf.build(elements)
