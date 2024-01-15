@@ -299,7 +299,7 @@ def start_analyze():
             os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
         )
 
-        dataframe_to_pdf(df_temp, EXPORT_PATH, f"{i[:22]}.xlsx")
+        dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"))
 
     df_stat = (
         df.query('ОСП == "Кирова 38"')
