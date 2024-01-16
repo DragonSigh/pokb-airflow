@@ -12,6 +12,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+
 def export_dataframe_to_pdf(dataframe, filename, title):
     """Exports a pandas DataFrame to a PDF file with specified formatting.
 
@@ -23,11 +24,15 @@ def export_dataframe_to_pdf(dataframe, filename, title):
 
     styles = getSampleStyleSheet()
 
-    pdfmetrics.registerFont(TTFont('Ubuntu', '/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf'))
+    pdfmetrics.registerFont(
+        TTFont("Ubuntu", "/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf")
+    )
+
+    dataframe.columns = dataframe.columns.str.upper().str.replace(" ", "\n")
 
     table_data = [dataframe.columns.values.tolist()]
     table_data.extend(dataframe.values.tolist())
-    
+
     table_style = TableStyle(
         [
             ("FONTNAME", (0, 0), (-1, -1), "Ubuntu"),
