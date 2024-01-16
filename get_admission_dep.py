@@ -365,17 +365,19 @@ def start_analyze():
         )
 
         if not df_temp.empty:
+            osp_name = df_temp["ОСП"].iloc[0]
             utils.save_to_excel(
                 df_temp,
-                os.path.join(EXPORT_PATH, f"{i[:22]}.xlsx"),
+                os.path.join(EXPORT_PATH, osp_name + " " + f"{i[:21]}.xlsx"),
             )
             df_temp["ФИО Врача"] = df_temp["ФИО Врача"].astype(str)
             df_temp["ФИО Врача"] = df_temp["ФИО Врача"].apply(
                 lambda x: x.replace(" ", "\n")
             )
-            # dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"))
+
+            # dataframe_to_pdf(df_temp, os.path.join(EXPORT_PATH, osp_name + " " + f"{i[:21]}.pdf"))
             export_dataframe_to_pdf(
-                df_temp, os.path.join(EXPORT_PATH, f"{i[:22]}.pdf"), str(i)
+                df_temp, os.path.join(EXPORT_PATH, osp_name + " " + f"{i[:21]}.pdf"), str(i)
             )
 
     df_stat = (
