@@ -48,12 +48,16 @@ def export_dataframe_to_pdf(dataframe, filename, title):
         "report header", fontName="Ubuntu", parent=styles["Heading1"]
     )
 
-    pdf = SimpleDocTemplate(filename, pagesize=landscape(A4), topMargin=0, bottomMargin=0)
-    table = Table(table_data, hAlign="CENTER", vAlign="TOP")  # Center align table horizontally
+    pdf = SimpleDocTemplate(
+        filename, pagesize=landscape(A4), topMargin=0, bottomMargin=0
+    )
+    table = Table(
+        table_data, hAlign="CENTER", vAlign="TOP"
+    )  # Center align table horizontally
     table.setStyle(table_style)
 
     elements = []
-    #elements.append(Paragraph(title, header_style))  # Add title as a paragraph
+    # elements.append(Paragraph(title, header_style))  # Add title as a paragraph
     elements.append(table)
 
     pdf.build(elements)
@@ -258,8 +262,7 @@ def start_analyze():
         )
         .assign(Приемное_отделение=lambda x: x["Приемное отделение"].map(names))[
             [
-                "ФИО Врача",
-                "Приемное_отделение",
+                "ФИО Врача",  #                "Приемное_отделение",
                 "Пациентов",
                 "Заполнен осмотр, %",
                 "Создано направление, %",
@@ -269,6 +272,13 @@ def start_analyze():
     )
 
     utils.save_to_excel(
+        df_perv,
+        os.path.join(
+            EXPORT_PATH, "Заполнение первичного осмотра в приемном по врачам.xlsx"
+        ),
+    )
+
+    export_dataframe_to_pdf(
         df_perv,
         os.path.join(
             EXPORT_PATH, "Заполнение первичного осмотра в приемном по врачам.xlsx"
