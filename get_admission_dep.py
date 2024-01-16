@@ -28,16 +28,24 @@ def export_dataframe_to_pdf(dataframe, filename, title=""):
         TTFont("Ubuntu", "/home/user/miniforge3/envs/airflow/fonts/Ubuntu-R.ttf")
     )
 
+    pdfmetrics.registerFont(
+        TTFont("Ubuntu-B", "/home/user/miniforge3/envs/airflow/fonts/Ubuntu-B.ttf")
+    )
+
+
     dataframe.columns = dataframe.columns.str.upper().str.replace(" ", "\n")
 
     table_data = [dataframe.columns.values.tolist()]
     table_data.extend(dataframe.values.tolist())
+
+    # table_data = [list(dataframe.columns)] + [[str(x) for x in row] for row in dataframe.itertuples(index=False)]  # Include column names
 
     table_style = TableStyle(
         [
             ("FONTNAME", (0, 0), (-1, -1), "Ubuntu"),
             ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),  # Gray header background
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),  # Black header text
+            ('FONTNAME', (0, 0), (-1, 0), 'Ubuntu-B'),  # Bold font for header
             ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Center align all cells
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),  # Middle align all cells
             ("GRID", (0, 0), (-1, -1), 1, colors.black),  # Add grid lines
