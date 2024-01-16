@@ -13,7 +13,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 
-def export_dataframe_to_pdf(dataframe, filename, title):
+def export_dataframe_to_pdf(dataframe, filename, title=""):
     """Exports a pandas DataFrame to a PDF file with specified formatting.
 
     Args:
