@@ -53,5 +53,13 @@ analyze_task = PythonOperator(
     dag=dag,
 )
 
+shut_down = PythonOperator(
+    task_id="shut_down",
+    python_callable=shut_down,
+    provide_context=True,
+    dag=dag,
+)
+
 bi_export_task >> analyze_task
 hospital_export_task >> analyze_task
+analyze_task >> shut_down
