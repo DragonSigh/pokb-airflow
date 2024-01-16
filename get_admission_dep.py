@@ -45,7 +45,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     )
 
     header_style = ParagraphStyle(
-        "report header", fontName="Ubuntu", parent=style["Heading1"]
+        "report header", fontName="Ubuntu", parent=styles["Heading1"]
     )
 
     pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
