@@ -3,19 +3,24 @@ from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 
 
-def start_hospital_export():
-    import get_admission_dep
-    get_admission_dep.start_hospital_export()
+def start_hospital_export_run():
+    from get_admission_dep import start_hospital_export
+    start_hospital_export()
 
 
-def start_bi_export():
-    import get_admission_dep
-    get_admission_dep.start_bi_export()
+def start_bi_export_run():
+    from get_admission_dep import start_bi_export
+    start_bi_export()
 
 
-def start_analyze():
-    import get_admission_dep
-    get_admission_dep.start_analyze()
+def start_analyze_run():
+    from get_admission_dep import start_analyze
+    start_analyze()
+
+
+def shut_down_run():
+    from get_admission_dep import shut_down
+    shut_down()
 
 
 default_args = {
@@ -34,28 +39,28 @@ dag = DAG(
 
 hospital_export_task = PythonOperator(
     task_id="hospital_export",
-    python_callable=start_hospital_export,
+    python_callable=start_hospital_export_run,
     provide_context=True,
     dag=dag,
 )
 
 bi_export_task = PythonOperator(
     task_id="bi_export",
-    python_callable=start_bi_export,
+    python_callable=start_bi_export_run,
     provide_context=True,
     dag=dag,
 )
 
 analyze_task = PythonOperator(
     task_id="analyze",
-    python_callable=start_analyze,
+    python_callable=start_analyze_run,
     provide_context=True,
     dag=dag,
 )
 
 shut_down = PythonOperator(
     task_id="shut_down",
-    python_callable=shut_down,
+    python_callable=shut_down_run,
     provide_context=True,
     dag=dag,
 )
