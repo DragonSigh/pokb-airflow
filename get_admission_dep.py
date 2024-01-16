@@ -281,7 +281,7 @@ def start_analyze():
     export_dataframe_to_pdf(
         df_perv,
         os.path.join(
-            EXPORT_PATH, "Заполнение первичного осмотра в приемном по врачам.xlsx"
+            EXPORT_PATH, "Заполнение первичного осмотра в приемном по врачам.pdf"
         ),
     )
 
