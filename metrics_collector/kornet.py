@@ -53,7 +53,8 @@ def load_dlo_report(begin_date, end_date):
             + "&EndDate="
             + end_date.strftime("%d.%m.%Y")
         )
-    
+    except Exception as ex:
+        raise ex
     logging.info("Отчет сформирован в браузере")
 
 
