@@ -49,7 +49,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     )
 
     pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
-    table = Table(table_data, hAlign="CENTER")  # Center align table horizontally
+    table = Table(table_data, hAlign="CENTER", vAlign="TOP")  # Center align table horizontally
     table.setStyle(table_style)
 
     elements = []
