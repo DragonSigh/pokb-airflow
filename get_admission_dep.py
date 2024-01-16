@@ -6,7 +6,7 @@ import json
 import os
 
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.pdfbase import pdfmetrics
@@ -44,12 +44,16 @@ def export_dataframe_to_pdf(dataframe, filename, title):
         ]
     )
 
+    header_style = ParagraphStyle(
+        "report header", fontName="Ubuntu", parent=style["Heading1"]
+    )
+
     pdf = SimpleDocTemplate(filename, pagesize=landscape(A4))
     table = Table(table_data, hAlign="CENTER")  # Center align table horizontally
     table.setStyle(table_style)
 
     elements = []
-    elements.append(Paragraph(title, styles["Heading1"]))  # Add title as a paragraph
+    elements.append(Paragraph(title, header_style))  # Add title as a paragraph
     elements.append(table)
 
     pdf.build(elements)
