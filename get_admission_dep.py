@@ -53,7 +53,7 @@ def export_dataframe_to_pdf(dataframe, filename, title):
     table.setStyle(table_style)
 
     elements = []
-    elements.append(Paragraph(title, header_style))  # Add title as a paragraph
+    #elements.append(Paragraph(title, header_style))  # Add title as a paragraph
     elements.append(table)
 
     pdf.build(elements)
