@@ -12,20 +12,17 @@ last_date = config.last_date
 yesterday_date = config.yesterday_date
 
 # Настройки
-PATH_TO_CREDENTIAL = r"/home/user/"
+PATH_TO_CREDENTIAL = r"/home/user/auth-bi-emias.json"
 EXPORT_PATH = r"/etc/samba/share/download/Показатель 7"
 
 
 def start_bi_report_saving():
-    # Получить путь к файлу с данными для авторизации
-    bi_emias_credentials_path = os.path.join(PATH_TO_CREDENTIAL, "auth-bi-emias.json")
+    # Чтение данных для авторизации
+    with open(PATH_TO_CREDENTIAL) as f:
+        data = json.load(f)
 
-    f = open(bi_emias_credentials_path, "r", encoding="utf-8")
-    data = json.load(f)
-    f.close()
-    for _departments in data["departments"]:
-        for _units in _departments["units"]:
-            bi_emias.authorize(_units["login"], _units["password"])
+    bi_emias.authorize(data["username"], data["password"])
+
     # Выгрузка отчета
     bi_emias.load_any_report("pass_dvn", first_date, last_date)
     bi_emias.export_report()
