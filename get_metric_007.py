@@ -194,7 +194,7 @@ def check_metric_007():
     try:
         if (
             not utils.is_actual_report_exist(
-                EXPORT_PATH, "Прохождение пациентами ДВН или ПМО"
+                config.reports_path, "Прохождение пациентами ДВН или ПМО"
             )
             is None
         ):
