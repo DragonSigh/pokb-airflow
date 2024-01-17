@@ -203,7 +203,7 @@ def check_metric_007():
             os.path.join(EXPORT_PATH, "metric_007_error.png")
         )
         config.browser.page_source
-        with open(os.path.join(EXPORT_PATH, "debug.html", "w")) as f:
+        with open(os.path.join(EXPORT_PATH, "debug.html"), "w") as f:
             f.write(config.browser.page_source)
         raise ex
     analyze_data()
