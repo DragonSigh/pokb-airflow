@@ -1,5 +1,5 @@
 from airflow.models import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
 
@@ -17,7 +17,7 @@ default_args = {
 dag = DAG(
     dag_id="metric_022",
     description="Выгрузка и анализ Показателя 22",
-    schedule_interval="0 7 * * 2-5",
+    schedule="0 7 * * 2-5",
     catchup=False,
     default_args=default_args
 )
@@ -25,6 +25,5 @@ dag = DAG(
 python_task = PythonOperator(
     task_id="run_metric_022",
     python_callable=check_metric_022,
-    provide_context=True,
     dag=dag,
 )
