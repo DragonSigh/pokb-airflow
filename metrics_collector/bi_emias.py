@@ -44,15 +44,14 @@ def authorize(login_data: str, password_data: str):
     logging.info("Авторизация пройдена")
 
 
-def load_any_report(report_name, use_dates=True, begin_date=config.first_date, end_date=config.last_date):
-    logging.info(
-        f"Открываю страницу отчета {report_name}"
-    )
+def load_any_report(
+    report_name, use_dates=True, begin_date=config.first_date, end_date=config.last_date
+):
+    logging.info(f"Открываю страницу отчета {report_name}")
 
     browser.get("http://bi.mz.mosreg.ru/#form/" + report_name)
 
     if use_dates:
-
         logging.info(
             f"Выбран период:"
             f" с {begin_date.strftime('%d.%m.%Y')}"
@@ -64,6 +63,15 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
                 (By.XPATH, "//input[@data-componentid='ext-datefield-3']")
             )
         )
+
+        # Фильтр ОГРН
+        if report_name == "pass_dvn":
+            browser.execute_script(
+                "var ogrn_filter = globalThis.Ext.getCmp('ext-RTA-grid-textfilter-12'); +\
+                           ogrn_filter.setValue('1215000036305'); + \
+                           ogrn_filter.fireEvent('select');"
+            )
+
         browser.execute_script(
             "var first_date = globalThis.Ext.getCmp('ext-datefield-3'); +\
                             first_date.setValue('"
@@ -83,11 +91,7 @@ def load_any_report(report_name, use_dates=True, begin_date=config.first_date, e
                 (By.XPATH, '//div[@data-componentid="ext-toolbar-8"]')
             )
         )
-    # Фильтр ОГРН
-    # if report_name == 'pass_dvn':
-    #    browser.execute_script("var ogrn_filter = globalThis.Ext.getCmp('ext-RTA-grid-textfilter-14'); +\
-    #                        ogrn_filter.setValue('1215000036305'); + \
-    #                        ogrn_filter.fireEvent('select');")
+
         browser.find_element(
             By.XPATH, "//button[@data-componentid='ext-button-12']"
         ).click()
