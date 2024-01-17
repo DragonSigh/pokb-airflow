@@ -32,7 +32,7 @@ default_args = {
 dag = DAG(
     dag_id="hospital_admission_dep",
     description="Анализ отчетов приемного отделения",
-    schedule_interval="0 9 * * 1-5",
+    schedule_interval="30 9 * * 1-5",
     catchup=False,
     default_args=default_args
 )
