@@ -58,9 +58,15 @@ def load_any_report(
             f" по {end_date.strftime('%d.%m.%Y')}"
         )
 
-        WebDriverWait(browser, 60).until(
+        WebDriverWait(browser, 30).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//input[@name='BegDate']")
+            )
+        )
+
+        WebDriverWait(browser, 60).until(
+            EC.invisibility_of_element(
+                (By.XPATH, '//div[@data-componentid="ext-toolbar-8"]')
             )
         )
 
