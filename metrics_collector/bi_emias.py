@@ -60,32 +60,34 @@ def load_any_report(
 
         WebDriverWait(browser, 60).until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//input[@data-componentid='ext-datefield-3']")
+                (By.XPATH, "//input[@name='BegDate']")
             )
         )
 
-        # Фильтр ОГРН
+        # Если строится отчет pass_dvn
         if report_name == "pass_dvn":
+            # Фильтр ОГРН
             browser.execute_script(
                 "var ogrn_filter = globalThis.Ext.getCmp('ext-RTA-grid-textfilter-12'); +\
                            ogrn_filter.setValue('1215000036305'); + \
                            ogrn_filter.fireEvent('select');"
             )
 
-        browser.execute_script(
-            "var first_date = globalThis.Ext.getCmp('ext-datefield-3'); +\
-                            first_date.setValue('"
-            + begin_date.strftime("%d.%m.%Y")
-            + "'); + \
-                            first_date.fireEvent('select');"
-        )
-        browser.execute_script(
-            "var last_date = globalThis.Ext.getCmp('ext-datefield-4'); +\
-                            last_date.setValue('"
-            + end_date.strftime("%d.%m.%Y")
-            + "'); + \
-                            last_date.fireEvent('select');"
-        )
+            browser.execute_script(
+                "var first_date = globalThis.Ext.getCmp('ext-datefield-5'); +\
+                                first_date.setValue('"
+                + begin_date.strftime("%d.%m.%Y")
+                + "'); + \
+                                first_date.fireEvent('select');"
+            )
+            browser.execute_script(
+                "var last_date = globalThis.Ext.getCmp('ext-datefield-6'); +\
+                                last_date.setValue('"
+                + end_date.strftime("%d.%m.%Y")
+                + "'); + \
+                                last_date.fireEvent('select');"
+            )
+
         WebDriverWait(browser, 300).until(
             EC.invisibility_of_element(
                 (By.XPATH, '//div[@data-componentid="ext-toolbar-8"]')
