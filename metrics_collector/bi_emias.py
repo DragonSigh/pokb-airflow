@@ -78,7 +78,9 @@ def load_any_report(
                            ogrn_filter.setValue('1215000036305'); + \
                            ogrn_filter.fireEvent('select');"
             )
-
+            browser.save_screenshot(
+                os.path.join(reports_path, "test.png")
+            )
             browser.execute_script(
                 "var first_date = globalThis.Ext.getCmp('ext-datefield-5'); +\
                                 first_date.setValue('"
