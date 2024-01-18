@@ -103,8 +103,9 @@ def load_any_report(
         )
 
         browser.find_element(
-            By.XPATH, "//button[@data-componentid='ext-button-12']"
+            By.XPATH, "//button[@data-componentid='ext-button-13']"
         ).click()
+
         WebDriverWait(browser, 300).until(
             EC.invisibility_of_element(
                 (By.XPATH, '//div[@data-componentid="ext-toolbar-8"]')
@@ -126,7 +127,7 @@ def export_report():
         pass
     # Нажимаем на кнопку "Выгрузить в Excel" и ожидаем загрузку файла
     browser.find_element(
-        By.XPATH, "//button[@data-componentid='ext-button-13']"
+        By.XPATH, "//button[@data-componentid='ext-button-14']"
     ).click()
     utils.download_wait(reports_path, 600, len(os.listdir(reports_path)) + 1)
     browser.find_element(
