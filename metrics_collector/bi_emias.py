@@ -73,11 +73,11 @@ def load_any_report(
         # Если строится отчет pass_dvn
         if report_name == "pass_dvn":
             # Фильтр ОГРН
-            browser.execute_script(
-                "var ogrn_filter = globalThis.Ext.getCmp('ext-RTA-grid-textfilter-24'); +\
-                           ogrn_filter.setValue('1215000036305'); + \
-                           ogrn_filter.fireEvent('select');"
-            )
+            #browser.execute_script(
+            #    "var ogrn_filter = globalThis.Ext.getCmp('ext-RTA-grid-textfilter-24'); +\
+            #               ogrn_filter.setValue('1215000036305'); + \
+            #               ogrn_filter.fireEvent('select');"
+            #)
             browser.save_screenshot(
                 os.path.join(reports_path, "test.png")
             )
