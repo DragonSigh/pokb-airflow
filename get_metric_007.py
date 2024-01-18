@@ -26,7 +26,7 @@ def start_bi_report_saving():
     bi_emias.authorize(data["username"], data["password"])
 
     # Выгрузка отчета
-    bi_emias.load_any_report("pass_dvn", True, month_ago, last_date)
+    bi_emias.load_any_report("pass_dvn", True, first_date, last_date)
     bi_emias.export_report()
     logging.info("Выгрузка из BI ЕМИАС завершена")
 
