@@ -40,7 +40,7 @@ def analyze_data():
     # Сконвертировать время закрытия карты в дату
     df_pass_dvn["День недели"] = pd.to_datetime(
         df_pass_dvn["Дата закрытия карты диспансеризации"], format="%d.%m.%Y %H:%M:%S"
-    ).dt.day_name("ru_RU")
+    ).dt.day_name("ru_RU.utf8")
 
     df_pass_dvn["День недели"] = pd.Categorical(
         df_pass_dvn["День недели"],
