@@ -1,12 +1,14 @@
 import metrics_collector.config as config
 import metrics_collector.utils as utils
 import metrics_collector.bi_emias as bi_emias
+from datetime import date, timedelta
 import os
 import re
 import json
 import pandas as pd
 import logging
 
+month_ago = date.today() - timedelta(days=30)
 first_date = config.first_date
 last_date = config.last_date
 yesterday_date = config.yesterday_date
@@ -24,7 +26,7 @@ def start_bi_report_saving():
     bi_emias.authorize(data["username"], data["password"])
 
     # Выгрузка отчета
-    bi_emias.load_any_report("pass_dvn", first_date, last_date)
+    bi_emias.load_any_report("pass_dvn", month_ago, last_date)
     bi_emias.export_report()
     logging.info("Выгрузка из BI ЕМИАС завершена")
 
