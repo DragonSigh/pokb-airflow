@@ -14,7 +14,7 @@ ANALYTICS_CHAT_ID = -1002115902949
 
 
 def send_telegram_message(chat_id: int, message: str):
-    params = {"chat_id": chat_id, "text": message}
+    params = {"chat_id": chat_id, "text": message, "parse_mode": "MarkdownV2"}
     base_url = f"https://api.telegram.org/bot{TOKEN}/"
     url = base_url + "sendMessage?" + urlencode(params)
     resp = requests.get(url)
