@@ -2,6 +2,7 @@ import metrics_collector.config as config
 import metrics_collector.utils as utils
 import metrics_collector.hospital as hospital
 import metrics_collector.bi_emias as bi_emias
+import logging
 import json
 import os
 
@@ -129,6 +130,10 @@ def start_bi_export():
                 "dashboard_priem_otdel_krasnogorsk_al", use_dates=False
             )
             bi_emias.export_report()
+            # Quality control
+            if os.path.getsize(os.path.join(EXPORT_PATH, "Дашборд приемного отделения.xlsx")) < 20000:
+                logging.info("Повторная выгрузка отчета, так как он оказался пустым")
+                start_bi_export()
             config.browser.quit()
         except Exception as ex:
             config.browser.save_screenshot(os.path.join(EXPORT_PATH, "bi_error.png"))
