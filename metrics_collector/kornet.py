@@ -66,7 +66,7 @@ def export_report():
     #    pass
     # Ожидать загрузки отчёта в веб-интерфейсе
     logging.info("Начинается экспорт отчета")
-    WebDriverWait(browser, 30).until(
+    WebDriverWait(browser, 60).until(
         EC.element_to_be_clickable(
             (
                 By.XPATH,
