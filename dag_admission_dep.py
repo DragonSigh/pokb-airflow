@@ -32,7 +32,7 @@ default_args = {"start_date": datetime(2023, 1, 1), "sla": timedelta(minutes=60)
 dag = DAG(
     dag_id="hospital_admission_dep",
     description="Анализ отчетов приемного отделения",
-    schedule_interval="40 9 * * 1-5",
+    schedule_interval="55 8 * * 1-5",
     catchup=False,
     default_args=default_args,
 )
