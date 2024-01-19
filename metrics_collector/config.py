@@ -40,6 +40,7 @@ options.add_experimental_option(
         "download.directory_upgrade": True,
         "safebrowsing.enabled": False,
         "safebrowsing.disable_download_protection": True,
+        "https-upgrades": False,
     },
 )
 
