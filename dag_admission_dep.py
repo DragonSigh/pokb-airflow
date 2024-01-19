@@ -5,26 +5,17 @@ from datetime import datetime, timedelta
 
 def start_hospital_export_run():
     from get_admission_dep import start_hospital_export
-
     start_hospital_export()
 
 
 def start_bi_export_run():
     from get_admission_dep import start_bi_export
-
     start_bi_export()
 
 
 def start_analyze_run():
     from get_admission_dep import start_analyze
-
     start_analyze()
-
-
-def shut_down_run():
-    from get_admission_dep import shut_down
-
-    shut_down()
 
 
 def send_message_run():
@@ -67,13 +58,6 @@ analyze_task = PythonOperator(
     dag=dag,
 )
 
-shut_down = PythonOperator(
-    task_id="shut_down",
-    python_callable=shut_down_run,
-    provide_context=True,
-    dag=dag,
-)
-
 send_message = PythonOperator(
     task_id="send_message",
     python_callable=send_message_run,
@@ -83,4 +67,4 @@ send_message = PythonOperator(
 
 bi_export_task >> analyze_task
 hospital_export_task >> analyze_task
-analyze_task >> shut_down >> send_message
+analyze_task >> send_message

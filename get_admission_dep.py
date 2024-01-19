@@ -428,7 +428,3 @@ def start_analyze():
         df_stat_osp,
         os.path.join(EXPORT_PATH, "ОСП Статистика по приемным отделениям.xlsx"),
     )
-
-
-def shut_down():
-    config.browser.quit()
