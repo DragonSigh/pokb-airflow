@@ -19,7 +19,7 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[1])
         browser.close()
         browser.switch_to.window(browser.window_handles[0])
-    browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
+    browser.get("http://llo.emias.mosreg.ru/Korvet2024/admin/signin")
     browser.refresh()
 
     browser.find_element(
@@ -47,7 +47,7 @@ def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
     try:
         browser.get(
-            "http://llo.emias.mosreg.ru/korvet/LocalReportForm.aspx?"
+            "http://llo.emias.mosreg.ru/Korvet2024/LocalReportForm.aspx?"
             + "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
             + begin_date.strftime("%d.%m.%Y")
             + "&EndDate="
@@ -80,4 +80,4 @@ def export_report():
     )
     utils.download_wait(config.reports_path, 20)
     logging.info("Экспорт файла с отчетом завершен")
-    browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignOut")
+    browser.get("http://llo.emias.mosreg.ru/Korvet2024/Admin/SignOut")

@@ -10,8 +10,7 @@ def check_metric_007():
 
 def send_message_run():
     import metrics_collector.telegram as telegram
-
-    text = "Отчёт по Показателю 7 успешно сформирован"
+    text = "Отчёт по Показателю 7 успешно сформирован\n"
     link = "`\\\\10.2.14.224\\share\\download\\Показатель 7`"
     telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text}: {link}")
 
