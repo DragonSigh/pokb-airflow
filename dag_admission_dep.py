@@ -21,8 +21,8 @@ def start_analyze_run():
 def send_message_run():
     import metrics_collector.telegram as telegram
 
-    text = r"Отчёт по дашборду приёмных отделений успешно сформирован"
-    link = r"`\\10.2.14.224\share\download\Приемные отделения`"
+    text = "Отчёт по дашборду приёмных отделений успешно сформирован"
+    link = "`\\\\10.2.14.224\\share\\download\\Приемные отделения`"
     telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text}: {link}")
 
 
