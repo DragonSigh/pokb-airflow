@@ -14,6 +14,17 @@ reports_path = config.reports_path
 def authorize(login_data: str, password_data: str):
     # Очистить куки
     browser.delete_all_cookies()
+
+    # Очистить хранилище HSTS
+    browser.get("chrome://net-internals/#hsts")
+
+    element = browser.find_element(
+        By.XPATH, '//*[@id="domain-security-policy-view-delete-input"]'
+    )
+    actions.click(element).send_keys("llo.emias.mosreg.ru").send_keys(
+        Keys.ENTER
+    ).perform()
+
     # Убедиться что открыта только одна вкладка
     if len(browser.window_handles) > 1:
         browser.switch_to.window(browser.window_handles[1])

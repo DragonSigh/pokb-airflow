@@ -62,8 +62,6 @@ browser.execute_cdp_cmd(
     },
 )
 
-#Очистить хранилище HSTS
-
 # Период: с начала недели по сегодняшний день
 first_date = date.today() - timedelta(days=date.today().weekday())
 last_date = date.today()
