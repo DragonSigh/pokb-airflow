@@ -43,7 +43,7 @@ def start_kornet_report_saving():
         f'Выбран период: с {first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
     )
-    logging.info(f"Сохранение файла с отчетом в папку: {EXPORT_PATH}")
+    logging.info(f"Сохранение файла с отчетом в папку: {config.reports_path}")
     f = open(kornet_credentials_path, "r", encoding="utf-8")
     data = json.load(f)
     f.close()
@@ -83,7 +83,7 @@ def start_kornet_report_saving():
         "Количество",
     ]
     logging.info("Выгрузка из КОРНЕТА завершена")
-    utils.save_to_excel(df_kornet, EXPORT_PATH + "/Промежуточный КОРНЕТ.xlsx")
+    utils.save_to_excel(df_kornet, os.path.join(EXPORT_PATH, "Промежуточный КОРНЕТ.xlsx"))
 
 
 def start_emias_report_saving():
