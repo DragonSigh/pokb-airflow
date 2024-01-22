@@ -78,7 +78,9 @@ def save_to_excel(dframe: pd.DataFrame, path, index_arg=False):
         for column in dframe:
             column_width = max(dframe[column].astype(str).map(len).max(), len(column))
             col_idx = dframe.columns.get_loc(column)
-            writer.sheets["Sheet1"].column_dimensions[chr(65 + col_idx)].width = column_width + 5
+            writer.sheets["Sheet1"].column_dimensions[chr(65 + col_idx)].width = (
+                column_width + 5
+            )
     os.chmod(path, 0o777)
 
 
@@ -87,7 +89,10 @@ def get_new_department_name(x):
     Обновляем старые подразделения до ОСП
     """
     value = str(x)
-    if "Филиал №6 ГБУЗ МО Подольская ОКБ (Закрыто)" in value or "Климовская ЦГБ" in value:
+    if (
+        "Филиал №6 ГБУЗ МО Подольская ОКБ (Закрыто)" in value
+        or "Климовская ЦГБ" in value
+    ):
         return "ОСП 6"
     elif "ГБУЗ МО «Подольская РБ» (Закрыто)" in value:
         return "ОСП 4"
@@ -147,3 +152,14 @@ def is_actual_report_exist(directory, partial_name, hours=23):
                     return None
                 return file_path
     return None
+
+
+def emptydir(top):
+    if top == "/" or top == "\\":
+        return
+    else:
+        for root, dirs, files in os.walk(top, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))

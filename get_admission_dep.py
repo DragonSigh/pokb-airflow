@@ -141,9 +141,13 @@ def start_bi_export():
 
 
 def start_analyze():
+
     import pandas as pd
     import numpy as np
     import re
+
+    # Очистить папку с предыдущими отчетами
+    utils.emptydir(EXPORT_PATH)
 
     df = pd.read_excel(
         os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx"),
