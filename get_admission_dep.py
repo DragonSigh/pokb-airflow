@@ -131,7 +131,7 @@ def start_bi_export():
             )
             bi_emias.export_report()
             # Quality control
-            if os.path.getsize(os.path.join(EXPORT_PATH, "Дашборд приемного отделения.xlsx")) < 20000:
+            if os.path.getsize(os.path.join(config.reports_path, "Дашборд приемного отделения.xlsx")) < 20000:
                 logging.info("Повторная выгрузка отчета, так как он оказался пустым")
                 start_bi_export()
             config.browser.quit()
