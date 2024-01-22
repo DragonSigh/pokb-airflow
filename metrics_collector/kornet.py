@@ -58,7 +58,7 @@ def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
     try:
         browser.get(
-            "llo.emias.mosreg.ru/korvet/Admin/LocalReportForm.aspx?"
+            "http://llo.emias.mosreg.ru/korvet/Admin/LocalReportForm.aspx?"
             + "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
             + begin_date.strftime("%d.%m.%Y")
             + "&EndDate="
