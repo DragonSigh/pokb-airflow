@@ -20,9 +20,9 @@ def start_analyze_run():
 
 def send_message_run():
     import metrics_collector.telegram as telegram
-    text = "Отчёт по дашборду приёмных отделений успешно сформирован\n"
-    link = "`\\\\10.2.14.224\\share\\download\\Приемные отделения`"
-    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text}: {link}")
+    text = r"Отчёт по дашборду приёмных отделений успешно сформирован:\n"
+    link = r"`\\\\10.2.14.224\\share\\download\\Приемные отделения`"
+    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text}{link}")
 
 
 default_args = {"start_date": datetime(2023, 1, 1), "sla": timedelta(minutes=60)}
