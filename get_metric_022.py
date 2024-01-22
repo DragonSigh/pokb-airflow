@@ -43,7 +43,7 @@ def start_kornet_report_saving():
         f'Выбран период: с {first_date.strftime("%d.%m.%Y")} '
         f'по {last_date.strftime("%d.%m.%Y")}'
     )
-    logging.info(f"Сохранение файла с отчетом в папку: {config.reports_path}")
+    logging.info(f"Путь выгрузки отчётов: {EXPORT_PATH}")
     f = open(kornet_credentials_path, "r", encoding="utf-8")
     data = json.load(f)
     f.close()
