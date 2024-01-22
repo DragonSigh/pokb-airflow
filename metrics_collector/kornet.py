@@ -57,13 +57,15 @@ def authorize(login_data: str, password_data: str):
 def load_dlo_report(begin_date, end_date):
     logging.info("Открываю страницу отчёта")
     try:
-        browser.get(
+        link = (
             "http://llo.emias.mosreg.ru/korvet/Admin/LocalReportForm.aspx?"
             + "guid=85122D62-3F72-40B5-A7ED-B2AFBF27560B&FundingSource=0&BeginDate="
             + begin_date.strftime("%d.%m.%Y")
             + "&EndDate="
             + end_date.strftime("%d.%m.%Y")
         )
+        logging.info(link)
+        browser.get(link)
     except Exception as ex:
         raise ex
     logging.info("Отчет сформирован в браузере")
