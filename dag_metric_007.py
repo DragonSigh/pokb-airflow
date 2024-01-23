@@ -25,9 +25,14 @@ def alert_tg_channel_on_error(context):
     task_name = telegram.escape_markdown(last_task.task_id)
     log_link = telegram.escape_markdown(last_task.log_url.replace("localhost", "10.2.14.224"))
     # execution_date = context.get("execution_date")
+    title = f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*"
     date = datetime.now().ctime()
+    msg_parts = {"Дата": date}
+    msg = "\n".join(
+        [title, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
+    ).strip()
     telegram.send_telegram_message(
-        telegram.ERRORS_CHAT_ID, f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*\n{date}"
+        telegram.ERRORS_CHAT_ID, msg
     )
 
 
