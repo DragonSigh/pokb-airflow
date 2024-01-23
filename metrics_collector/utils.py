@@ -131,7 +131,7 @@ def get_department(x):
         return value
 
 
-def is_actual_report_exist(directory, partial_name, hours=23):
+def is_actual_report_exist(directory, partial_name, hours=12):
     """
     Проверка актуальности файла с отчетом
         directory:

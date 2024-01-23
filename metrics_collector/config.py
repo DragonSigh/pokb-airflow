@@ -3,6 +3,8 @@ import os
 from datetime import date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 
 reports_path = r"/etc/samba/share/download"
@@ -61,6 +63,14 @@ browser.execute_cdp_cmd(
         "storageTypes": "all",
     },
 )
+
+# Очистить хранилище HSTS
+browser.get("chrome://net-internals/#hsts")
+element = browser.find_element(
+    By.XPATH, '//*[@id="domain-security-policy-view-delete-input"]'
+)
+
+actions.click(element).send_keys("llo.emias.mosreg.ru").send_keys(Keys.ENTER).perform()
 
 # Период: с начала недели по сегодняшний день
 first_date = date.today() - timedelta(days=date.today().weekday())

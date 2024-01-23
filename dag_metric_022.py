@@ -12,7 +12,8 @@ def send_message_run():
     import metrics_collector.telegram as telegram
     text = r"Отчёт по Показателю 22 успешно сформирован:"
     link = r"`\\\\10.2.14.224\\share\\download\\Показатель 22`"
-    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text}  {link}")
+    date = datetime.now().ctime()
+    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text} {link} {date}")
 
 
 default_args = {
@@ -24,7 +25,7 @@ default_args = {
 dag = DAG(
     dag_id="metric_022",
     description="Выгрузка и анализ Показателя 22",
-    schedule="0 7 * * 2-5",
+    schedule="0 10 * * 2-5",
     catchup=False,
     default_args=default_args
 )
