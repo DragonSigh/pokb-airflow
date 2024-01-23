@@ -20,8 +20,9 @@ def notify_tg_channel_on_success(context):
 
 def alert_tg_channel_on_error(context):
     import metrics_collector.telegram as telegram
-
-    telegram.send_telegram_message(telegram.ERRORS_CHAT_ID, "ошибка 007")
+    last_task = context.get("task_instance")
+    task_name = last_task.task_id
+    telegram.send_telegram_message(telegram.ERRORS_CHAT_ID, "ошибка 007:" + task_name)
 
 
 default_args = {
