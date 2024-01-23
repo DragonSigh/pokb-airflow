@@ -32,7 +32,7 @@ def alert_tg_channel_on_error(context):
         [title, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
     ).strip()
     telegram.send_telegram_message(
-        telegram.ERRORS_CHAT_ID, telegram.escape_markdown((msg))
+        telegram.ERRORS_CHAT_ID, telegram.escape_markdown(msg)
     )
 
 
