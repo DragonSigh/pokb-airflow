@@ -12,10 +12,14 @@ def check_metric_007():
 def notify_tg_channel_on_success(context):
     import metrics_collector.telegram as telegram
 
-    text = r"Отчёт по Показателю 7 успешно сформирован:"
+    text = "🟢 Отчёт по Показателю 7 успешно сформирован:"
     link = r"`\\\\10.2.14.224\\share\\download\\Показатель 7`"
     date = datetime.now().ctime()
-    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text} {link} {date}")
+    msg_parts = {"Дата": date, "Ссылка": link}
+    msg = "\n".join(
+        [text, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
+    ).strip()
+    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, msg)
 
 
 def alert_tg_channel_on_error(context):
@@ -25,11 +29,11 @@ def alert_tg_channel_on_error(context):
     task_name = telegram.escape_markdown(last_task.task_id)
     log_link = telegram.escape_markdown(last_task.log_url.replace("localhost", "10.2.14.224"))
     # execution_date = context.get("execution_date")
-    title = f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*"
+    text = f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*"
     date = datetime.now().ctime()
     msg_parts = {"Дата": date}
     msg = "\n".join(
-        [title, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
+        [text, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
     ).strip()
     telegram.send_telegram_message(
         telegram.ERRORS_CHAT_ID, msg

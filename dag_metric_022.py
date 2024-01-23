@@ -8,17 +8,42 @@ def check_metric_022():
     get_metric_022.check_metric_022()
 
 
-def send_message_run():
+def notify_tg_channel_on_success():
     import metrics_collector.telegram as telegram
-    text = r"Отчёт по Показателю 22 успешно сформирован:"
+
+    text = "🟢 Отчёт по Показателю 22 успешно сформирован:"
     link = r"`\\\\10.2.14.224\\share\\download\\Показатель 22`"
     date = datetime.now().ctime()
-    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text} {link} {date}")
+    msg_parts = {"Дата": date, "Ссылка": link}
+    msg = "\n".join(
+        [text, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
+    ).strip()
+    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, msg)
+
+
+def alert_tg_channel_on_error(context):
+    import metrics_collector.telegram as telegram
+
+    last_task = context.get("task_instance")
+    task_name = telegram.escape_markdown(last_task.task_id)
+    log_link = telegram.escape_markdown(last_task.log_url.replace("localhost", "10.2.14.224"))
+    # execution_date = context.get("execution_date")
+    text = f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*"
+    date = datetime.now().ctime()
+    msg_parts = {"Дата": date}
+    msg = "\n".join(
+        [text, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
+    ).strip()
+    telegram.send_telegram_message(
+        telegram.ERRORS_CHAT_ID, msg
+    )
 
 
 default_args = {
     'start_date': datetime(2023, 1, 1),
-    'sla': timedelta(minutes=60)
+    'sla': timedelta(minutes=60),
+    "on_success_callback": notify_tg_channel_on_success,
+    "on_failure_callback": alert_tg_channel_on_error,
 }
 
 # At 07:00 on every day-of-week from Tuesday through Friday.
@@ -35,13 +60,3 @@ check_metric_task = PythonOperator(
     python_callable=check_metric_022,
     dag=dag,
 )
-
-
-send_message = PythonOperator(
-    task_id="send_message",
-    python_callable=send_message_run,
-    provide_context=True,
-    dag=dag,
-)
-
-check_metric_task >> send_message
