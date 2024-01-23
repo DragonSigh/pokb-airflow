@@ -103,10 +103,13 @@ def start_mysql_export():
             ter_ped_vop_ids = [1815, 1816, 1857, 1858, 1895]
             if df_temp["specialty_id"].iloc[0] in ter_ped_vop_ids:
                 # Количество дней ожидания до свободной ячейки для врача
-                nearest_day = (
-                    df_temp[df_temp["ac_doctor"] == 1]["end_time"].iloc[0].normalize()
-                    - pd.Timestamp("today").normalize()
-                ).days
+                if df_temp[df_temp["ac_doctor"] == 1].empty:
+                    nearest_day = 9999  # не найдено
+                else:
+                    nearest_day = (
+                        df_temp[df_temp["ac_doctor"] == 1]["end_time"].iloc[0].normalize()
+                        - pd.Timestamp("today").normalize()
+                    ).days
                 # Количество дней ожидания до свободной ячейки для самозаписи
                 if df_temp[df_temp["ac_internet"] == 1].empty:
                     nearest_day_internet = 9999  # не найдено
