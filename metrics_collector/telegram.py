@@ -11,6 +11,7 @@ with open(PATH_TO_CREDENTIAL) as f:
 TOKEN = data["token"]
 
 ANALYTICS_CHAT_ID = -1002115902949
+ERRORS_CHAT_ID = -1002103199357
 
 
 def send_telegram_message(chat_id: int, message: str):
