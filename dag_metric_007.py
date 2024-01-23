@@ -18,7 +18,7 @@ def notify_tg_channel_on_success(context):
     telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, f"{text} {link} {date}")
 
 
-def aletr_tg_channel_on_error(context):
+def alert_tg_channel_on_error(context):
     import metrics_collector.telegram as telegram
 
     last_task = context.get("task_instance")
@@ -38,7 +38,7 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
     "sla": timedelta(minutes=60),
     "on_success_callback": notify_tg_channel_on_success,
-    "on_failure_callback": aletr_tg_channel_on_error,
+    "on_failure_callback": alert_tg_channel_on_error,
 }
 
 # At 15:00 on Wednesday.
