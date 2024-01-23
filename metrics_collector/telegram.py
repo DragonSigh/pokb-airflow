@@ -24,7 +24,7 @@ def send_telegram_message(chat_id: int, message: str):
 
 
 def escape_markdown(
-    text: str, version=1, entity_type=None
+    text: str, version=2, entity_type=None
 ) -> str:
     """Helper function to escape telegram markup symbols.
 
