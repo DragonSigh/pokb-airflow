@@ -21,17 +21,7 @@ def notify_tg_channel_on_success(context):
 def alert_tg_channel_on_error(context):
     import metrics_collector.telegram as telegram
 
-    last_task = context.get("task_instance")
-    task_name = last_task.task_id
-    log_link = f"<{last_task.log_url}|{task_name}>"
-    error_message = context.get("exception") or context.get("reason")
-    execution_date = context.get("execution_date")
-    title = f":red_circle: ошибка в {task_name}!"
-    msg_parts = {"Дата": execution_date, "Лог": log_link, "Ошибка": error_message}
-    msg = "\\n".join(
-        [title, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
-    ).strip()
-    telegram.send_telegram_message(telegram.ERRORS_CHAT_ID, msg)
+    telegram.send_telegram_message(telegram.ERRORS_CHAT_ID, "ошибка 007")
 
 
 default_args = {
