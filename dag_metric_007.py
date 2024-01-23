@@ -29,7 +29,7 @@ def alert_tg_channel_on_error(context):
     title = f"Ошибка в {task_name}!"
     #msg_parts = {"Дата": execution_date, "Лог": log_link, "Ошибка": error_message}
     telegram.send_telegram_message(
-        telegram.ERRORS_CHAT_ID, f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*!\n123"
+        telegram.ERRORS_CHAT_ID, f"🔴 Ошибка при выполнении задачи *[{task_name}]({log_link})*!"
     )
 
 
