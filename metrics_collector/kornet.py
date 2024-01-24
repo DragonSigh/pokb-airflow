@@ -23,7 +23,7 @@ def authorize(login_data: str, password_data: str):
 
     WebDriverWait(browser, 30).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//*[@id="content"]/div/div/form/div[1]/input")
+            (By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input')
         )
     )
 
