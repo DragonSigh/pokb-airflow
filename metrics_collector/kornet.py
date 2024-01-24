@@ -1,6 +1,7 @@
 import metrics_collector.config as config
 import metrics_collector.utils as utils
 import logging
+import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -80,6 +81,6 @@ def export_report():
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
     )
-    utils.download_wait(config.reports_path, 20)
+    utils.download_wait(config.reports_path, 20, len(os.listdir(config.reports_path)) + 1)
     logging.info("Экспорт файла с отчетом завершен")
     browser.get("http://llo.emias.mosreg.ru/Korvet2024/Admin/SignOut")
