@@ -20,7 +20,6 @@ def authorize(login_data: str, password_data: str):
         browser.close()
         browser.switch_to.window(browser.window_handles[0])
     browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignIn")
-    browser.refresh()
 
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
