@@ -55,7 +55,7 @@ def alert_tg_channel_on_error(context):
 default_args = {
     "start_date": datetime(2023, 1, 1),
     "sla": timedelta(minutes=60),
-    "on_success_callback": notify_tg_channel_on_success,
+    "on_success_callback": None,
     "on_failure_callback": alert_tg_channel_on_error,
 }
 
@@ -86,6 +86,7 @@ analyze_task = PythonOperator(
     task_id="analyze",
     python_callable=start_analyze_run,
     provide_context=True,
+    on_success_callback=notify_tg_channel_on_success,
     dag=dag,
 )
 
