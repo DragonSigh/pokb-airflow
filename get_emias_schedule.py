@@ -209,24 +209,24 @@ def start_mysql_export():
             "ФИО врача",
             "Специальность",
             "До ближайшей свободной ячейки (дней)",
-            "До ячейки самозаписи (дней)",
+            "До ячейки самозаписи (дней) (9999 = отсутствует)",
         ],
     )
     df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1) | (df_nearest_cells["До ячейки самозаписи (дней)"] > 1)]
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
 
     df_nearest_cells.to_excel(
-        EXPORT_PATH + "/Ближайшие свободные ячейки тер пед.xlsx", index=False
+        EXPORT_PATH + "/Ближайшие свободные ячейки тер воп.xlsx", index=False
     )
 
     # Права на скачивание любому пользователю
-    os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки тер пед.xlsx", 0o777)
+    os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки тер воп.xlsx", 0o777)
 
     values = [df_nearest_cells.columns.values.tolist()]
     values.extend(df_nearest_cells.values.tolist())
 
-    wks = "Доступность терапевтов и педиатров!A1"
-    worksheet = spreadsheet.worksheet("Доступность терапевтов и педиатров")
+    wks = "Доступность терапевтов и ВОП!A1"
+    worksheet = spreadsheet.worksheet("Доступность терапевтов и ВОП")
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
@@ -242,7 +242,7 @@ def start_mysql_export():
             "ФИО врача",
             "Специальность",
             "До ближайшей свободной ячейки (дней)",
-            "До ячейки самозаписи (дней)",
+            "До ячейки самозаписи (дней) (9999 = отсутствует)",
         ],
     )
     df_nearest_cells_spec = df_nearest_cells_spec[(df_nearest_cells_spec["До ближайшей свободной ячейки (дней)"] > 10) | (df_nearest_cells_spec["До ячейки самозаписи (дней)"] > 10)]
