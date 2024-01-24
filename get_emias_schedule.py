@@ -158,7 +158,7 @@ def start_mysql_export():
                     nearest_day,
                     nearest_day_internet,
                 ]
-                nearest_cells.append(row)
+                nearest_cells_spec.append(row)
         # else:
         # Врач без свободных ячеек
         # print(df[df["resource_id"] == resource]["doctor_full_name"].iloc[0])
