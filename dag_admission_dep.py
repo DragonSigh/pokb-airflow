@@ -31,7 +31,7 @@ def notify_tg_channel_on_success():
     msg = "\n".join(
         [text, *[f"*{key}*: {value}" for key, value in msg_parts.items()]]
     ).strip()
-    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, msg)
+    telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, text)
 
 
 def alert_tg_channel_on_error(context):
