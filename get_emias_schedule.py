@@ -258,8 +258,8 @@ def start_mysql_export():
     values = [df_nearest_cells_spec.columns.values.tolist()]
     values.extend(df_nearest_cells_spec.values.tolist())
 
-    wks = "Доступность специалистов!A1"
-    worksheet = spreadsheet.worksheet("Доступность специалистов")
+    wks = "Доступность узких специалистов!A1"
+    worksheet = spreadsheet.worksheet("Доступность узких специалистов")
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
