@@ -21,7 +21,7 @@ def start_analyze_run():
     start_analyze()
 
 
-def notify_tg_channel_on_success():
+def notify_tg_channel_on_success(context):
     import metrics_collector.telegram as telegram
 
     text = "🟢 Отчёт по дашборду приёмных отделений успешно сформирован:"

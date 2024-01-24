@@ -8,7 +8,7 @@ def check_metric_022():
     get_metric_022.check_metric_022()
 
 
-def notify_tg_channel_on_success():
+def notify_tg_channel_on_success(context):
     import metrics_collector.telegram as telegram
 
     text = "🟢 Отчёт по Показателю 22 успешно сформирован:"
