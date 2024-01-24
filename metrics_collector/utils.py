@@ -154,12 +154,13 @@ def is_actual_report_exist(directory, partial_name, hours=12):
     return None
 
 
-def emptydir(top):
+def emptydir(top, exclude=[]):
     if top == "/" or top == "\\":
         return
     else:
         for root, dirs, files in os.walk(top, topdown=False):
             for name in files:
-                os.remove(os.path.join(root, name))
+                if name not in exclude:
+                    os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))

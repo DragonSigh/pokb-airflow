@@ -148,8 +148,8 @@ def start_emias_report_saving():
 def analyze_data(df_kornet, df_emias):
 
     # Очистить папку с предыдущими отчетами
-    utils.emptydir(EXPORT_PATH)
-    
+    utils.emptydir(EXPORT_PATH, exclude=["Промежуточный ЕМИАС.xlsx", "Промежуточный КОРНЕТ.xlsx"])
+
     df_emias["ФИО пациента"] = df_emias["ФИО пациента"].apply(complex_rename)
 
     # Очистка датафрейма ЕМИАСа
