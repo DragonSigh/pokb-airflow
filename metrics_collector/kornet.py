@@ -19,34 +19,17 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[1])
         browser.close()
         browser.switch_to.window(browser.window_handles[0])
-    browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin?re=lpurecipes.aspx")
 
-    WebDriverWait(browser, 30).until(
-        EC.presence_of_element_located(
-            (By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input')
-        )
-    )
-
-    browser.find_element(
+    browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
+    browser.refresh()
+    login_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
-    ).send_keys(login_data)
-
-    WebDriverWait(browser, 30).until(
-        EC.presence_of_element_located(
-            (By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input')
-        )
     )
-
-    browser.find_element(
+    login_field.send_keys(login_data)
+    password_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'
-    ).send_keys(password_data)
-
-    WebDriverWait(browser, 30).until(
-        EC.presence_of_element_located(
-            (By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button')
-        )
     )
-
+    password_field.send_keys(password_data)
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
     ).click()
