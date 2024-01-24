@@ -58,6 +58,7 @@ def start_mysql_export():
 
     missed_days = []
     nearest_cells = []
+    nearest_cells_spec = []
     for resource in df["resource_id"].unique():
         df_temp = df[df["resource_id"] == resource]
         # Расписание создано на 3 недели вперед
@@ -102,6 +103,35 @@ def start_mysql_export():
             # Терапевты, участковые терапевты, педиатры, участковые педиатры, ВОП
             ter_ped_vop_ids = [1815, 1816, 1857, 1858, 1895]
             if df_temp["specialty_id"].iloc[0] in ter_ped_vop_ids:
+                # Количество дней ожидания до свободной ячейки для врача
+                if df_temp[df_temp["ac_doctor"] == 1].empty:
+                    nearest_day = 9999  # не найдено
+                else:
+                    nearest_day = (
+                        df_temp[df_temp["ac_doctor"] == 1]["end_time"].iloc[0].normalize()
+                        - pd.Timestamp("today").normalize()
+                    ).days
+                # Количество дней ожидания до свободной ячейки для самозаписи
+                if df_temp[df_temp["ac_internet"] == 1].empty:
+                    nearest_day_internet = 9999  # не найдено
+                else:
+                    nearest_day_internet = (
+                        df_temp[df_temp["ac_internet"] == 1]["end_time"]
+                        .iloc[0]
+                        .normalize()
+                        - pd.Timestamp("today").normalize()
+                    ).days
+                row = [
+                    df_temp["subdivision_name"].iloc[0],
+                    df_temp["department_name"].iloc[0],
+                    df_temp["doctor_full_name"].iloc[0],
+                    df_temp["specialty_name"].iloc[0],
+                    nearest_day,
+                    nearest_day_internet,
+                ]
+                nearest_cells.append(row)
+            else:
+                # Узкие специалисты
                 # Количество дней ожидания до свободной ячейки для врача
                 if df_temp[df_temp["ac_doctor"] == 1].empty:
                     nearest_day = 9999  # не найдено
@@ -186,17 +216,50 @@ def start_mysql_export():
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
 
     df_nearest_cells.to_excel(
-        EXPORT_PATH + "/Ближайшие свободные ячейки.xlsx", index=False
+        EXPORT_PATH + "/Ближайшие свободные ячейки тер пед.xlsx", index=False
     )
 
     # Права на скачивание любому пользователю
-    os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки.xlsx", 0o777)
+    os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки тер пед.xlsx", 0o777)
 
     values = [df_nearest_cells.columns.values.tolist()]
     values.extend(df_nearest_cells.values.tolist())
 
     wks = "Доступность терапевтов и педиатров!A1"
     worksheet = spreadsheet.worksheet("Доступность терапевтов и педиатров")
+    worksheet.batch_clear(["A1:Z500"])
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
+    # ДОСТУПНОСТЬ СПЕЦИАЛИСТОВ
+
+    df_nearest_cells_spec = pd.DataFrame(
+        nearest_cells_spec,
+        columns=[
+            "Подразделение",
+            "Отделение",
+            "ФИО врача",
+            "Специальность",
+            "До ближайшей свободной ячейки (дней)",
+            "До ячейки самозаписи (дней)",
+        ],
+    )
+    df_nearest_cells_spec = df_nearest_cells_spec[(df_nearest_cells_spec["До ближайшей свободной ячейки (дней)"] > 10) | (df_nearest_cells_spec["До ячейки самозаписи (дней)"] > 10)]
+    df_nearest_cells_spec = df_nearest_cells_spec.sort_values("Подразделение")
+
+    df_nearest_cells_spec.to_excel(
+        EXPORT_PATH + "/Ближайшие свободные ячейки спец.xlsx", index=False
+    )
+
+    # Права на скачивание любому пользователю
+    os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки спец.xlsx", 0o777)
+
+    values = [df_nearest_cells_spec.columns.values.tolist()]
+    values.extend(df_nearest_cells_spec.values.tolist())
+
+    wks = "Доступность специалистов!A1"
+    worksheet = spreadsheet.worksheet("Доступность специалистов")
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
