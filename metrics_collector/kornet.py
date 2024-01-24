@@ -19,9 +19,13 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[1])
         browser.close()
         browser.switch_to.window(browser.window_handles[0])
-    browser.get("http://llo.emias.mosreg.ru/korvet/Admin/SignIn")
+    browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin?re=lpurecipes.aspx")
 
-    browser.implicitly_wait(10)
+    WebDriverWait(browser, 30).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[@id="content"]/div/div/form/div[1]/input")
+        )
+    )
 
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
