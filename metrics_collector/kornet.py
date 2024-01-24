@@ -31,9 +31,21 @@ def authorize(login_data: str, password_data: str):
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
     ).send_keys(login_data)
 
+    WebDriverWait(browser, 30).until(
+        EC.presence_of_element_located(
+            (By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input')
+        )
+    )
+
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'
     ).send_keys(password_data)
+
+    WebDriverWait(browser, 30).until(
+        EC.presence_of_element_located(
+            (By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button')
+        )
+    )
 
     browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
