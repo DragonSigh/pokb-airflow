@@ -34,7 +34,6 @@ def notify_tg_channel_on_success():
     telegram.send_telegram_message(telegram.ANALYTICS_CHAT_ID, msg)
 
 
-
 def alert_tg_channel_on_error(context):
     import metrics_collector.telegram as telegram
 
