@@ -69,7 +69,7 @@ def start_mysql_export():
             .strftime("%Y-%m-%d")
             .tolist()
         )
-        if missed_dates:
+        if missed_dates & (df_temp["resource_type"].iloc[0] == "Врач"): # ТОЛЬКО ВРАЧИ TODO
             if df_temp["resource_type"].iloc[0] == "Врач":
                 resource_name = df_temp["doctor_full_name"].iloc[0]
             elif df_temp["resource_type"].iloc[0] == "Оборудование":
@@ -91,7 +91,6 @@ def start_mysql_export():
             (df_temp["access_code"] != 111)
             & (df_temp["begin_time"] > today_timestamp.normalize())
             & (df_temp["begin_time"] < tomorrow_timestamp)
-            & (df_temp["resource_type"] == "Врач")  # ТОЛЬКО ВРАЧИ НА 3 недели
         ]
         # TODO
         df_sum["diff_minutes"] = df_sum["end_time"] - df_sum["begin_time"]
