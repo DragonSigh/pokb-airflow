@@ -44,7 +44,7 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
     "sla": timedelta(minutes=120),
     'retries': 5,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=1),
     'retry_exponential_backoff': True,
     'max_retry_delay': timedelta(minutes=10),
     "on_success_callback": None,
