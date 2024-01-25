@@ -240,7 +240,7 @@ def start_mysql_export():
             "До ячейки самозаписи (дней) (9999 = отсутствует)",
         ],
     )
-    df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1) | (df_nearest_cells["До ячейки самозаписи (дней)"] > 1)]
+    df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1) | (df_nearest_cells["До ячейки самозаписи (дней) (9999 = отсутствует)"] > 1)]
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
 
     df_nearest_cells.to_excel(
@@ -273,7 +273,7 @@ def start_mysql_export():
             "До ячейки самозаписи (дней) (9999 = отсутствует)",
         ],
     )
-    df_nearest_cells_spec = df_nearest_cells_spec[(df_nearest_cells_spec["До ближайшей свободной ячейки (дней)"] > 10) | (df_nearest_cells_spec["До ячейки самозаписи (дней)"] > 10)]
+    df_nearest_cells_spec = df_nearest_cells_spec[(df_nearest_cells_spec["До ближайшей свободной ячейки (дней)"] > 10) | (df_nearest_cells_spec["До ячейки самозаписи (дней) (9999 = отсутствует)"] > 10)]
     df_nearest_cells_spec = df_nearest_cells_spec.sort_values("Подразделение")
 
     df_nearest_cells_spec.to_excel(
@@ -307,7 +307,7 @@ def start_mysql_export():
             "До ближайшей свободной ячейки (дней) (9999 = отсутствует)",,
         ],
     )
-    df_nearest_cells_eq = df_nearest_cells_eq(df_nearest_cells_eq["До ближайшей свободной ячейки (дней)"] > 9) | (df_nearest_cells_eq["До ячейки самозаписи (дней)"] > 9)]
+    df_nearest_cells_eq = df_nearest_cells_eq(df_nearest_cells_eq["До ближайшей свободной ячейки (дней) (9999 = отсутствует)"] > 9)]
     df_nearest_cells_eq = df_nearest_cells_eq.sort_values("Подразделение")
 
     df_nearest_cells_eq.to_excel(
