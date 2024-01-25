@@ -90,8 +90,8 @@ def start_mysql_export():
         df_sum = df_temp[
             (df_temp["access_code"] != 111)
             & (df_temp["begin_time"] > today_timestamp.normalize())
-            & (df_temp["begin_time"] < tomorrow_timestamp
-            & (df_temp["resource_type"] == "Врач")) # ТОЛЬКО ВРАЧИ НА 3 недели
+            & (df_temp["begin_time"] < tomorrow_timestamp)
+            & (df_temp["resource_type"] == "Врач")  # ТОЛЬКО ВРАЧИ НА 3 недели
         ]
         # TODO
         df_sum["diff_minutes"] = df_sum["end_time"] - df_sum["begin_time"]
@@ -341,7 +341,12 @@ def start_mysql_export():
         ],
     )
     df_nearest_cells_eq = df_nearest_cells_eq[
-        (df_nearest_cells_eq["До ближайшей свободной ячейки (дней) (9999 = отсутствует)"] > 9)
+        (
+            df_nearest_cells_eq[
+                "До ближайшей свободной ячейки (дней) (9999 = отсутствует)"
+            ]
+            > 9
+        )
     ]
     df_nearest_cells_eq = df_nearest_cells_eq.sort_values("Подразделение")
 
