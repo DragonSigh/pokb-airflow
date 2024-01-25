@@ -63,7 +63,7 @@ LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_LPU] AS subdivision -- подразд�
 	ON dep.[rf_LPUID] = subdivision.[LPUID]
 WHERE CAST(dtt.[Date] AS DATE) >= CAST(GETDATE() AS DATE) -- все дни после сегодняшнего числа
 	-- AND dtt.[UsedUE] = 1 -- только свободные ячейки
-	AND res_type.[Name] = 'Врач' -- только врач
+	-- AND res_type.[Name] = 'Врач' -- только врач
 	AND res_spec.[InTime] = 1 -- Доступен в расписании
 	-- AND dtt.[IsOutSchedule] = 0 -- убираем Вне расписания
 	-- AND doc.[FAM_V] + ' ' + doc.[IM_V] + ' ' + doc.[OT_V] = 'БАГДАДЯН АРУСЯК ВАРДГЕСОВНА'
