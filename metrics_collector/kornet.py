@@ -31,7 +31,8 @@ def authorize(login_data: str, password_data: str):
     password_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'
     )
-    password_field.send_keys(password_data).send_keys(Keys.ENTER)
+    password_field.send_keys(password_data)
+    password_field.send_keys(Keys.ENTER)
     #browser.find_element(
     #    By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
     #).click()
