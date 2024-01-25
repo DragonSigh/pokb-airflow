@@ -232,7 +232,7 @@ def start_mysql_export():
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
 
-    # ДОСТУПНОСТЬ СПЕЦИАЛИСТОВ
+    # ДОСТУПНОСТЬ УЗКИХ СПЕЦИАЛИСТОВ
 
     df_nearest_cells_spec = pd.DataFrame(
         nearest_cells_spec,

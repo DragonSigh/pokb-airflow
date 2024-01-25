@@ -3,6 +3,7 @@ import metrics_collector.utils as utils
 import logging
 import os
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -22,8 +23,7 @@ def authorize(login_data: str, password_data: str):
         browser.switch_to.window(browser.window_handles[0])
 
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
-    browser.refresh()
-    browser.implicitly_wait(10)
+    browser.implicitly_wait(20)
     login_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
     )
@@ -31,10 +31,10 @@ def authorize(login_data: str, password_data: str):
     password_field = browser.find_element(
         By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'
     )
-    password_field.send_keys(password_data)
-    browser.find_element(
-        By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
-    ).click()
+    password_field.send_keys(password_data).send_keys(Keys.ENTER)
+    #browser.find_element(
+    #    By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
+    #).click()
 
     WebDriverWait(browser, 60).until(
         EC.presence_of_element_located(
