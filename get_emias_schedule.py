@@ -131,13 +131,12 @@ def start_mysql_export():
                 ]
                 nearest_cells_eq.append(row)
 
-        # Доступность педиатров и врачей специалистов
+        # Доступность врачей
         df_temp = df_temp[
             (df_temp["is_used"] == 0)
             & (
-                df_temp["end_time"]
-                > pd.Timestamp("today") & df_temp["resource_type"]
-                == "Врач"
+                (df_temp["end_time"] > pd.Timestamp("today"))
+                & (df_temp["resource_type"] == "Врач")
             )
         ]
         if not df_temp.empty:
