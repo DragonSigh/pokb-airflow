@@ -98,18 +98,29 @@ def start_mysql_export():
         # print(df_sum["diff_minutes"])
         # Доступность оборудования
         df_temp_eq = df_temp[
-            (df_temp["is_used"] == 0) & (df_temp["end_time"] > pd.Timestamp("today") & df_temp["resource_type"] == "Оборудование")
+            (df_temp["is_used"] == 0)
+            & (
+                df_temp["end_time"]
+                > pd.Timestamp("today") & df_temp["resource_type"]
+                == "Оборудование"
+            )
         ]
         if not df_temp.empty:
             # МРТ и КТ
-            mri_ct_ids = ["Магнитно-резонансный томограф", "Компьютерный томограф", "Компьютерные томографы"]
+            mri_ct_ids = [
+                "Магнитно-резонансный томограф",
+                "Компьютерный томограф",
+                "Компьютерные томографы",
+            ]
             if df_temp_eq["equipment_type"].iloc[0] in mri_ct_ids:
                 # Количество дней ожидания до свободной ячейки для врача
                 if df_temp_eq[df_temp_eq["ac_doctor"] == 1].empty:
                     nearest_day = 9999  # не найдено
                 else:
                     nearest_day = (
-                        df_temp_eq[df_temp_eq["ac_doctor"] == 1]["end_time"].iloc[0].normalize()
+                        df_temp_eq[df_temp_eq["ac_doctor"] == 1]["end_time"]
+                        .iloc[0]
+                        .normalize()
                         - pd.Timestamp("today").normalize()
                     ).days
                 row = [
@@ -123,7 +134,12 @@ def start_mysql_export():
 
         # Доступность педиатров и врачей специалистов
         df_temp = df_temp[
-            (df_temp["is_used"] == 0) & (df_temp["end_time"] > pd.Timestamp("today") & df_temp["resource_type"] == "Врач")
+            (df_temp["is_used"] == 0)
+            & (
+                df_temp["end_time"]
+                > pd.Timestamp("today") & df_temp["resource_type"]
+                == "Врач"
+            )
         ]
         if not df_temp.empty:
             # Терапевты, участковые терапевты, педиатры, участковые педиатры, ВОП
@@ -134,7 +150,9 @@ def start_mysql_export():
                     nearest_day = 9999  # не найдено
                 else:
                     nearest_day = (
-                        df_temp[df_temp["ac_doctor"] == 1]["end_time"].iloc[0].normalize()
+                        df_temp[df_temp["ac_doctor"] == 1]["end_time"]
+                        .iloc[0]
+                        .normalize()
                         - pd.Timestamp("today").normalize()
                     ).days
                 # Количество дней ожидания до свободной ячейки для самозаписи
@@ -163,7 +181,9 @@ def start_mysql_export():
                     nearest_day = 9999  # не найдено
                 else:
                     nearest_day = (
-                        df_temp[df_temp["ac_doctor"] == 1]["end_time"].iloc[0].normalize()
+                        df_temp[df_temp["ac_doctor"] == 1]["end_time"]
+                        .iloc[0]
+                        .normalize()
                         - pd.Timestamp("today").normalize()
                     ).days
                 # Количество дней ожидания до свободной ячейки для самозаписи
@@ -198,7 +218,13 @@ def start_mysql_export():
     # Расписание создано на 3 недели вперед
     df_missed_days = pd.DataFrame(
         missed_days,
-        columns=["Тип ресурса", "Подразделение", "Отделение", "Название ресурса", "Даты без расписания"],
+        columns=[
+            "Тип ресурса",
+            "Подразделение",
+            "Отделение",
+            "Название ресурса",
+            "Даты без расписания",
+        ],
     )
 
     df_missed_days["Даты без расписания"] = df_missed_days["Даты без расписания"].apply(
@@ -216,7 +242,6 @@ def start_mysql_export():
     # Заливка в таблицу Google
     gc = gs.authorize(CREDENTIALS)
     spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
-
 
     # ДОСТУПНОСТЬ ТЕРАПЕВТОВ И ВОП
     values = [df_missed_days.columns.values.tolist()]
@@ -240,7 +265,10 @@ def start_mysql_export():
             "До ячейки самозаписи (дней) (9999 = отсутствует)",
         ],
     )
-    df_nearest_cells = df_nearest_cells[(df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1) | (df_nearest_cells["До ячейки самозаписи (дней) (9999 = отсутствует)"] > 1)]
+    df_nearest_cells = df_nearest_cells[
+        (df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1)
+        | (df_nearest_cells["До ячейки самозаписи (дней) (9999 = отсутствует)"] > 1)
+    ]
     df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
 
     df_nearest_cells.to_excel(
@@ -273,7 +301,13 @@ def start_mysql_export():
             "До ячейки самозаписи (дней) (9999 = отсутствует)",
         ],
     )
-    df_nearest_cells_spec = df_nearest_cells_spec[(df_nearest_cells_spec["До ближайшей свободной ячейки (дней)"] > 10) | (df_nearest_cells_spec["До ячейки самозаписи (дней) (9999 = отсутствует)"] > 10)]
+    df_nearest_cells_spec = df_nearest_cells_spec[
+        (df_nearest_cells_spec["До ближайшей свободной ячейки (дней)"] > 10)
+        | (
+            df_nearest_cells_spec["До ячейки самозаписи (дней) (9999 = отсутствует)"]
+            > 10
+        )
+    ]
     df_nearest_cells_spec = df_nearest_cells_spec.sort_values("Подразделение")
 
     df_nearest_cells_spec.to_excel(
@@ -304,10 +338,12 @@ def start_mysql_export():
             "Отделение",
             "ФИО врача",
             "Специальность",
-            "До ближайшей свободной ячейки (дней) (9999 = отсутствует)",,
+            "До ближайшей свободной ячейки (дней) (9999 = отсутствует)",
         ],
     )
-    df_nearest_cells_eq = df_nearest_cells_eq(df_nearest_cells_eq["До ближайшей свободной ячейки (дней) (9999 = отсутствует)"] > 9)]
+    df_nearest_cells_eq = df_nearest_cells_eq[
+        (df_nearest_cells_eq["До ближайшей свободной ячейки (дней)"] > 9)
+    ]
     df_nearest_cells_eq = df_nearest_cells_eq.sort_values("Подразделение")
 
     df_nearest_cells_eq.to_excel(
