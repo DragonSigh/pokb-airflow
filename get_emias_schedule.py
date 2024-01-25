@@ -100,12 +100,11 @@ def start_mysql_export():
         df_temp_eq = df_temp[
             (df_temp["is_used"] == 0)
             & (
-                df_temp["end_time"]
-                > pd.Timestamp("today") & df_temp["resource_type"]
-                == "Оборудование"
+                (df_temp["end_time"] > pd.Timestamp("today"))
+                & (df_temp["resource_type"] == "Оборудование")
             )
         ]
-        if not df_temp.empty:
+        if not df_temp_eq.empty:
             # МРТ и КТ
             mri_ct_ids = [
                 "Магнитно-резонансный томограф",
