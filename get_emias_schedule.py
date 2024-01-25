@@ -62,14 +62,14 @@ def start_mysql_export():
     nearest_cells_eq = []
     for resource in df["resource_id"].unique():
         df_temp = df[df["resource_id"] == resource]
-        # Расписание создано на 3 недели вперед
+        # Расписание создано на 3 недели вперед   # ТОЛЬКО ВРАЧИ
         missed_dates = (
             pd.date_range(start=date.today(), end=(date.today() + timedelta(days=21)))
-            .difference(df_temp["begin_time"].dt.date)
+            .difference(df_temp[df_temp["resource_type"] == "Врач"]["begin_time"].dt.date)
             .strftime("%Y-%m-%d")
             .tolist()
         )
-        if missed_dates & (df_temp["resource_type"].iloc[0] == "Врач"): # ТОЛЬКО ВРАЧИ TODO
+        if missed_dates:
             if df_temp["resource_type"].iloc[0] == "Врач":
                 resource_name = df_temp["doctor_full_name"].iloc[0]
             elif df_temp["resource_type"].iloc[0] == "Оборудование":
