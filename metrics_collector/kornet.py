@@ -3,7 +3,7 @@ import metrics_collector.utils as utils
 import logging
 import os
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -24,19 +24,26 @@ def authorize(login_data: str, password_data: str):
 
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
     browser.refresh()
-    browser.implicitly_wait(20)
-    login_field = browser.find_element(
-        By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'
-    )
-    login_field.send_keys(login_data)
-    password_field = browser.find_element(
-        By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'
-    )
-    password_field.send_keys(password_data)
-    password_field.send_keys(Keys.ENTER)
-    #browser.find_element(
-    #    By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
-    #).click()
+
+    for _ in range(4):
+        try:
+
+            login_field = WebDriverWait(browser, 120).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'))
+            )
+            login_field.send_keys(login_data)
+
+            password_field = WebDriverWait(browser, 120).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'))
+            )
+            password_field.send_keys(password_data)
+            break
+        except StaleElementReferenceException as e:
+            raise e
+
+    browser.find_element(
+        By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
+    ).click()
 
     WebDriverWait(browser, 60).until(
         EC.presence_of_element_located(
@@ -84,6 +91,8 @@ def export_report():
     browser.execute_script(
         "$find('ctl00_plate_reportViewer').exportReport('EXCELOPENXML');"
     )
-    utils.download_wait(config.reports_path, 20, len(os.listdir(config.reports_path)) + 1)
+    utils.download_wait(
+        config.reports_path, 20, len(os.listdir(config.reports_path)) + 1
+    )
     logging.info("Экспорт файла с отчетом завершен")
     browser.get("http://llo.emias.mosreg.ru/Korvet2024/Admin/SignOut")
