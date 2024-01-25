@@ -65,25 +65,28 @@ def start_mysql_export():
         # Расписание создано на 3 недели вперед   # ТОЛЬКО ВРАЧИ
         missed_dates = (
             pd.date_range(start=date.today(), end=(date.today() + timedelta(days=21)))
-            .difference(df_temp[df_temp["resource_type"] == "Врач"]["begin_time"].dt.date)
+            .difference(df_temp["begin_time"].dt.date)
             .strftime("%Y-%m-%d")
             .tolist()
         )
         if missed_dates:
             if df_temp["resource_type"].iloc[0] == "Врач":
                 resource_name = df_temp["doctor_full_name"].iloc[0]
+                row = [
+                    df_temp["resource_type"].iloc[0],
+                    df_temp["subdivision_name"].iloc[0],
+                    df_temp["department_name"].iloc[0],
+                    resource_name,
+                    missed_dates,
+                ]
+                missed_days.append(row)
             elif df_temp["resource_type"].iloc[0] == "Оборудование":
                 resource_name = df_temp["equipment_name"].iloc[0]
+                continue
             elif df_temp["resource_type"].iloc[0] == "Кабинет":
                 resource_name = df_temp["cabinet_number"].iloc[0]
-            row = [
-                df_temp["resource_type"].iloc[0],
-                df_temp["subdivision_name"].iloc[0],
-                df_temp["department_name"].iloc[0],
-                resource_name,
-                missed_dates,
-            ]
-            missed_days.append(row)
+                continue
+
         # Суммарное время
         today_timestamp = pd.Timestamp("today")
         tomorrow_timestamp = pd.Timestamp("today").normalize() + pd.Timedelta(days=1)
