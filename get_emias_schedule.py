@@ -351,8 +351,8 @@ def start_mysql_export():
     # Права на скачивание любому пользователю
     os.chmod(EXPORT_PATH + "/Ближайшие свободные ячейки мрт и кт.xlsx", 0o777)
 
-    values = [df_nearest_cells_spec.columns.values.tolist()]
-    values.extend(df_nearest_cells_spec.values.tolist())
+    values = [df_nearest_cells_eq.columns.values.tolist()]
+    values.extend(df_nearest_cells_eq.values.tolist())
 
     wks = "Доступность МРТ и КТ!A1"
     worksheet = spreadsheet.worksheet("Доступность МРТ и КТ")
