@@ -340,14 +340,14 @@ def start_mysql_export():
             "До ближайшей свободной ячейки (дней) (9999 = отсутствует)",
         ],
     )
-    df_nearest_cells_eq = df_nearest_cells_eq[
-        (
-            df_nearest_cells_eq[
-                "До ближайшей свободной ячейки (дней) (9999 = отсутствует)"
-            ]
-            > 9
-        )
-    ]
+    # df_nearest_cells_eq = df_nearest_cells_eq[
+    #     (
+    #         df_nearest_cells_eq[
+    #             "До ближайшей свободной ячейки (дней) (9999 = отсутствует)"
+    #         ]
+    #         > 9
+    #     )
+    # ]
     df_nearest_cells_eq = df_nearest_cells_eq.sort_values("Подразделение")
 
     df_nearest_cells_eq.to_excel(
