@@ -129,7 +129,7 @@ def start_mysql_export():
                     df_temp_eq["subdivision_name"].iloc[0],
                     df_temp_eq["department_name"].iloc[0],
                     df_temp_eq["equipment_name"].iloc[0],
-                    df_temp_eq["specialty_name"].iloc[0],
+                    df_temp_eq["cabinet_number"].iloc[0],
                     nearest_day,
                 ]
                 nearest_cells_eq.append(row)
@@ -336,7 +336,7 @@ def start_mysql_export():
             "Подразделение",
             "Отделение",
             "Название оборудования",
-            "Специальность",
+            "Кабинет",
             "До ближайшей свободной ячейки (дней) (9999 = отсутствует)",
         ],
     )
