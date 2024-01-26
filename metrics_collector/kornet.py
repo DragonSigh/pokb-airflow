@@ -37,13 +37,13 @@ def authorize(login_data: str, password_data: str):
                 EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'))
             )
             password_field.send_keys(password_data)
-            break
-        except StaleElementReferenceException as e:
-            raise e
 
-    browser.find_element(
-        By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
-    ).click()
+            browser.find_element(
+                By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
+            ).click()
+            break
+        except (StaleElementReferenceException, TimeoutError) as e:
+            raise e
 
     WebDriverWait(browser, 60).until(
         EC.presence_of_element_located(
