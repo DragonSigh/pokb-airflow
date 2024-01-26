@@ -1,4 +1,4 @@
-import numpy as np
+import logging
 import pandas as pd
 from sqlalchemy import create_engine
 from datetime import date, timedelta
@@ -108,6 +108,7 @@ def start_mysql_export():
             )
         ]
         if not df_temp_eq.empty:
+            logging.info(df_temp_eq["equipment_type"].iloc[0])
             # МРТ и КТ
             mri_ct_ids = [
                 "Магнитно-резонансный томограф",
