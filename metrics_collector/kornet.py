@@ -42,8 +42,8 @@ def authorize(login_data: str, password_data: str):
                 By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
             ).click()
             break
-        except (StaleElementReferenceException, TimeoutError) as e:
-            raise e
+        except (StaleElementReferenceException, TimeoutError):
+            pass
 
     WebDriverWait(browser, 60).until(
         EC.presence_of_element_located(
