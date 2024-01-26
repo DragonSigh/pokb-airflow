@@ -112,7 +112,7 @@ def start_mysql_export():
                 & (df_temp["resource_type"] == "Оборудование")
             )
         ]
-        if True:
+        if not df_temp_eq.empty:
             # МРТ и КТ
             mri_ct_ids = [
                 "Магнитно-резонансный томограф",
