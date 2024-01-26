@@ -23,6 +23,11 @@ SCOPE = [
 CREDENTIALS = ServiceAccountCredentials.from_json_keyfile_name(
     PATH_TO_GSHEETS_CREDENTIAL, SCOPE
 )
+# Вкладки
+_CR_SCHEDULE = "Расписание врачей на 3 недели вперед (КР 26)"
+_CR_AVAILABILITY_THERAPISTS = "Доступность терапевтов и ВОП (КР 25)"
+_CR_AVAILABILITY_SPECIALISTS = "Доступность узких специалистов (КР 25)"
+_CR_AVAILABILITY_MRI_CT = "Доступность МРТ и КТ (КР 28, 199)"
 
 
 def start_mysql_export():
@@ -82,10 +87,10 @@ def start_mysql_export():
                 missed_days.append(row)
             elif df_temp["resource_type"].iloc[0] == "Оборудование":
                 resource_name = df_temp["equipment_name"].iloc[0]
-                #continue
+                # continue
             elif df_temp["resource_type"].iloc[0] == "Кабинет":
                 resource_name = df_temp["cabinet_number"].iloc[0]
-                #continue
+                # continue
 
         # Суммарное время
         today_timestamp = pd.Timestamp("today")
@@ -248,8 +253,8 @@ def start_mysql_export():
     values = [df_missed_days.columns.values.tolist()]
     values.extend(df_missed_days.values.tolist())
 
-    wks = "Расписание на 3 недели!A1"
-    worksheet = spreadsheet.worksheet("Расписание на 3 недели")
+    wks = _CR_SCHEDULE + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_SCHEDULE)
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
@@ -282,8 +287,8 @@ def start_mysql_export():
     values = [df_nearest_cells.columns.values.tolist()]
     values.extend(df_nearest_cells.values.tolist())
 
-    wks = "Доступность терапевтов и ВОП!A1"
-    worksheet = spreadsheet.worksheet("Доступность терапевтов и ВОП")
+    wks = _CR_AVAILABILITY_THERAPISTS + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_AVAILABILITY_THERAPISTS)
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
@@ -321,8 +326,8 @@ def start_mysql_export():
     values = [df_nearest_cells_spec.columns.values.tolist()]
     values.extend(df_nearest_cells_spec.values.tolist())
 
-    wks = "Доступность узких специалистов!A1"
-    worksheet = spreadsheet.worksheet("Доступность узких специалистов")
+    wks = _CR_AVAILABILITY_SPECIALISTS + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_AVAILABILITY_SPECIALISTS)
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
@@ -360,8 +365,8 @@ def start_mysql_export():
     values = [df_nearest_cells_eq.columns.values.tolist()]
     values.extend(df_nearest_cells_eq.values.tolist())
 
-    wks = "Доступность МРТ и КТ!A1"
-    worksheet = spreadsheet.worksheet("Доступность МРТ и КТ")
+    wks = _CR_AVAILABILITY_MRI_CT + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_AVAILABILITY_MRI_CT)
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
