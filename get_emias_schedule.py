@@ -82,10 +82,10 @@ def start_mysql_export():
                 missed_days.append(row)
             elif df_temp["resource_type"].iloc[0] == "Оборудование":
                 resource_name = df_temp["equipment_name"].iloc[0]
-                continue
+                #continue
             elif df_temp["resource_type"].iloc[0] == "Кабинет":
                 resource_name = df_temp["cabinet_number"].iloc[0]
-                continue
+                #continue
 
         # Суммарное время
         today_timestamp = pd.Timestamp("today")
@@ -108,7 +108,6 @@ def start_mysql_export():
             )
         ]
         if not df_temp_eq.empty:
-            logging.info(df_temp_eq["equipment_type"].iloc[0])
             # МРТ и КТ
             mri_ct_ids = [
                 "Магнитно-резонансный томограф",
