@@ -27,29 +27,32 @@ def authorize(login_data: str, password_data: str):
 
     for _ in range(4):
         try:
-
             login_field = WebDriverWait(browser, 120).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input'))
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="content"]/div/div/form/div[1]/input')
+                )
             )
             login_field.send_keys(login_data)
 
             password_field = WebDriverWait(browser, 120).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input'))
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="content"]/div/div/form/div[2]/input')
+                )
             )
             password_field.send_keys(password_data)
 
             browser.find_element(
                 By.XPATH, '//*[@id="content"]/div/div/form/div[4]/button'
             ).click()
+
+            WebDriverWait(browser, 60).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//*[@id='aspnetForm']/header/nav/ul/li[3]")
+                )
+            )
             break
         except (StaleElementReferenceException, TimeoutError):
             pass
-
-    WebDriverWait(browser, 60).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='aspnetForm']/header/nav/ul/li[3]")
-        )
-    )
 
     logging.info("Авторизация пройдена")
 
