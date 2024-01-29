@@ -1,5 +1,3 @@
-import os
-
 from datetime import date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains

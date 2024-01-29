@@ -9,7 +9,7 @@ import os
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import landscape, A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
@@ -432,3 +432,9 @@ def start_analyze():
         df_stat_osp,
         os.path.join(EXPORT_PATH, "ОСП Статистика по приемным отделениям.xlsx"),
     )
+
+
+if __name__ == "__main__":
+    config.reports = os.path.abspath(os.getcwd())
+    EXPORT_PATH = os.join(config.reports, "test_export")
+    start_analyze()
