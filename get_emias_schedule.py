@@ -313,7 +313,9 @@ def start_mysql_export():
             > 10
         )
     ]
-    df_nearest_cells_spec = df_nearest_cells_spec.sort_values(["Подразделение", "Специальность"])
+    df_nearest_cells_spec = df_nearest_cells_spec.sort_values(
+        ["Подразделение", "Специальность"]
+    )
 
     df_nearest_cells_spec.to_excel(
         EXPORT_PATH + "/Ближайшие свободные ячейки спец.xlsx", index=False
@@ -353,6 +355,9 @@ def start_mysql_export():
     #     )
     # ]
     df_nearest_cells_eq = df_nearest_cells_eq.sort_values("Подразделение")
+    df_nearest_cells_eq = df_nearest_cells_eq[
+        df_nearest_cells_eq["Кабинет"].str.contains("Стационар") == False
+    ]
 
     df_nearest_cells_eq.to_excel(
         EXPORT_PATH + "/Ближайшие свободные ячейки мрт и кт.xlsx", index=False
