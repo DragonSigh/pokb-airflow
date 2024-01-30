@@ -50,11 +50,11 @@ default_args = {
     "on_failure_callback": alert_tg_channel_on_error,
 }
 
-# At 07:00 on every day-of-week from Tuesday through Friday.
+# At 10:00 on every day-of-week from Monday through Friday.
 dag = DAG(
     dag_id="metric_022",
     description="Выгрузка и анализ Показателя 22",
-    schedule="0 10 * * 2-5",
+    schedule="0 10 * * 1-5",
     catchup=False,
     default_args=default_args
 )
