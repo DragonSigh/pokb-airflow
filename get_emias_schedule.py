@@ -274,7 +274,7 @@ def start_mysql_export():
         (df_nearest_cells["До ближайшей свободной ячейки (дней)"] > 1)
         | (df_nearest_cells["До ячейки самозаписи (дней) (9999 = отсутствует)"] > 1)
     ]
-    df_nearest_cells = df_nearest_cells.sort_values("Подразделение")
+    df_nearest_cells = df_nearest_cells.sort_values(["Подразделение", "Специальность"])
 
     df_nearest_cells.to_excel(
         EXPORT_PATH + "/Ближайшие свободные ячейки тер воп.xlsx", index=False
@@ -313,7 +313,7 @@ def start_mysql_export():
             > 10
         )
     ]
-    df_nearest_cells_spec = df_nearest_cells_spec.sort_values("Подразделение")
+    df_nearest_cells_spec = df_nearest_cells_spec.sort_values(["Подразделение", "Специальность"])
 
     df_nearest_cells_spec.to_excel(
         EXPORT_PATH + "/Ближайшие свободные ячейки спец.xlsx", index=False
