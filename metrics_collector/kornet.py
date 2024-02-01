@@ -4,6 +4,7 @@ import logging
 import os
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -52,7 +53,7 @@ def authorize(login_data: str, password_data: str):
                 )
             )
             break
-        except (StaleElementReferenceException, TimeoutError) as ex:
+        except (StaleElementReferenceException, TimeoutException) as ex:
             logging.exception(ex)
 
     logging.info("Авторизация пройдена")
