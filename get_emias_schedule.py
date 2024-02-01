@@ -355,6 +355,7 @@ def start_mysql_export():
     #     )
     # ]
     df_nearest_cells_eq = df_nearest_cells_eq.sort_values("Подразделение")
+    # Исключить стационарные кабинеты
     df_nearest_cells_eq = df_nearest_cells_eq[
         df_nearest_cells_eq["Кабинет"].str.contains("Стационар") == False
     ]

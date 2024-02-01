@@ -25,7 +25,8 @@ def authorize(login_data: str, password_data: str):
     browser.get("http://llo.emias.mosreg.ru/korvet/admin/signin")
     browser.refresh()
 
-    for _ in range(4):
+    for i in range(4):
+        logging.info(f"Попытка авторизации #{i}")
         try:
             login_field = WebDriverWait(browser, 120).until(
                 EC.presence_of_element_located(
