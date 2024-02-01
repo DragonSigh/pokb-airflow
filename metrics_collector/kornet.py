@@ -52,8 +52,8 @@ def authorize(login_data: str, password_data: str):
                 )
             )
             break
-        except (StaleElementReferenceException, TimeoutError):
-            pass
+        except (StaleElementReferenceException, TimeoutError) as ex:
+            logging.exception(ex)
 
     logging.info("Авторизация пройдена")
 
