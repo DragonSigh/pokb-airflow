@@ -34,7 +34,7 @@ def start_bi_report_saving():
 def analyze_data():
     # Очистить папку с предыдущими отчетами
     utils.emptydir(EXPORT_PATH)
-    
+
     # Загружаем отчёт в датафрейм
     df_pass_dvn = pd.read_excel(
         os.path.join(config.reports_path, "Прохождение пациентами ДВН или ПМО.xlsx"),

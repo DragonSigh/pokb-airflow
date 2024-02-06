@@ -1,3 +1,4 @@
+# Импорт библиотек и классов
 from datetime import date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -5,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 
+# Директория для выгрузки отчетов
 reports_path = r"/etc/samba/share/download"
 
 # Опции для веб-драйвера
