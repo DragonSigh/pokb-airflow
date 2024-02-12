@@ -8,8 +8,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+# Получает объект браузера из конфигурации
 browser = config.browser
+
+# Получает объект действий с клавиатурой и мышью из конфигурации
 actions = config.actions
+
+# Получает путь к папке с отчетами из конфигурации
 reports_path = config.reports_path
 
 
@@ -46,32 +51,45 @@ def authorize(login_data: str, password_data: str):
     WebDriverWait(browser, 30).until(
         EC.invisibility_of_element((By.XPATH, '//*[@id="loadertext"]'))
     )
-    #Предупреждение
-    #element = browser.find_element(By.XPATH, "/html/body/div[8]/div[3]/div/button/span")
-    #element.click()
     logging.info("Авторизация пройдена")
 
 
 def load_system_report(cabinet_id, begin_date, end_date):
     """
-    Открыть Системные отчеты - Отчет по записи на прием v2
+    Функция открывает Отчет по записи на прием v2 в Системных отчетах.
+
+    Args:
+        cabinet_id: Идентификатор кабинета.
+        begin_date: Начальная дата периода отчета.
+        end_date: Конечная дата периода отчета.
     """
     logging.info(f"Открываю Отчет по записи на прием v2, ID кабинета: {cabinet_id}")
+
+    #  Находим элемент "Системные отчеты" на странице и кликаем по нему
     element = browser.find_element(By.XPATH, '//*[@id="Portlet_9"]/div[2]/div[1]/a')
     WebDriverWait(browser, 20).until(EC.element_to_be_clickable(element))
     browser.execute_script("arguments[0].click();", element)
-    #element.click()
     WebDriverWait(browser, 20).until(EC.number_of_windows_to_be(2))
     browser.switch_to.window(browser.window_handles[1])
+
+    # Ждем, пока исчезнет индикатор загрузки
     WebDriverWait(browser, 20).until(
         EC.invisibility_of_element((By.XPATH, '//*[@id="loadertext"]'))
     )
+
+    # Вводим "v2" в поле фильтра отчетов.
     element = browser.find_element(By.XPATH, '//*[@id="table_filter"]/label/input')
     actions.click(element).send_keys("v2").perform()
+
+    # Кликам по ссылке на Отчет по записи на прием v2
     element = browser.find_element(By.XPATH, '//*[@id="table"]/tbody/tr/td[3]/a')
     element.click()
+
+    # Ждем, пока станет доступна кнопка "Выполнить"
     element = browser.find_element(By.XPATH, '//*[@id="send-request-btn"]')
     WebDriverWait(browser, 20).until(EC.element_to_be_clickable(element))
+
+    # Вводим период
     element = browser.find_element(By.XPATH, '//*[@id="Arguments_0__Value"]')
     browser.execute_script(
         """
@@ -82,6 +100,8 @@ def load_system_report(cabinet_id, begin_date, end_date):
         element,
         begin_date.strftime("%d.%m.%Y") + "_" + end_date.strftime("%d.%m.%Y"),
     )
+
+    # Выбираем кабинет по идентификатору
     element = browser.find_element(By.XPATH, '//*[@id="Arguments_2__Value"]')
     browser.execute_script(
         """
@@ -92,6 +112,8 @@ def load_system_report(cabinet_id, begin_date, end_date):
         element,
         cabinet_id,
     )
+
+    # Указываем параметр 0 - без отмененных записей
     element = browser.find_element(By.XPATH, '//*[@id="Arguments_3__Value"]')
     browser.execute_script(
         """
@@ -102,6 +124,8 @@ def load_system_report(cabinet_id, begin_date, end_date):
         element,
         "0",
     )
+
+    # Жмем кнопку "Выполнить"
     browser.find_element(By.XPATH, '//*[@id="send-request-btn"]').click()
     logging.info("Отчет открыт в браузере")
 
@@ -114,6 +138,7 @@ def export_system_report(cabinet):
     except FileExistsError:
         pass
     # Сохранить в Excel
+    # Ожидать появления надписи "Выполнено"
     try:
         WebDriverWait(browser, 300).until(
             EC.text_to_be_present_in_element_value(
@@ -122,10 +147,12 @@ def export_system_report(cabinet):
         )
     except TimeoutException:
         browser.refresh()
-
+    # Нажать на кнопку "Скачать файл"
     element = browser.find_element(By.XPATH, '//*[@id="dlbId"]')
     element.click()
+    # Ожидать скачивания в папку
     utils.download_wait(reports_path, 20)
+    # Закрыть браузер и переключиться на другое окно
     browser.close()
     browser.switch_to.window(browser.window_handles[0])
     logging.info(f"Файл с отчетом сохранён в папку: {reports_path}")

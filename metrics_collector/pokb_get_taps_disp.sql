@@ -1,26 +1,20 @@
--- Выгрузка всех ТАП по диспансеризации с начала года
+-- Выгрузка карт диспансеризации и ПМО
 SELECT
-	tap.[Number] AS [tap_number],
-	CAST([DateTAP] AS Date) AS [tap_date],
-	MKAB.[NUM] AS [mkab_number],
-	UPPER(MKAB.[Family]) AS [last_name],
-	LEFT(MKAB.[Name], 1) AS [first_name],
-	LEFT(MKAB.[OT], 1) AS [middle_name],
-	LEFT(CAST(MKAB.[DATE_BD] AS Date), 4) AS [birth_year],
-	dep.[DepartmentNAME] AS [department_name],
-	subdivision.[M_NAMES] AS [subdivision_name]
-  FROM [hlt_Pod_OKB_363001].[dbo].[hlt_TAP] AS tap -- ТАПы
-  LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_MKAB] AS MKAB -- МКАБы
-  ON tap.[rf_MKABID] = MKAB.[MKABID]
+	disp_card.[DateOpen] AS date_open,
+	disp_card.[DateClose] AS date_close,
+	disp_card.[Number] AS card_number,
+	lpu.[M_NAMES] AS subdivision_name,
+	UPPER(doc.[FAM_V] + ' ' + doc.[IM_V] + ' ' + doc.[OT_V]) AS [doctor_full_name]
+  FROM [hlt_Pod_OKB_363001].[dbo].[hlt_disp_Card] AS disp_card -- карты диспансеризации
+  LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_LPU] AS lpu -- подразделения
+  ON disp_card.[rf_LpuGuid] = lpu.[GUIDLPU]
   LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_DocPRVD] AS doc_spec -- врачи
-  ON tap.[rf_DocPRVDID] = doc_spec.[DocPRVDID]
-  LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_PRVD] AS spec -- ресурсы
-  ON doc_spec.[rf_PRVDID]  = spec.[PRVDID] 
-  LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_Department] AS dep -- отделения
-  ON doc_spec.[rf_DepartmentID] = dep.[DepartmentID]
-  LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_LPU] AS subdivision -- подразделения
-  ON dep.[rf_LPUID] = subdivision.[LPUID]
-  WHERE [DateTAP] >= '2024-01-01'
-  AND tap.[isClosed] = 1 -- ТАП закрыт
-  AND tap.[rf_kl_ReasonTypeID] = 11 -- 2.2 Диспансеризация
-ORDER BY [DateTAP] DESC
+  ON disp_card.[rf_DocPRVDID] = doc_spec.[DocPRVDID]
+  LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[hlt_LPUDoctor] doc -- данные врача-сотрудника 
+  ON doc_spec.[rf_LPUDoctorID] = doc.[LPUDoctorID]
+  WHERE [DateClose] >= '2024-01-01' AND [DateClose] <= '2025-01-01'
+  AND [IsClosed] = 1 -- Закрыта
+  AND [rf_disp_ReasonCloseGuid] = '51D750AC-74C8-493E-B643-A486425449A1' -- Обследование пройдено
+  AND ([rf_DispTypeGuid] = '1DEC26C7-13A2-4DAF-8C2C-38E33619C82E' -- 404н Диспансеризация
+  OR [rf_DispTypeGuid] = '0DA8DFF7-0EF0-4AD8-B933-B4E2F80B7988') -- 404н Профилактические медицинские осмотры
+  ORDER BY disp_card.[DateClose] DESC
