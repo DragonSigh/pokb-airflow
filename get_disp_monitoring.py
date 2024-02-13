@@ -266,13 +266,26 @@ def start_mysql_export():
     gc = gs.authorize(CREDENTIALS)
     spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
 
-    # ДОСТУПНОСТЬ ТЕРАПЕВТОВ И ВОП
+    wks = _CR_DISP + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_DISP)
+
+    df_current = pd.DataFrame(worksheet.get_all_values())
+
+    # Выбрать первую строку в качестве столбцов
+    df_current.columns = df_current.iloc[0]
+    df_current = df_current[1:]  # Удалить первую строку
+    df_current = df_current.reset_index(drop=True)  # Сброс индексов
+    # Удалить колонки с 1 по 4 включительно
+    df_current = df_current.drop(df_current.columns[1:5], axis=1)
+    print(df_current)
+
+    df_final = df_final.merge(df_current, how="left", on="ОСП")
+
     values = [df_final.columns.values.tolist()]
     values.extend(df_final.values.tolist())
 
-    wks = _CR_DISP + "!A1"
-    worksheet = spreadsheet.worksheet(_CR_DISP)
     worksheet.batch_clear(["A1:Z500"])
+
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )

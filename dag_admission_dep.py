@@ -55,6 +55,9 @@ def alert_tg_channel_on_error(context):
 default_args = {
     "start_date": datetime(2023, 1, 1),
     "sla": timedelta(minutes=60),
+    "retries": 5,
+    "retry_delay": timedelta(minutes=1),
+    "retry_exponential_backoff": True,
     "on_success_callback": None,
     "on_failure_callback": alert_tg_channel_on_error,
 }
