@@ -15,8 +15,8 @@ EXPORT_PATH = r"/etc/samba/share/download/Мониторинг диспансе�
 SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_taps_disp.sql"
 PATH_TO_MYSQL_CREDENTIAL = r"/home/user/auth-mysql.json"
 PATH_TO_GSHEETS_CREDENTIAL = r"/home/user/pokb-399111-f04c71766977.json"
-# SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
-SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  #тест
+#SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
+SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест
 SCOPE = [
     r"https://spreadsheets.google.com/feeds",
     r"https://www.googleapis.com/auth/drive",
@@ -24,6 +24,8 @@ SCOPE = [
 
 # Вкладки
 _CR_DISP = "Мониторинг диспансеризации"
+_CR_LAST_WEEK_DIV = "За прошлую неделю (отделения)"
+_CR_LAST_WEEK_DOC = "За прошлую неделю (врачи)"
 
 # Константы
 _YEAR_PLAN = 184233
@@ -213,6 +215,45 @@ def start_mysql_export():
         .reset_index()
     )
 
+    # ЗА НЕДЕЛЮ - ОТДЕЛЕНИЯ
+
+    df_agg_past_week_div = (
+        df_week.groupby(["subdivision_name"])
+        .agg(
+            {
+                "card_number": "count",
+            }
+        )
+        .reset_index()
+        .sort_values("subdivision_name")
+        .rename(
+            columns={
+                "subdivision_name": "Отделение",
+                "card_number": f"Проведено {week_column_format}",
+            }
+        )
+    )
+
+    # ЗА НЕДЕЛЮ - ВРАЧИ
+
+    df_agg_past_week_doc = (
+        df_week.groupby(["subdivision_name", "doctor_full_name"])
+        .agg(
+            {
+                "card_number": "count",
+            }
+        )
+        .reset_index()
+        .sort_values(["subdivision_name", "doctor_full_name"])
+        .rename(
+            columns={
+                "subdivision_name": "Отделение",
+                "doctor_full_name": "ФИО",
+                "card_number": f"Проведено {week_column_format}",
+            }
+        )
+    )
+
     df_agg_past_week[f"Цель {week_column_format}"] = df_agg_past_week.apply(
         lambda row: int(_WORK_DAY_PLAN * 5 * _WEIGHTS[row["subdivision_short"]]),
         axis=1,
@@ -286,6 +327,26 @@ def start_mysql_export():
 
     worksheet.batch_clear(["A1:Z500"])
 
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
+    # Отделения
+    wks = _CR_LAST_WEEK_DIV + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DIV)
+    values = [df_agg_past_week_div.columns.values.tolist()]
+    values.extend(df_agg_past_week_div.values.tolist())
+    worksheet.batch_clear(["A1:Z500"])
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
+    # Врачи
+    wks = _CR_LAST_WEEK_DOC + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DOC)
+    values = [df_agg_past_week_doc.columns.values.tolist()]
+    values.extend(df_agg_past_week_doc.values.tolist())
+    worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
     )
