@@ -5,6 +5,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import NoSuchDriverException
 
 # Директория для выгрузки отчетов
 reports_path = r"/etc/samba/share/download"
@@ -49,8 +50,14 @@ options.add_experimental_option(
 )
 
 # Выбираем драйвер браузера и устанавливаем его опции
-service = Service(r"/home/user/chromedriver")
-browser = webdriver.Chrome(options=options, service=service)
+try:
+    service = Service(r"/home/user/chromedriver")
+    browser = webdriver.Chrome(options=options, service=service)
+except NoSuchDriverException:
+    service = Service(r"C:\chromedriver\chromedriver.exe")
+    browser = webdriver.Chrome(options=options, service=service)
+    reports_path = r"E:\System\Projects\pokb-metrics-collector\reports"
+
 # browser.set_page_load_timeout(30)
 # browser.set_script_timeout(3)
 actions = ActionChains(browser)
