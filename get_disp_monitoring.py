@@ -15,7 +15,7 @@ EXPORT_PATH = r"/etc/samba/share/download/Мониторинг диспансе�
 SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_taps_disp.sql"
 PATH_TO_MYSQL_CREDENTIAL = r"/home/user/auth-mysql.json"
 PATH_TO_GSHEETS_CREDENTIAL = r"/home/user/pokb-399111-f04c71766977.json"
-#SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
+# SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
 SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест
 SCOPE = [
     r"https://spreadsheets.google.com/feeds",
@@ -217,7 +217,26 @@ def start_mysql_export():
 
     # ЗА НЕДЕЛЮ - ОТДЕЛЕНИЯ
 
+    # С начала года нарастающим итогом - отделения
     df_agg_past_week_div = (
+        df[df["date_close"] <= past_week_sunday]
+        .groupby(["subdivision_name"])
+        .agg(
+            {
+                "card_number": "count",
+            }
+        )
+        .reset_index()
+        .sort_values("subdivision_name")
+        .rename(
+            columns={
+                "subdivision_name": "Отделение",
+                "card_number": f"Проведено с начала года",
+            }
+        )
+    )
+
+    df_agg_past_week_div = df_agg_past_week_div.merge(
         df_week.groupby(["subdivision_name"])
         .agg(
             {
@@ -231,12 +250,34 @@ def start_mysql_export():
                 "subdivision_name": "Отделение",
                 "card_number": f"Проведено {week_column_format}",
             }
-        )
-    )
+        ),
+        on="Отделение",
+        how="left",
+    ).fillna(0)
 
     # ЗА НЕДЕЛЮ - ВРАЧИ
 
+    # С начала года нарастающим итогом - врачи
     df_agg_past_week_doc = (
+        df[df["date_close"] <= past_week_sunday]
+        .groupby(["subdivision_name", "doctor_full_name"])
+        .agg(
+            {
+                "card_number": "count",
+            }
+        )
+        .reset_index()
+        .sort_values(["subdivision_name", "doctor_full_name"])
+        .rename(
+            columns={
+                "subdivision_name": "Отделение",
+                "doctor_full_name": "ФИО",
+                "card_number": f"Проведено с начала года",
+            }
+        )
+    )
+
+    df_agg_past_week_doc = df_agg_past_week_doc.merge(
         df_week.groupby(["subdivision_name", "doctor_full_name"])
         .agg(
             {
@@ -251,8 +292,10 @@ def start_mysql_export():
                 "doctor_full_name": "ФИО",
                 "card_number": f"Проведено {week_column_format}",
             }
-        )
-    )
+        ),
+        on=["Отделение", "ФИО"],
+        how="left",
+    ).fillna(0)
 
     df_agg_past_week[f"Цель {week_column_format}"] = df_agg_past_week.apply(
         lambda row: int(_WORK_DAY_PLAN * 5 * _WEIGHTS[row["subdivision_short"]]),
@@ -363,7 +406,7 @@ if __name__ == "__main__":
 
 
 # 1. Грузим раз в неделю в 15:00 прошлую неделю две цифры: абсолютное значение в количестве прошедших
-# диспансеризацию и процент выполненияплана за эту неделю (не нарастающим, а именно за неделю) - результат
+# диспансеризацию и процент выполнения плана за эту неделю (не нарастающим, а именно за неделю) - результат
 # грузим в гугл-таблицу и ячейку с % выполнения красим цветом по следующему принципу: диапазон баллов: отставание
 # от плана менее 1,97% - 5 баллов (зел); 1,97 – 2,99 – 3 балла (жел); 3 и более – 0 баллов (красн).
 # 2. Вторым столбцом после названия ОСП должен стоять годовой план; следующий столбец абсолютный план по состоянию
