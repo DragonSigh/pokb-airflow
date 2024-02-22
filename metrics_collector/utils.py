@@ -125,6 +125,8 @@ def get_department(x):
         return "ЦАОП"
     elif re.match(r"^.*Ленинградская.*$", value):
         return "Ленинградская 9"
+    elif re.match(r"^.*Централизованное отделение.*$", value):
+        return "Ленинградская 9"
     elif pd.isna(x):
         return "Не указано"
     else:

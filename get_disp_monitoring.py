@@ -15,7 +15,7 @@ EXPORT_PATH = r"/etc/samba/share/download/Мониторинг диспансе�
 SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_taps_disp.sql"
 PATH_TO_MYSQL_CREDENTIAL = r"/home/user/auth-mysql.json"
 PATH_TO_GSHEETS_CREDENTIAL = r"/home/user/pokb-399111-f04c71766977.json"
-# SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
+#SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
 SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест
 SCOPE = [
     r"https://spreadsheets.google.com/feeds",
