@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 from datetime import date, datetime, timedelta
 import json
 import os
-
 import gspread as gs
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -29,10 +28,10 @@ _CR_LAST_WEEK_DOC = "За прошлую неделю (врачи)"
 _CR_ERRORS = "Проведено вне ОСП"
 
 # Константы
-_YEAR_PLAN = 184233
-_WORK_DAY_PLAN = _YEAR_PLAN // 248
+_YEAR_PLAN = 184233 # Годовой план для Подольской ОКБ
+_WORK_DAY_PLAN = _YEAR_PLAN // 248 # Количество рабочих дней в году
 
-# Веса для распределения
+# Веса для распределения по подразделениям
 _WEIGHTS = {
     "ОСП 1": 0.304,
     "ОСП 2": 0.065,
@@ -45,7 +44,26 @@ _WEIGHTS = {
 }
 
 
-def workdays_between(start_date, end_date):
+# Список праздников
+holidays = [
+    date(2024, 1, 1),  # Новый год
+    date(2024, 1, 2),  # Новый год
+    date(2024, 1, 3),  # Новый год
+    date(2024, 1, 4),  # Новый год
+    date(2024, 1, 5),  # Новый год
+    date(2024, 1, 6),  # Новый год
+    date(2024, 1, 8),  # Новый год
+    date(2024, 1, 7),  # Рождество
+    date(2024, 2, 23),  # День защитника Отечества
+    date(2024, 3, 8),  # Международный женский день
+    date(2024, 5, 1),  # Праздник Весны и Труда
+    date(2024, 5, 9),  # День Победы
+    date(2024, 6, 12),  # День России
+    date(2024, 11, 4),  # День народного единства
+]
+
+
+def workdays_between(start_date, end_date, holidays):
     """
     Функция для вычисления количества рабочих дней между двумя датами включительно.
 
@@ -72,6 +90,9 @@ def workdays_between(start_date, end_date):
         date = start_date + timedelta(days=day)
         weekday = date.weekday()
         if weekday in weekends:
+            weekend_days += 1
+        # Проверка, является ли день праздником
+        elif date in holidays:
             weekend_days += 1
 
     # Возвращаем количество рабочих дней
@@ -119,15 +140,18 @@ def start_mysql_export():
         "ОСП 7",
     ]
 
-    # # Понедельник прошлой недели
+    # Понедельник прошлой недели
+    past_week_monday = (
+        date.today() - timedelta(days=date.today().weekday()) - timedelta(days=7)
+    )
+    # Воскресенье прошлой недели
+    past_week_sunday = past_week_monday + timedelta(days=6)
+
+    # # Если нужны конкретные даты
     # past_week_monday = (
     #     date.today() - timedelta(days=date.today().weekday()) - timedelta(days=7)
     # )
-    # # Воскресенье прошлой недели
-    # past_week_sunday = past_week_monday + timedelta(days=6)
-
-    past_week_monday = datetime(2024, 1, 1)
-    past_week_sunday = datetime(2024, 2, 28)
+    # past_week_sunday = date(datetime.now().year, 2, 29)
 
     first_date = past_week_monday.strftime("%d.%m")
     last_date = past_week_sunday.strftime("%d.%m")
@@ -136,7 +160,9 @@ def start_mysql_export():
     year_beginning = date(datetime.now().year, 1, 1)
 
     # Количество рабочих дней с начала года
-    current_workdays = workdays_between(year_beginning, past_week_sunday)
+    current_workdays = workdays_between(year_beginning, past_week_sunday, holidays)
+
+    print(current_workdays)
 
     # ОШИБКИ - проведено вне ОСП
     df_errors = df[~df["subdivision_short"].isin(osp_list)].fillna(0)
@@ -318,8 +344,11 @@ def start_mysql_export():
         how="left",
     ).fillna(0)
 
+    # Количество рабочих дней с начала года
+    current_workdays_in_week = workdays_between(past_week_monday, past_week_sunday, holidays)
+
     df_agg_past_week[f"Цель {week_column_format}"] = df_agg_past_week.apply(
-        lambda row: int(_WORK_DAY_PLAN * 5 * _WEIGHTS[row["subdivision_short"]]),
+        lambda row: int(_WORK_DAY_PLAN * current_workdays_in_week * _WEIGHTS[row["subdivision_short"]]),
         axis=1,
     )
 
@@ -327,7 +356,7 @@ def start_mysql_export():
         lambda row: round(
             100
             * row["card_number"]
-            / (_WORK_DAY_PLAN * 5 * _WEIGHTS[row["subdivision_short"]]),
+            / (_WORK_DAY_PLAN * current_workdays_in_week * _WEIGHTS[row["subdivision_short"]]),
             2,
         ),
         axis=1,
