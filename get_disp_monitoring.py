@@ -26,6 +26,7 @@ SCOPE = [
 _CR_DISP = "Мониторинг диспансеризации"
 _CR_LAST_WEEK_DIV = "За прошлую неделю (отделения)"
 _CR_LAST_WEEK_DOC = "За прошлую неделю (врачи)"
+_CR_ERRORS = "Проведено вне ОСП"
 
 # Константы
 _YEAR_PLAN = 184233
@@ -118,12 +119,15 @@ def start_mysql_export():
         "ОСП 7",
     ]
 
-    # Понедельник прошлой недели
-    past_week_monday = (
-        date.today() - timedelta(days=date.today().weekday()) - timedelta(days=7)
-    )
-    # Воскресенье прошлой недели
-    past_week_sunday = past_week_monday + timedelta(days=6)
+    # # Понедельник прошлой недели
+    # past_week_monday = (
+    #     date.today() - timedelta(days=date.today().weekday()) - timedelta(days=7)
+    # )
+    # # Воскресенье прошлой недели
+    # past_week_sunday = past_week_monday + timedelta(days=6)
+
+    past_week_monday = datetime(2024, 1, 1)
+    past_week_sunday = datetime(2024, 2, 28)
 
     first_date = past_week_monday.strftime("%d.%m")
     last_date = past_week_sunday.strftime("%d.%m")
@@ -134,6 +138,23 @@ def start_mysql_export():
     # Количество рабочих дней с начала года
     current_workdays = workdays_between(year_beginning, past_week_sunday)
 
+    # ОШИБКИ - проведено вне ОСП
+    df_errors = df[~df["subdivision_short"].isin(osp_list)].fillna(0)
+
+    df_errors["date_close"] = df_errors["date_close"].astype(str)
+
+    df_errors = df_errors.rename(
+        columns={
+            "subdivision_short": "Отделение",
+            "doctor_full_name": "ФИО",
+            "card_number": "Номер карты",
+            "date_close": "Дата закрытия",
+        }
+    )[["Отделение", "ФИО", "Номер карты", "Дата закрытия"]].sort_values(
+        ["Отделение", "ФИО"]
+    )
+
+    print(df_errors)
     df = df[df["subdivision_short"].isin(osp_list)]
 
     # С НАЧАЛА ГОДА
@@ -163,7 +184,7 @@ def start_mysql_export():
         axis=1,
     )
 
-    df_agg_year["Эффективность реализации плана, %"] = df_agg_year.apply(
+    df_agg_year["Эффективность реализации годового плана, %"] = df_agg_year.apply(
         lambda row: round(
             100
             * row["card_number"]
@@ -184,13 +205,13 @@ def start_mysql_export():
             "Годовой план",
             f"Цель на {last_date}",
             f"Проведено на {last_date}",
-            "Эффективность реализации плана, %",
+            "Эффективность реализации годового плана, %",
         ]
     ]
 
     df_agg_year.loc["ПОКБ"] = df_agg_year.sum(numeric_only=True)
     df_agg_year.loc["ПОКБ", ["ОСП"]] = "ПОКБ"
-    df_agg_year.loc["ПОКБ", ["Эффективность реализации плана, %"]] = round(
+    df_agg_year.loc["ПОКБ", ["Эффективность реализации годового плана, %"]] = round(
         100
         * df_agg_year.at["ПОКБ", f"Проведено на {last_date}"]
         / df_agg_year.at["ПОКБ", f"Цель на {last_date}"],
@@ -363,7 +384,9 @@ def start_mysql_export():
     df_current = df_current.drop(df_current.columns[1:5], axis=1)
     print(df_current)
 
-    df_final = df_final.merge(df_current, how="left", on="ОСП")
+    # Если Google таблица не пустая, добавляем исторические данные
+    if not df_current.empty:
+        df_final = df_final.merge(df_current, how="left", on="ОСП")
 
     values = [df_final.columns.values.tolist()]
     values.extend(df_final.values.tolist())
@@ -389,6 +412,16 @@ def start_mysql_export():
     worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DOC)
     values = [df_agg_past_week_doc.columns.values.tolist()]
     values.extend(df_agg_past_week_doc.values.tolist())
+    worksheet.batch_clear(["A1:Z500"])
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
+    # Ошибки вне ОСП
+    wks = _CR_ERRORS + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_ERRORS)
+    values = [df_errors.columns.values.tolist()]
+    values.extend(df_errors.values.tolist())
     worksheet.batch_clear(["A1:Z500"])
     spreadsheet.values_update(
         wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
