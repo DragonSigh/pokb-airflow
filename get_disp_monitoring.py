@@ -14,8 +14,8 @@ EXPORT_PATH = r"/etc/samba/share/download/Мониторинг диспансе�
 SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_taps_disp.sql"
 PATH_TO_MYSQL_CREDENTIAL = r"/home/user/auth-mysql.json"
 PATH_TO_GSHEETS_CREDENTIAL = r"/home/user/pokb-399111-f04c71766977.json"
-#SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
-SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест
+SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
+# SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест выгрузки
 SCOPE = [
     r"https://spreadsheets.google.com/feeds",
     r"https://www.googleapis.com/auth/drive",
@@ -28,8 +28,8 @@ _CR_LAST_WEEK_DOC = "За прошлую неделю (врачи)"
 _CR_ERRORS = "Проведено вне ОСП"
 
 # Константы
-_YEAR_PLAN = 184233 # Годовой план для Подольской ОКБ
-_WORK_DAY_PLAN = _YEAR_PLAN // 248 # Количество рабочих дней в году
+_YEAR_PLAN = 184233  # Годовой план для Подольской ОКБ
+_WORK_DAY_PLAN = _YEAR_PLAN // 248  # Количество рабочих дней в году
 
 # Веса для распределения по подразделениям
 _WEIGHTS = {
@@ -151,7 +151,7 @@ def start_mysql_export():
     # past_week_monday = (
     #     date.today() - timedelta(days=date.today().weekday()) - timedelta(days=7)
     # )
-    # past_week_sunday = date(datetime.now().year, 2, 29)
+    # past_week_sunday = date(datetime.now().year, 3, 4)
 
     first_date = past_week_monday.strftime("%d.%m")
     last_date = past_week_sunday.strftime("%d.%m")
@@ -345,10 +345,16 @@ def start_mysql_export():
     ).fillna(0)
 
     # Количество рабочих дней с начала года
-    current_workdays_in_week = workdays_between(past_week_monday, past_week_sunday, holidays)
+    current_workdays_in_week = workdays_between(
+        past_week_monday, past_week_sunday, holidays
+    )
 
     df_agg_past_week[f"Цель {week_column_format}"] = df_agg_past_week.apply(
-        lambda row: int(_WORK_DAY_PLAN * current_workdays_in_week * _WEIGHTS[row["subdivision_short"]]),
+        lambda row: int(
+            _WORK_DAY_PLAN
+            * current_workdays_in_week
+            * _WEIGHTS[row["subdivision_short"]]
+        ),
         axis=1,
     )
 
@@ -356,7 +362,11 @@ def start_mysql_export():
         lambda row: round(
             100
             * row["card_number"]
-            / (_WORK_DAY_PLAN * current_workdays_in_week * _WEIGHTS[row["subdivision_short"]]),
+            / (
+                _WORK_DAY_PLAN
+                * current_workdays_in_week
+                * _WEIGHTS[row["subdivision_short"]]
+            ),
             2,
         ),
         axis=1,

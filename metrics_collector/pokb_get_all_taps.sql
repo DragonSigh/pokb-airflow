@@ -20,6 +20,6 @@ SELECT --TOP(1)
   ON doc_spec.[rf_DepartmentID] = dep.[DepartmentID]
   LEFT JOIN [hlt_Pod_OKB_363001].[dbo].[oms_LPU] AS subdivision -- подразделения
   ON dep.[rf_LPUID] = subdivision.[LPUID]
-  WHERE [DateTAP] >= '2022-01-01' -- AND [DateTAP] <= '2023-11-14'
+  WHERE [DateTAP] >= '2024-01-01' -- AND [DateTAP] <= '2023-11-14'
   AND tap.[isClosed] = 1 -- ТАП закрыт
 ORDER BY [DateTAP] DESC
