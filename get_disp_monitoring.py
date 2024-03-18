@@ -26,6 +26,7 @@ _CR_DISP = "Мониторинг диспансеризации"
 _CR_LAST_WEEK_DIV = "За прошлую неделю (отделения)"
 _CR_LAST_WEEK_DOC = "За прошлую неделю (врачи)"
 _CR_ERRORS = "Проведено вне ОСП"
+_CR_DAILY = "Проведено с начала года"
 
 # Константы
 _YEAR_PLAN = 184233  # Годовой план для Подольской ОКБ
@@ -147,11 +148,8 @@ def start_mysql_export():
     # Воскресенье прошлой недели
     past_week_sunday = past_week_monday + timedelta(days=6)
 
-    # # Если нужны конкретные даты
-    # past_week_monday = (
-    #     date.today() - timedelta(days=date.today().weekday()) - timedelta(days=7)
-    # )
-    # past_week_sunday = date(datetime.now().year, 3, 4)
+    # Вчерашний день
+    yesterday = date.today() - timedelta(days=1)
 
     first_date = past_week_monday.strftime("%d.%m")
     last_date = past_week_sunday.strftime("%d.%m")
@@ -183,7 +181,7 @@ def start_mysql_export():
     print(df_errors)
     df = df[df["subdivision_short"].isin(osp_list)]
 
-    # С НАЧАЛА ГОДА
+    # С НАЧАЛА ГОДА ПО ВОСКРЕСЕНЬЕ ПРОШЛОЙ НЕДЕЛИ
 
     df_agg_year = df[df["date_close"] <= past_week_sunday]
 
@@ -243,6 +241,67 @@ def start_mysql_export():
         / df_agg_year.at["ПОКБ", f"Цель на {last_date}"],
         2,
     )
+
+    # С НАЧАЛА ГОДА ПО ВЧЕРАШНИЙ ДЕНЬ
+
+    df_agg_year_yest = df[df["date_close"] <= yesterday]
+
+    df_agg_year_yest = (
+        df_agg_year_yest.groupby(["subdivision_short"])
+        .agg(
+            {
+                "card_number": "count",
+            }
+        )
+        .reset_index()
+    )
+
+
+    df_agg_year_yest["Годовой план"] = df_agg_year_yest.apply(
+        lambda row: int(_YEAR_PLAN * _WEIGHTS[row["subdivision_short"]]), axis=1
+    )
+
+    df_agg_year_yest[f"Цель на {last_date}"] = df_agg_year_yest.apply(
+        lambda row: int(
+            _WORK_DAY_PLAN * current_workdays * _WEIGHTS[row["subdivision_short"]]
+        ),
+        axis=1,
+    )
+
+    df_agg_year_yest["Эффективность реализации годового плана, %"] = df_agg_year_yest.apply(
+        lambda row: round(
+            100
+            * row["card_number"]
+            / (_WORK_DAY_PLAN * current_workdays * _WEIGHTS[row["subdivision_short"]]),
+            2,
+        ),
+        axis=1,
+    )
+
+    df_agg_year_yest = df_agg_year_yest.rename(
+        columns={
+            "subdivision_short": "ОСП",
+            "card_number": f"Проведено на {last_date}",
+        }
+    )[
+        [
+            "ОСП",
+            "Годовой план",
+            f"Цель на {last_date}",
+            f"Проведено на {last_date}",
+            "Эффективность реализации годового плана, %",
+        ]
+    ]
+
+    df_agg_year_yest.loc["ПОКБ"] = df_agg_year_yest.sum(numeric_only=True)
+    df_agg_year_yest.loc["ПОКБ", ["ОСП"]] = "ПОКБ"
+    df_agg_year_yest.loc["ПОКБ", ["Эффективность реализации годового плана, %"]] = round(
+        100
+        * df_agg_year_yest.at["ПОКБ", f"Проведено на {last_date}"]
+        / df_agg_year_yest.at["ПОКБ", f"Цель на {last_date}"],
+        2,
+    )
+
 
     # ЗА НЕДЕЛЮ
 
@@ -410,61 +469,76 @@ def start_mysql_export():
     gc = gs.authorize(CREDENTIALS)
     spreadsheet = gc.open_by_key(SPREADSHEET_KEY)
 
+    # Проведено с начала года
+    wks = _CR_DAILY + "!A1"
+    worksheet = spreadsheet.worksheet(_CR_DAILY)
+    values = [df_agg_year_yest.columns.values.tolist()]
+    values.extend(df_agg_year_yest.values.tolist())
+    worksheet.batch_clear(["A1:Z500"])
+    spreadsheet.values_update(
+        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+    )
+
     wks = _CR_DISP + "!A1"
     worksheet = spreadsheet.worksheet(_CR_DISP)
 
-    df_current = pd.DataFrame(worksheet.get_all_values())
+    today = datetime.today().weekday()
 
-    # Выбрать первую строку в качестве столбцов
-    df_current.columns = df_current.iloc[0]
-    df_current = df_current[1:]  # Удалить первую строку
-    df_current = df_current.reset_index(drop=True)  # Сброс индексов
-    # Удалить колонки с 1 по 4 включительно
-    df_current = df_current.drop(df_current.columns[1:5], axis=1)
-    print(df_current)
+    # 0 - понедельник, 6 - воскресенье
+    if today == 3:
+        # Сегодня четверг
+        df_current = pd.DataFrame(worksheet.get_all_values())
 
-    # Если Google таблица не пустая, добавляем исторические данные
-    if not df_current.empty:
-        df_final = df_final.merge(df_current, how="left", on="ОСП")
+        # Выбрать первую строку в качестве столбцов
+        df_current.columns = df_current.iloc[0]
+        df_current = df_current[1:]  # Удалить первую строку
+        df_current = df_current.reset_index(drop=True)  # Сброс индексов
+        # Удалить колонки с 1 по 4 включительно
+        df_current = df_current.drop(df_current.columns[1:5], axis=1)
+        print(df_current)
 
-    values = [df_final.columns.values.tolist()]
-    values.extend(df_final.values.tolist())
+        # Если Google таблица не пустая, добавляем исторические данные
+        if not df_current.empty:
+            df_final = df_final.merge(df_current, how="left", on="ОСП")
 
-    worksheet.batch_clear(["A1:Z500"])
+        values = [df_final.columns.values.tolist()]
+        values.extend(df_final.values.tolist())
 
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
-    )
+        worksheet.batch_clear(["A1:Z500"])
 
-    # Отделения
-    wks = _CR_LAST_WEEK_DIV + "!A1"
-    worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DIV)
-    values = [df_agg_past_week_div.columns.values.tolist()]
-    values.extend(df_agg_past_week_div.values.tolist())
-    worksheet.batch_clear(["A1:Z500"])
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
-    )
+        spreadsheet.values_update(
+            wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+        )
 
-    # Врачи
-    wks = _CR_LAST_WEEK_DOC + "!A1"
-    worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DOC)
-    values = [df_agg_past_week_doc.columns.values.tolist()]
-    values.extend(df_agg_past_week_doc.values.tolist())
-    worksheet.batch_clear(["A1:Z500"])
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
-    )
+        # Отделения
+        wks = _CR_LAST_WEEK_DIV + "!A1"
+        worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DIV)
+        values = [df_agg_past_week_div.columns.values.tolist()]
+        values.extend(df_agg_past_week_div.values.tolist())
+        worksheet.batch_clear(["A1:Z500"])
+        spreadsheet.values_update(
+            wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+        )
 
-    # Ошибки вне ОСП
-    wks = _CR_ERRORS + "!A1"
-    worksheet = spreadsheet.worksheet(_CR_ERRORS)
-    values = [df_errors.columns.values.tolist()]
-    values.extend(df_errors.values.tolist())
-    worksheet.batch_clear(["A1:Z500"])
-    spreadsheet.values_update(
-        wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
-    )
+        # Врачи
+        wks = _CR_LAST_WEEK_DOC + "!A1"
+        worksheet = spreadsheet.worksheet(_CR_LAST_WEEK_DOC)
+        values = [df_agg_past_week_doc.columns.values.tolist()]
+        values.extend(df_agg_past_week_doc.values.tolist())
+        worksheet.batch_clear(["A1:Z500"])
+        spreadsheet.values_update(
+            wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+        )
+
+        # Ошибки вне ОСП
+        wks = _CR_ERRORS + "!A1"
+        worksheet = spreadsheet.worksheet(_CR_ERRORS)
+        values = [df_errors.columns.values.tolist()]
+        values.extend(df_errors.values.tolist())
+        worksheet.batch_clear(["A1:Z500"])
+        spreadsheet.values_update(
+            wks, params={"valueInputOption": "USER_ENTERED"}, body={"values": values}
+        )
 
 
 if __name__ == "__main__":
