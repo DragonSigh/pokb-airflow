@@ -256,7 +256,6 @@ def start_mysql_export():
         .reset_index()
     )
 
-
     df_agg_year_yest["Годовой план"] = df_agg_year_yest.apply(
         lambda row: int(_YEAR_PLAN * _WEIGHTS[row["subdivision_short"]]), axis=1
     )
@@ -268,14 +267,20 @@ def start_mysql_export():
         axis=1,
     )
 
-    df_agg_year_yest["Эффективность реализации годового плана, %"] = df_agg_year_yest.apply(
-        lambda row: round(
-            100
-            * row["card_number"]
-            / (_WORK_DAY_PLAN * current_workdays * _WEIGHTS[row["subdivision_short"]]),
-            2,
-        ),
-        axis=1,
+    df_agg_year_yest["Эффективность реализации годового плана, %"] = (
+        df_agg_year_yest.apply(
+            lambda row: round(
+                100
+                * row["card_number"]
+                / (
+                    _WORK_DAY_PLAN
+                    * current_workdays
+                    * _WEIGHTS[row["subdivision_short"]]
+                ),
+                2,
+            ),
+            axis=1,
+        )
     )
 
     df_agg_year_yest = df_agg_year_yest.rename(
@@ -295,13 +300,14 @@ def start_mysql_export():
 
     df_agg_year_yest.loc["ПОКБ"] = df_agg_year_yest.sum(numeric_only=True)
     df_agg_year_yest.loc["ПОКБ", ["ОСП"]] = "ПОКБ"
-    df_agg_year_yest.loc["ПОКБ", ["Эффективность реализации годового плана, %"]] = round(
-        100
-        * df_agg_year_yest.at["ПОКБ", f"Проведено на {last_date}"]
-        / df_agg_year_yest.at["ПОКБ", f"Цель на {last_date}"],
-        2,
+    df_agg_year_yest.loc["ПОКБ", ["Эффективность реализации годового плана, %"]] = (
+        round(
+            100
+            * df_agg_year_yest.at["ПОКБ", f"Проведено на {last_date}"]
+            / df_agg_year_yest.at["ПОКБ", f"Цель на {last_date}"],
+            2,
+        )
     )
-
 
     # ЗА НЕДЕЛЮ
 
