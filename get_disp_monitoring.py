@@ -15,7 +15,7 @@ SQL_QUERY_FILE_PATH = SCRIPT_DIRECTORY + r"/metrics_collector/pokb_get_taps_disp
 PATH_TO_MYSQL_CREDENTIAL = r"/home/user/auth-mysql.json"
 PATH_TO_GSHEETS_CREDENTIAL = r"/home/user/pokb-399111-f04c71766977.json"
 SPREADSHEET_KEY = r"17U0jjvNCvrqLbu3MT5aiI4FCh4ChAV5B_7PT302aKhE"
-# SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест выгрузки
+#SPREADSHEET_KEY = r"1NIzWfTgzLlIdTvHKy7syRB60IhP4Msndma6NONSFCT0"  # тест выгрузки
 SCOPE = [
     r"https://spreadsheets.google.com/feeds",
     r"https://www.googleapis.com/auth/drive",
@@ -153,6 +153,7 @@ def start_mysql_export():
 
     first_date = past_week_monday.strftime("%d.%m")
     last_date = past_week_sunday.strftime("%d.%m")
+    yesterday_date = yesterday.strftime("%d.%m")
 
     # Начало года
     year_beginning = date(datetime.now().year, 1, 1)
@@ -260,54 +261,47 @@ def start_mysql_export():
         lambda row: int(_YEAR_PLAN * _WEIGHTS[row["subdivision_short"]]), axis=1
     )
 
-    df_agg_year_yest[f"Цель на {last_date}"] = df_agg_year_yest.apply(
+    df_agg_year_yest[f"Цель на {yesterday_date}"] = df_agg_year_yest.apply(
         lambda row: int(
             _WORK_DAY_PLAN * current_workdays * _WEIGHTS[row["subdivision_short"]]
         ),
         axis=1,
     )
 
-    df_agg_year_yest["Эффективность реализации годового плана, %"] = (
-        df_agg_year_yest.apply(
-            lambda row: round(
-                100
-                * row["card_number"]
-                / (
-                    _WORK_DAY_PLAN
-                    * current_workdays
-                    * _WEIGHTS[row["subdivision_short"]]
-                ),
-                2,
-            ),
-            axis=1,
-        )
+    df_agg_year_yest["Эффективность реализации годового плана, %"] = df_agg_year_yest.apply(
+        lambda row: round(
+            100
+            * row["card_number"]
+            / (_WORK_DAY_PLAN * current_workdays * _WEIGHTS[row["subdivision_short"]]),
+            2,
+        ),
+        axis=1,
     )
 
     df_agg_year_yest = df_agg_year_yest.rename(
         columns={
             "subdivision_short": "ОСП",
-            "card_number": f"Проведено на {last_date}",
+            "card_number": f"Проведено на {yesterday_date}",
         }
     )[
         [
             "ОСП",
             "Годовой план",
-            f"Цель на {last_date}",
-            f"Проведено на {last_date}",
+            f"Цель на {yesterday_date}",
+            f"Проведено на {yesterday_date}",
             "Эффективность реализации годового плана, %",
         ]
     ]
 
     df_agg_year_yest.loc["ПОКБ"] = df_agg_year_yest.sum(numeric_only=True)
     df_agg_year_yest.loc["ПОКБ", ["ОСП"]] = "ПОКБ"
-    df_agg_year_yest.loc["ПОКБ", ["Эффективность реализации годового плана, %"]] = (
-        round(
-            100
-            * df_agg_year_yest.at["ПОКБ", f"Проведено на {last_date}"]
-            / df_agg_year_yest.at["ПОКБ", f"Цель на {last_date}"],
-            2,
-        )
+    df_agg_year_yest.loc["ПОКБ", ["Эффективность реализации годового плана, %"]] = round(
+        100
+        * df_agg_year_yest.at["ПОКБ", f"Проведено на {yesterday_date}"]
+        / df_agg_year_yest.at["ПОКБ", f"Цель на {yesterday_date}"],
+        2,
     )
+
 
     # ЗА НЕДЕЛЮ
 
